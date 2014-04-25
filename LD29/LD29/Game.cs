@@ -31,7 +31,7 @@ namespace LD29
 
         public int RenderWidth = 320;
         public int RenderHeight = 180;
-        public int DisplayScale = 5;
+        public int DisplayScale = 4;
 
         private RenderTarget2D renderTarget;
 
