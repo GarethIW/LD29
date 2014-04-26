@@ -65,8 +65,8 @@ namespace LD29
             AudioController.LoadContent(Content);
 
             // Add the first screen here, usually either MainMenuScreen or GameplayScreen if you just want to go straight to gameplay
-            screenManager.AddScreen(new ExampleGameplayScreen());
-            //screenManager.AddScreen(new GameplayScreen());
+            //screenManager.AddScreen(new ExampleGameplayScreen());
+            screenManager.AddScreen(new GameplayScreen());
             //screenManager.AddScreen(new MainMenuScreen());
         }
 

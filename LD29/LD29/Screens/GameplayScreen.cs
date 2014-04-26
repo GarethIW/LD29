@@ -19,6 +19,12 @@ namespace LD29.Screens
 
         private ParticleController particleController = new ParticleController();
 
+        private Parallax waterParallax;
+
+        private int waterLevel;
+
+        private int xpos;
+
         public GameplayScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
@@ -33,6 +39,9 @@ namespace LD29.Screens
 
             camera = new Camera(ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight, map);
 
+            waterLevel = ScreenManager.Game.RenderHeight - (36);
+            waterParallax = new Parallax(content.Load<Texture2D>("abovewater-parallax"), 12, 1f, waterLevel, 1000, new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight));
+
             particleController.LoadContent(content);
 
             base.LoadContent();
@@ -40,9 +49,14 @@ namespace LD29.Screens
 
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
+            xpos++;
+            if (xpos == 320*3) xpos = 0;
+
             camera.Update(gameTime);
            
             particleController.Update(gameTime, map);
+
+            waterParallax.Update(gameTime, xpos);
 
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
         }
@@ -52,6 +66,8 @@ namespace LD29.Screens
             Vector2 center = new Vector2(ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight) / 2f;
             SpriteBatch sb = ScreenManager.SpriteBatch;
 
+            waterParallax.Draw(sb, false);
+
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.CameraMatrix);
             map.DrawLayer(sb, "fg", camera);
             sb.End();
@@ -60,6 +76,9 @@ namespace LD29.Screens
 
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
             sb.End();
+
+            waterParallax.Draw(sb, true);
+
 
             ScreenManager.FadeBackBufferToBlack(1f - TransitionAlpha);
 
