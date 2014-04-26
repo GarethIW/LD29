@@ -88,7 +88,7 @@ namespace LD29.Screens
                 if (playerShip.Position.Y < waterLevel - 10)
                     playerShip.underWater = false;
 
-                waterParallax.HeightScale = MathHelper.Lerp(waterParallax.HeightScale, 0.1f, 0.1f);
+                waterParallax.HeightScale = MathHelper.Lerp(waterParallax.HeightScale, 0.1f, 0.05f);
             }
 
             particleController.Update(gameTime, map);

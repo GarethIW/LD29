@@ -44,6 +44,8 @@ namespace LD29
             }
 
             Position.X = camPos;
+
+            
         }
 
         public void Draw(SpriteBatch sb, bool fg, float camY)
@@ -60,7 +62,7 @@ namespace LD29
                      //if(x>=Position.X-(vp.Width*2) && x<=Position.X+(vp.Width*2))
                          sb.Draw(texBG,
                              new Vector2(x, ((Position.Y - ((numLayers / 2) * (layerHeight * HeightScale))) + (layer * (layerHeight * HeightScale))) - (camY-(vp.Height/2))),
-                                new Rectangle(0,layerHeight*layer,texBG.Width,layerHeight),
+                             new Rectangle(0,layerHeight*layer,texBG.Width,HeightScale<0.5f?(int)(((float)layerHeight/5f)*(HeightScale*10f)):layerHeight),
                                 Color.White,
                                 0f, new Vector2(texBG.Width, layerHeight)/2, 1f, SpriteEffects.None, 0);
                 }
