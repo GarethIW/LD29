@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="220" height="30" tilewidth="16" tileheight="16">
- <tileset firstgid="1" name="testtiles" tilewidth="16" tileheight="16">
-  <image source="testtiles.png" width="96" height="48"/>
-  <tile id="0">
-   <properties>
-    <property name="CollisionSet" value="True"/>
-   </properties>
-  </tile>
+<map version="1.0" orientation="orthogonal" width="200" height="30" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="EarthTiles" tilewidth="16" tileheight="16">
+  <image source="EarthTiles.png" width="96" height="96"/>
  </tileset>
- <layer name="fg" width="220" height="30">
+ <layer name="fg" width="200" height="30">
   <properties>
    <property name="Collision" value="On"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3V0Y6CMBBAUcLTZln//3f3RRNNNFDbDp1yTjLPDC1XlwUAAJjVz8EB6hxtTW/X5f7b0Rt73H87WutrhjPNtu+o/Lf1Ncu5ttq35buv98lEb/3MdK4t9m15FuuSr7eS1rJ8FyOZ6Vxrdy791j49Y30zWeitr5nO9bHr7T4le3/T2my9tXr/0Xx7tz3eccZzvS2vze29R+19vBu9na/1nUbulMHzvp96ix69xet5n1G7ZfA78GSwFc7fOWvu6v0bWmM7+Iyt8jlRzu4qY2fPSnobVenvRulE7ZaFxupl/xZGbK1kt6y0dF0jtnY1OroWrUE8vUE8rUE8rUE8nQEAAAAAADP5B8BcVL8gZwAA
+   H4sIAAAAAAAAC+3BAQ0AAADCoPdP7ewBFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN7SqhPfAXQAA
   </data>
  </layer>
- <objectgroup name="spawn" width="220" height="30">
-  <object x="176" y="192" width="16" height="16"/>
+ <objectgroup name="spawn" width="200" height="30">
+  <object x="736" y="192" width="16" height="16"/>
  </objectgroup>
 </map>

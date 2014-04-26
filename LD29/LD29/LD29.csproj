@@ -80,6 +80,7 @@
     <Compile Include="Entities\RotBox.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="MapGeneration.cs" />
     <Compile Include="Parallax.cs" />
     <Compile Include="ParticleController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

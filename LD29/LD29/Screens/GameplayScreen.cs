@@ -7,6 +7,7 @@ using LD29.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using TiledLib;
 using TimersAndTweens;
 
@@ -45,11 +46,11 @@ namespace LD29.Screens
             underwaterBGParallax = new Parallax(content.Load<Texture2D>("underwater-bg"), 4, 1f, waterLevel + 20, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), true);
 
             playerShip = new Ship(content.Load<Texture2D>("playership"), new Rectangle(0,0,10,10), null, Vector2.Zero);
-            playerShip.Position = new Vector2((map.TileWidth*map.Width)/2, 150);
-
-            
+            playerShip.Position = new Vector2(64, 190);
 
             particleController.LoadContent(content);
+
+            MapGeneration.Generate(map);
 
             base.LoadContent();
         }
@@ -62,7 +63,7 @@ namespace LD29.Screens
 
             
 
-            waterLevel = 224;
+            waterLevel = 260;
             waterParallax.Position.Y = waterLevel;
             underwaterBGParallax.Position.Y = waterLevel + 20;
 
@@ -107,6 +108,7 @@ namespace LD29.Screens
 
         public override void HandleInput(InputState input)
         {
+            if(input.IsNewKeyPress(Keys.Back)) MapGeneration.Generate(map);
             playerShip.HandleInput(input);
             base.HandleInput(input);
         }
@@ -117,7 +119,7 @@ namespace LD29.Screens
             SpriteBatch sb = ScreenManager.SpriteBatch;
 
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
-            sb.Draw(ScreenManager.blankTexture, new Rectangle(0,(int)waterLevel-((int)camera.Position.Y-ScreenManager.Game.RenderHeight/2),ScreenManager.Game.RenderWidth, (map.TileHeight*map.Height)-(int)waterLevel), null, new Color(0,16,65));
+            sb.Draw(ScreenManager.blankTexture, new Rectangle(0,(int)waterLevel-((int)camera.Position.Y-ScreenManager.Game.RenderHeight/2),ScreenManager.Game.RenderWidth, ((map.TileHeight*map.Height)+10)-(int)waterLevel), null, new Color(0,16,65));
             sb.End();
 
             underwaterBGParallax.Draw(sb, camera.Position.Y);
@@ -129,6 +131,10 @@ namespace LD29.Screens
             sb.End();
 
             particleController.Draw(sb, camera, 1);
+
+            sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+            sb.Draw(ScreenManager.blankTexture, new Rectangle(0, (int)waterLevel - ((int)camera.Position.Y - ScreenManager.Game.RenderHeight / 2) - 5, ScreenManager.Game.RenderWidth, ((map.TileHeight * map.Height) + 10) - (int)waterLevel), null, Color.Black * 0.5f);
+            sb.End();
 
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
             sb.End();
