@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioController.cs" />
+    <Compile Include="Entities\Ship.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\EntityPool.cs" />
     <Compile Include="Entities\Hero.cs" />
@@ -86,7 +87,6 @@
     <Compile Include="ScreenManager\GameScreen.cs" />
     <Compile Include="ScreenManager\InputState.cs" />
     <Compile Include="ScreenManager\ScreenManager.cs" />
-    <Compile Include="Screens\ExampleGameplayScreen.cs" />
     <Compile Include="Screens\GameplayScreen.cs" />
     <Compile Include="Screens\LoadingScreen.cs" />
     <Compile Include="Screens\MainMenuScreen.cs" />

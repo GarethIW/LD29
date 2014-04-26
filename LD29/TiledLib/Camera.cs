@@ -60,16 +60,21 @@ namespace TiledLib
         /// Update the camera
         /// </summary>
         /// 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, bool underwater, float waterlevel)
         {
             // Clamp target to map/camera bounds
-            ClampRect = new Rectangle((int)((Width / 2f) / Zoom), (int)((Height / 2f) / Zoom), (BoundsWidth) - (int)((Width / 2f) / Zoom), (BoundsHeight) - (int)((Height / 2f) / Zoom));
+            if (!underwater)
+                ClampRect = new Rectangle((int)((Width / 2f) / Zoom), (int)((Height / 2f) / Zoom), (BoundsWidth) - (int)((Width / 2f) / Zoom), ((int)waterlevel) - (int)((Height *0.4f) / Zoom));
+            else
+                ClampRect = new Rectangle((int)((Width / 2f) / Zoom), ((int)waterlevel) + (int)((Height * 0.45f) / Zoom), (BoundsWidth) - (int)((Width / 2f) / Zoom), (BoundsHeight) - (int)((Height / 2f) / Zoom));
 
-            Target.X = MathHelper.Clamp(Target.X, ClampRect.X, ClampRect.Width);
+
             Target.Y = MathHelper.Clamp(Target.Y, ClampRect.Y, ClampRect.Height);
+            //Position.Y = MathHelper.Clamp(Position.Y, ClampRect.Y, ClampRect.Height);
 
-            Position.X = MathHelper.Clamp(Position.X, ClampRect.X, ClampRect.Width);
-            Position.Y = MathHelper.Clamp(Position.Y, ClampRect.Y, ClampRect.Height);
+
+            //Target.X = MathHelper.Clamp(Target.X, ClampRect.X, ClampRect.Width);
+            
 
             if (shakeTime > 0)
             {
