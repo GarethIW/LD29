@@ -20,6 +20,7 @@ namespace LD29.Screens
         private ParticleController particleController = new ParticleController();
 
         private Parallax waterParallax;
+        private Parallax underwaterBGParallax;
 
         private float waterLevel;
 
@@ -40,7 +41,8 @@ namespace LD29.Screens
             camera = new Camera(ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight, map);
 
             waterLevel = ScreenManager.Game.RenderHeight;
-            waterParallax = new Parallax(content.Load<Texture2D>("abovewater-parallax"), 12, 0.5f, waterLevel, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight));
+            waterParallax = new Parallax(content.Load<Texture2D>("abovewater-parallax"), 12, 0.5f, waterLevel, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false);
+            underwaterBGParallax = new Parallax(content.Load<Texture2D>("underwater-bg"), 4, 1f, waterLevel + 20, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), true);
 
             playerShip = new Ship(content.Load<Texture2D>("playership"), new Rectangle(0,0,10,10), null, Vector2.Zero);
             playerShip.Position = new Vector2((map.TileWidth*map.Width)/2, 150);
@@ -62,26 +64,30 @@ namespace LD29.Screens
 
             waterLevel = 224;
             waterParallax.Position.Y = waterLevel;
+            underwaterBGParallax.Position.Y = waterLevel + 20;
 
             camera.Target = playerShip.Position;
+            camera.Target.X += playerShip.Speed.X*20f;
             camera.Update(gameTime, playerShip.underWater, waterLevel);
 
             if (playerShip.Position.X < 0f)
             {
                 playerShip.Position.X = (map.TileWidth * map.Width) + playerShip.Speed.X;
-                camera.Position.X = playerShip.Position.X - (camera.Target.X - camera.Position.X);
+                camera.Position.X = (playerShip.Position.X + playerShip.Speed.X * 20f) - (camera.Target.X - camera.Position.X);
+                //camera.Target.X -= playerShip.Speed.X * 20f;
             }
             if (playerShip.Position.X >= (map.TileWidth * map.Width))
             {
                 playerShip.Position.X = 0f + playerShip.Speed.X;
-                camera.Position.X = playerShip.Position.X - (camera.Target.X - camera.Position.X);
+                camera.Position.X = (playerShip.Position.X + playerShip.Speed.X * 20f) - (camera.Target.X - camera.Position.X);
+                //camera.Target.X += playerShip.Speed.X * 20f; ;
             }
 
             if (!playerShip.underWater)
             {
                 if(playerShip.Position.Y > waterLevel + 10) 
                     playerShip.underWater = true;
-                waterParallax.HeightScale = MathHelper.Lerp(waterParallax.HeightScale, 0.5f, 0.1f);
+                waterParallax.HeightScale = MathHelper.Lerp(waterParallax.HeightScale, 0.65f, 0.1f);
             }
             if (playerShip.underWater)
             {
@@ -94,6 +100,7 @@ namespace LD29.Screens
             particleController.Update(gameTime, map);
 
             waterParallax.Update(gameTime, playerShip.Speed.X, (int)playerShip.Position.X);
+            underwaterBGParallax.Update(gameTime,playerShip.Speed.X*0.5f,(int)playerShip.Position.X);
 
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
         }
@@ -109,6 +116,11 @@ namespace LD29.Screens
             Vector2 center = new Vector2(ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight) / 2f;
             SpriteBatch sb = ScreenManager.SpriteBatch;
 
+            sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+            sb.Draw(ScreenManager.blankTexture, new Rectangle(0,(int)waterLevel-((int)camera.Position.Y-ScreenManager.Game.RenderHeight/2),ScreenManager.Game.RenderWidth, (map.TileHeight*map.Height)-(int)waterLevel), null, new Color(0,16,65));
+            sb.End();
+
+            underwaterBGParallax.Draw(sb, camera.Position.Y);
             waterParallax.Draw(sb, false, camera.Position.Y);
 
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.CameraMatrix);

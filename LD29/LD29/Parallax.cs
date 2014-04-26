@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using TimersAndTweens;
 
 namespace LD29
 {
@@ -19,8 +20,11 @@ namespace LD29
         private int mapWidth;
 
         private float[] offsets;
+        private float[] waveoffsets;
 
-        public Parallax(Texture2D tex, int layerheight, float heightscale, float ypos, int mapwidth, Viewport viewport)
+        private bool wavyEffect = false;
+
+        public Parallax(Texture2D tex, int layerheight, float heightscale, float ypos, int mapwidth, Viewport viewport, bool wavy)
         {
             texBG = tex;
             layerHeight = layerheight;
@@ -31,17 +35,44 @@ namespace LD29
 
             numLayers = texBG.Height/layerheight;
             offsets = new float[numLayers];
+            waveoffsets =new float[numLayers];
+
+            wavyEffect = wavy;
+
+            if (wavyEffect) TweenController.Instance.Create("", TweenFuncs.Linear, WaveCallback, 5000, true, true);
+        }
+
+        private void WaveCallback(Tween tween)
+        {
+            for (int i = 0; i < numLayers; i++)
+            {
+                waveoffsets[i]=(float)Math.Sin((-MathHelper.PiOver2 + (MathHelper.Pi* tween.Value)) + (float)(i*0.2f)) * 15f;
+            }
         }
 
         public void Update(GameTime gameTime, float xSpeed, int camPos)
         {
-            float offsetStep = 1.6f / (float)numLayers;
-            for (int i = 0; i < numLayers; i++)
+            if (!wavyEffect)
             {
-                offsets[i] -= (xSpeed*(((float) i + 1f)*offsetStep));
-                if (offsets[i] >= texBG.Width) offsets[i] = offsets[i] - texBG.Width;
-                if (offsets[i] < 0f) offsets[i] = texBG.Width + offsets[i];
+                float offsetStep = 1.6f/(float) numLayers;
+                for (int i = 0; i < numLayers; i++)
+                {
+                    offsets[i] -= (xSpeed*(((float) i + 1f)*offsetStep));
+                    if (offsets[i] >= texBG.Width) offsets[i] = offsets[i] - texBG.Width;
+                    if (offsets[i] < 0f) offsets[i] = texBG.Width + offsets[i];
+                }
             }
+            else
+            {
+                for (int i = 0; i < numLayers; i++)
+                {
+                    offsets[i] -= xSpeed;
+                    if (offsets[i] >= texBG.Width) offsets[i] = offsets[i] - texBG.Width;
+                    if (offsets[i] < 0f) offsets[i] = texBG.Width + offsets[i];
+                }
+            }
+
+
 
             Position.X = camPos;
 
@@ -51,12 +82,12 @@ namespace LD29
         public void Draw(SpriteBatch sb, bool fg, float camY)
         {
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
-            int mid = numLayers/2;
+            int mid = numLayers>1?numLayers/2:1;
             int start = fg ? mid : 0;
 
             for (int layer = start; layer < start + mid; layer++)
             {
-                int xoff = (int)offsets[layer];
+                int xoff = (int) offsets[layer];// + (int)waveoffsets[layer];
                 for (int x = xoff-mapWidth; x <xoff+mapWidth; x += texBG.Width)
                 {
                      //if(x>=Position.X-(vp.Width*2) && x<=Position.X+(vp.Width*2))
@@ -65,6 +96,27 @@ namespace LD29
                              new Rectangle(0,layerHeight*layer,texBG.Width,HeightScale<0.5f?(int)(((float)layerHeight/5f)*(HeightScale*10f)):layerHeight),
                                 Color.White,
                                 0f, new Vector2(texBG.Width, layerHeight)/2, 1f, SpriteEffects.None, 0);
+                }
+            }
+            sb.End();
+        }
+
+        public void Draw(SpriteBatch sb, float camY)
+        {
+            sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+            int start = 0;
+
+            for (int layer = start; layer < numLayers; layer++)
+            {
+                int xoff = (int) offsets[layer] + (int)waveoffsets[layer];
+                for (int x = xoff - mapWidth; x < xoff + mapWidth; x += texBG.Width)
+                {
+                    //if(x>=Position.X-(vp.Width*2) && x<=Position.X+(vp.Width*2))
+                    sb.Draw(texBG,
+                        new Vector2(x, ((Position.Y - ((numLayers / 2) * (layerHeight * HeightScale))) + (layer * (layerHeight * HeightScale))) - (camY - (vp.Height / 2))),
+                        new Rectangle(0, layerHeight * layer, texBG.Width, HeightScale < 0.5f ? (int)(((float)layerHeight / 5f) * (HeightScale * 10f)) : layerHeight),
+                           Color.White,
+                           0f, new Vector2(texBG.Width, layerHeight) / 2, 1f, SpriteEffects.None, 0);
                 }
             }
             sb.End();
