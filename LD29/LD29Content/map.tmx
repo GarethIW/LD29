@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="200" height="30" tilewidth="16" tileheight="16">
  <tileset firstgid="1" name="EarthTiles" tilewidth="16" tileheight="16">
-  <image source="EarthTiles.png" width="96" height="96"/>
+  <image source="EarthTiles.png" width="128" height="176"/>
+  <tile id="0">
+   <properties>
+    <property name="CollisionSet" value="True"/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="fg" width="200" height="30">
   <properties>

@@ -9,7 +9,26 @@ namespace LD29
 {
     static class MapGeneration
     {
-        private const int CENTER_BLOCK = 8;
+        const int CENTER_BLOCK = 10;
+        const int EDGE_UP = 2;
+        const int EDGE_DOWN = 18;
+        const int EDGE_LEFT = 9;
+        const int EDGE_RIGHT = 11;
+
+        const int EDGE_INSIDE_UP = 5;
+        const int EDGE_INSIDE_DOWN = 17;
+        const int EDGE_INSIDE_LEFT = 10;
+        const int EDGE_INSIDE_RIGHT = 12;
+
+        const int CORNER_INSIDE_TL = 13;
+        const int CORNER_INSIDE_TR = 15;
+        const int CORNER_INSIDE_BL = 29;
+        const int CORNER_INSIDE_BR = 31;
+
+        const int CORNER_OUTSIDE_TL = 1;
+        const int CORNER_OUTSIDE_TR = 3;
+        const int CORNER_OUTSIDE_BL = 17;
+        const int CORNER_OUTSIDE_BR = 19;
 
         public static void Generate(Map gameMap)
         {
@@ -26,6 +45,9 @@ namespace LD29
                 int islandwidth = (gameMap.Width/2)/numIslands;
 
                 Point islandCenter = new Point(spacing * (island+1), 16);
+
+                if (island == 0) islandCenter.X -= 5;
+                if (island == numIslands-1) islandCenter.X += 5;
 
                 List<Point> cps = new List<Point>();
 
@@ -57,7 +79,7 @@ namespace LD29
                 numcps = 2 + Helper.Random.Next(2);
                 for (int i = 0; i < numcps; i++)
                     cps.Add(new Point(((islandCenter.X - (islandwidth / 2)) + ((islandwidth / (numcps + 1)) * (i + 1)) + (-2 + Helper.Random.Next(4))),
-                                  islandCenter.Y + 2 + Helper.Random.Next(10)));
+                                  islandCenter.Y + 2 + Helper.Random.Next(8)));
 
                 cps.Add(new Point(islandCenter.X + (islandwidth / 2), islandCenter.Y));
 
@@ -74,6 +96,115 @@ namespace LD29
                 }
 
             }
+
+            // Remove stray tiles
+            for (int y = 0; y < gameMap.Height; y++)
+            {
+                for (int x = 0; x < gameMap.Width; x++)
+                {
+                    if (layer.Tiles[x, y] != null)
+                        if (CountSurroundingTiles(gameMap, layer, x, y) <= 3)
+                        {
+                            layer.Tiles[x, y] = null;
+                        }
+                }
+            }
+
+            for (int y = 0; y < gameMap.Height; y++)
+            {
+                for (int x = 0; x < gameMap.Width; x++)
+                {
+
+                    if (GetTileIndex(gameMap, layer, x, y) == CENTER_BLOCK)
+                    {
+                        // Edges
+                        if (layer.Tiles[x - 1, y] == null)
+                            if (layer.Tiles[x, y - 1] != null)
+                                if (layer.Tiles[x, y + 1] != null) layer.Tiles[x, y] = gameMap.Tiles[EDGE_LEFT];
+
+                        if (layer.Tiles[x + 1, y] == null)
+                            if (layer.Tiles[x, y - 1] != null)
+                                if (layer.Tiles[x, y + 1] != null) layer.Tiles[x, y] = gameMap.Tiles[EDGE_RIGHT];
+
+                        if (layer.Tiles[x, y + 1] == null)
+                            if (layer.Tiles[x - 1, y] != null)
+                                if (layer.Tiles[x + 1, y] != null) layer.Tiles[x, y] = gameMap.Tiles[EDGE_DOWN];
+
+                        if (layer.Tiles[x, y - 1] == null)
+                            if (layer.Tiles[x - 1, y] != null)
+                                if (layer.Tiles[x + 1, y] != null) layer.Tiles[x, y] = gameMap.Tiles[EDGE_UP];
+
+                        // Corners - inside
+                        if (layer.Tiles[x - 1, y - 1] == null)
+                            if (layer.Tiles[x, y - 1] != null)
+                                if (layer.Tiles[x - 1, y] != null) layer.Tiles[x, y] = gameMap.Tiles[CORNER_INSIDE_BR];
+
+                        if (layer.Tiles[x - 1, y + 1] == null)
+                            if (layer.Tiles[x, y + 1] != null)
+                                if (layer.Tiles[x - 1, y] != null) layer.Tiles[x, y] = gameMap.Tiles[CORNER_INSIDE_TR];
+
+                        if (layer.Tiles[x + 1, y - 1] == null)
+                            if (layer.Tiles[x, y - 1] != null)
+                                if (layer.Tiles[x + 1, y] != null) layer.Tiles[x, y] = gameMap.Tiles[CORNER_INSIDE_BL];
+
+                        if (layer.Tiles[x + 1, y + 1] == null)
+                            if (layer.Tiles[x, y + 1] != null)
+                                if (layer.Tiles[x + 1, y] != null) layer.Tiles[x, y] = gameMap.Tiles[CORNER_INSIDE_TL];
+
+                        // Corners - outside
+                        if (layer.Tiles[x - 1, y - 1] == null)
+                            if (layer.Tiles[x, y - 1] == null)
+                                if (layer.Tiles[x - 1, y] == null) layer.Tiles[x, y] = gameMap.Tiles[CORNER_OUTSIDE_TL];
+
+                        if (layer.Tiles[x - 1, y + 1] == null)
+                            if (layer.Tiles[x, y + 1] == null)
+                                if (layer.Tiles[x - 1, y] == null) layer.Tiles[x, y] = gameMap.Tiles[CORNER_OUTSIDE_BL];
+
+                        if (layer.Tiles[x + 1, y - 1] == null)
+                            if (layer.Tiles[x, y - 1] == null)
+                                if (layer.Tiles[x + 1, y] == null) layer.Tiles[x, y] = gameMap.Tiles[CORNER_OUTSIDE_TR];
+
+                        if (layer.Tiles[x + 1, y + 1] == null)
+                            if (layer.Tiles[x, y + 1] == null)
+                                if (layer.Tiles[x + 1, y] == null) layer.Tiles[x, y] = gameMap.Tiles[CORNER_OUTSIDE_BR];
+
+                    }
+
+                }
+            }
+            // Remove stray tiles
+            for (int y = 0; y < gameMap.Height; y++)
+            {
+                for (int x = 0; x < gameMap.Width; x++)
+                {
+                    if (layer.Tiles[x, y] != null)
+                        if (CountSurroundingTiles(gameMap, layer, x, y) <= 3)
+                        {
+                            layer.Tiles[x, y] = null;
+                        }
+                }
+            }
+        }
+
+        static int GetTileIndex(Map map, TileLayer layer, int x, int y)
+        {
+            if (x > -1 && x < map.Width && y > -1 && y < map.Height && layer.Tiles[x, y] != null)
+            {
+                return map.Tiles.IndexOf(layer.Tiles[x, y]);
+            }
+
+            return -1;
+        }
+
+        static int CountSurroundingTiles(Map map, TileLayer layer, int x, int y)
+        {
+            int count = 0;
+
+            for (int yy = y - 1; yy <= y + 1; yy++)
+                for (int xx = x - 1; xx <= x + 1; xx++)
+                    if (layer.Tiles[xx, yy] != null && !(x == xx && y == yy)) count++;
+
+            return count;
         }
     }
 }

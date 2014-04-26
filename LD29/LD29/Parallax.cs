@@ -23,8 +23,9 @@ namespace LD29
         private float[] waveoffsets;
 
         private bool wavyEffect = false;
+        private bool cutoff = false;
 
-        public Parallax(Texture2D tex, int layerheight, float heightscale, float ypos, int mapwidth, Viewport viewport, bool wavy)
+        public Parallax(Texture2D tex, int layerheight, float heightscale, float ypos, int mapwidth, Viewport viewport, bool wavy, bool cut)
         {
             texBG = tex;
             layerHeight = layerheight;
@@ -38,6 +39,7 @@ namespace LD29
             waveoffsets =new float[numLayers];
 
             wavyEffect = wavy;
+            cutoff = cut;
 
             if (wavyEffect) TweenController.Instance.Create("", TweenFuncs.Linear, WaveCallback, 5000, true, true);
         }
@@ -93,7 +95,7 @@ namespace LD29
                      //if(x>=Position.X-(vp.Width*2) && x<=Position.X+(vp.Width*2))
                          sb.Draw(texBG,
                              new Vector2(x, ((Position.Y - ((numLayers / 2) * (layerHeight * HeightScale))) + (layer * (layerHeight * HeightScale))) - (camY-(vp.Height/2))),
-                             new Rectangle(0,layerHeight*layer,texBG.Width,HeightScale<0.5f?(int)(((float)layerHeight/5f)*(HeightScale*10f)):layerHeight),
+                             new Rectangle(0,layerHeight*layer,texBG.Width,(cutoff && HeightScale<0.5f)?(int)(((float)layerHeight/5f)*(HeightScale*10f)):layerHeight),
                                 Color.White,
                                 0f, new Vector2(texBG.Width, layerHeight)/2, 1f, SpriteEffects.None, 0);
                 }

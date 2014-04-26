@@ -22,6 +22,7 @@ namespace LD29.Screens
 
         private Parallax waterParallax;
         private Parallax underwaterBGParallax;
+        private Parallax rocksParallax;
 
         private float waterLevel;
 
@@ -42,8 +43,10 @@ namespace LD29.Screens
             camera = new Camera(ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight, map);
 
             waterLevel = ScreenManager.Game.RenderHeight;
-            waterParallax = new Parallax(content.Load<Texture2D>("abovewater-parallax"), 12, 0.5f, waterLevel, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false);
-            underwaterBGParallax = new Parallax(content.Load<Texture2D>("underwater-bg"), 4, 1f, waterLevel + 20, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), true);
+            waterParallax = new Parallax(content.Load<Texture2D>("abovewater-parallax"), 12, 0.5f, waterLevel, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false, true);
+            underwaterBGParallax = new Parallax(content.Load<Texture2D>("underwater-bg"), 4, 1f, waterLevel + 20, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), true, false);
+            rocksParallax = new Parallax(content.Load<Texture2D>("seabed-rocks"), 16, 0.35f, (map.TileHeight*map.Height) -15, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false, false);
+            
 
             playerShip = new Ship(content.Load<Texture2D>("playership"), new Rectangle(0,0,10,10), null, Vector2.Zero);
             playerShip.Position = new Vector2(64, 190);
@@ -100,8 +103,9 @@ namespace LD29.Screens
 
             particleController.Update(gameTime, map);
 
-            waterParallax.Update(gameTime, playerShip.Speed.X, (int)playerShip.Position.X);
-            underwaterBGParallax.Update(gameTime,playerShip.Speed.X*0.5f,(int)playerShip.Position.X);
+            waterParallax.Update(gameTime, playerShip.Speed.X, (int)camera.Position.X);
+            underwaterBGParallax.Update(gameTime,playerShip.Speed.X*0.5f,(int)camera.Position.X);
+            rocksParallax.Update(gameTime, playerShip.Speed.X, (int)camera.Position.X);
 
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
         }
@@ -124,6 +128,7 @@ namespace LD29.Screens
 
             underwaterBGParallax.Draw(sb, camera.Position.Y);
             waterParallax.Draw(sb, false, camera.Position.Y);
+            rocksParallax.Draw(sb, false, camera.Position.Y);
 
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.CameraMatrix);
             map.DrawLayer(sb, "fg", camera);
@@ -131,6 +136,8 @@ namespace LD29.Screens
             sb.End();
 
             particleController.Draw(sb, camera, 1);
+
+            rocksParallax.Draw(sb,true,camera.Position.Y);
 
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
             sb.Draw(ScreenManager.blankTexture, new Rectangle(0, (int)waterLevel - ((int)camera.Position.Y - ScreenManager.Game.RenderHeight / 2) - 5, ScreenManager.Game.RenderWidth, ((map.TileHeight * map.Height) + 10) - (int)waterLevel), null, Color.Black * 0.5f);

@@ -84,7 +84,8 @@ namespace LD29
                             CurrentDirection = SpriteAnimDirection.Reverse;
                             CurrentFrame -= 2;
                         }
-                        else CurrentFrame = 0;
+                        else if (Loop) CurrentFrame = 0;
+                        else CurrentFrame--;
                     }
                     break;
                 case SpriteAnimDirection.Reverse:
@@ -96,7 +97,8 @@ namespace LD29
                             CurrentDirection = SpriteAnimDirection.Forward;
                             CurrentFrame = 1;
                         }
-                        else CurrentFrame = NumFrames-1;
+                        else if(Loop) CurrentFrame = NumFrames-1;
+                        else CurrentFrame--;
                     }
                     break;
                 default:
@@ -111,6 +113,7 @@ namespace LD29
             CurrentDirection = SpriteAnimDirection.Forward;
             CurrentFrame = 0;
             CurrentFrameTime = 0;
+            State = SpriteAnimState.Paused;
         }
 
         public void Draw(SpriteBatch sb, Vector2 pos)
