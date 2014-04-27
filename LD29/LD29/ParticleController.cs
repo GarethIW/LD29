@@ -320,6 +320,24 @@ namespace LD29
             }
         }
 
+        public static void Acid(Particle p)
+        {
+            p.Scale += 0.01f;
+
+            switch (p.State)
+            {
+                case ParticleState.Attack:
+                    p.Alpha += 0.001f;
+                    break;
+                case ParticleState.Alive:
+                    if (p.Alpha < 0.2f) p.Alpha += 0.001f;
+                    break;
+                case ParticleState.Decay:
+                    p.Alpha = 0.2f - (p.DecayValue * 0.2f);
+                    break;
+            }
+        }
+
         public static void PermaLight(Particle p)
         {
             switch (p.State)

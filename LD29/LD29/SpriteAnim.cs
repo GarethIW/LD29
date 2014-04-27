@@ -85,7 +85,9 @@ namespace LD29
                             CurrentFrame -= 2;
                         }
                         else if (Loop) CurrentFrame = 0;
-                        else CurrentFrame--;
+                        else { State = SpriteAnimState.Paused;
+                            CurrentFrame--;
+                        }
                     }
                     break;
                 case SpriteAnimDirection.Reverse:
@@ -98,7 +100,12 @@ namespace LD29
                             CurrentFrame = 1;
                         }
                         else if(Loop) CurrentFrame = NumFrames-1;
-                        else CurrentFrame--;
+                        else
+                        {
+                            State = SpriteAnimState.Paused;
+                            CurrentFrame--;
+                        }
+                        
                     }
                     break;
                 default:

@@ -13,9 +13,11 @@ namespace LD29.Entities
     public class Enemy : Entity
     {
         protected SpriteAnim _idleAnim;
+        protected SpriteAnim _hitAnim;
         protected Vector2 _scale;
 
         protected Color _tint = Color.White;
+        protected float _hitAlpha = 0f;
 
         protected int _faceDir = -1;
 
@@ -41,7 +43,10 @@ namespace LD29.Entities
 
         public override void Update(GameTime gameTime, Map gameMap)
         {
+            if (_hitAlpha > 0f) _hitAlpha -= 0.1f;
+
             _idleAnim.Update(gameTime);
+            _hitAnim.Update(gameTime);
 
             if (Speed.X <= 0f) _faceDir = -1;
             else _faceDir = 1;
@@ -72,7 +77,6 @@ namespace LD29.Entities
                     part =>
                     {
                         ParticleFunctions.FadeInOut(part);
-                        if (part.Position.Y > 260) part.State = ParticleState.Done;
                     },
                     1f, 0f, 0f,
                     1, ParticleBlend.Alpha);
@@ -90,7 +94,6 @@ namespace LD29.Entities
                     part =>
                     {
                         ParticleFunctions.FadeInOut(part);
-                        if (part.Position.Y > 260) part.State = ParticleState.Done;
                     },
                     1f, 0f, 0f,
                     1, ParticleBlend.Alpha);
@@ -105,11 +108,7 @@ namespace LD29.Entities
                 {
                     Life -= ((Projectile) collided).Damage;
 
-                    TweenController.Instance.Create("", TweenFuncs.Linear, tween =>
-                    {
-                        _tint = new Color(1f,1f-tween.Value,1f-tween.Value);
-                        if (tween.State == TweenState.Finished) _tint = Color.White;
-                    }, 100, false, false);
+                    _hitAlpha = 1f;
                 }
             }
 
@@ -120,7 +119,13 @@ namespace LD29.Entities
         {
             _idleAnim.Draw(sb,Position, _faceDir==-1?SpriteEffects.None:SpriteEffects.FlipHorizontally,_scale,0f,_tint);
             if (Position.X >= 0 && Position.X < 200) _idleAnim.Draw(sb, Position + new Vector2(gameMap.Width * gameMap.TileWidth, 0), _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, 0f, _tint);
-            if (Position.X >= (gameMap.Width * gameMap.TileWidth) - 200 && Position.X < (gameMap.Width * gameMap.TileWidth)) _idleAnim.Draw(sb, Position - new Vector2(gameMap.Width * gameMap.TileWidth, 0), _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, 0f, _tint); 
+            if (Position.X >= (gameMap.Width * gameMap.TileWidth) - 200 && Position.X < (gameMap.Width * gameMap.TileWidth)) _idleAnim.Draw(sb, Position - new Vector2(gameMap.Width * gameMap.TileWidth, 0), _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, 0f, _tint);
+            if (_hitAlpha > 0f)
+            {
+                _hitAnim.Draw(sb, Position, _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, 0f, _tint*_hitAlpha);
+                if (Position.X >= 0 && Position.X < 200) _hitAnim.Draw(sb, Position + new Vector2(gameMap.Width * gameMap.TileWidth, 0), _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, 0f, _tint * _hitAlpha);
+                if (Position.X >= (gameMap.Width * gameMap.TileWidth) - 200 && Position.X < (gameMap.Width * gameMap.TileWidth)) _hitAnim.Draw(sb, Position - new Vector2(gameMap.Width * gameMap.TileWidth, 0), _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, 0f, _tint * _hitAlpha); 
+            }
             base.Draw(sb, gameMap);
         }
 

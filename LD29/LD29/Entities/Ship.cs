@@ -16,13 +16,17 @@ namespace LD29.Entities
     class Ship : Entity
     {
         public bool underWater = false;
+        public float Life = 100f;
 
-        private Color _tint = Color.White;
+        private float _hitAlpha = 0f;
         private int faceDir = 1;
 
         private SpriteAnim _idleAnim;
         private SpriteAnim _upAnim;
         private SpriteAnim _downAnim;
+        private SpriteAnim _idleHitAnim;
+        private SpriteAnim _upHitAnim;
+        private SpriteAnim _downHitAnim;
 
         private double projectileCoolDown1 = 50;
         private double projectileCoolDown2 = 1000;
@@ -30,7 +34,7 @@ namespace LD29.Entities
         private double projectileTime1;
         private double projectileTime2;
 
-        private int powerUpLevel = 3;
+        private int powerUpLevel = 0;
 
         public Ship(Texture2D spritesheet, Rectangle hitbox, List<Vector2> hitPolyPoints, Vector2 hitboxoffset) 
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
@@ -42,32 +46,48 @@ namespace LD29.Entities
             _downAnim = new SpriteAnim(spritesheet, 2, 2, 16, 16, 500, new Vector2(8, 8), false, false, 0);
             _downAnim.Pause();
 
+            _idleHitAnim = new SpriteAnim(spritesheet, 3, 1, 16, 16, 100, new Vector2(8, 8));
+            _idleHitAnim.Play();
+            _upHitAnim = new SpriteAnim(spritesheet, 4, 2, 16, 16, 500, new Vector2(8, 8), false, false, 0);
+            _upHitAnim.Pause();
+            _downHitAnim = new SpriteAnim(spritesheet, 5, 2, 16, 16, 500, new Vector2(8, 8), false, false, 0);
+            _downHitAnim.Pause();
+
             Active = true;
         }
 
         public override void Update(GameTime gameTime, Map gameMap)
         {
+            if (!Active) return;
+
             projectileTime1 -= gameTime.ElapsedGameTime.TotalMilliseconds;
             projectileTime2 -= gameTime.ElapsedGameTime.TotalMilliseconds;
 
             Position.Y = MathHelper.Clamp(Position.Y, 16, (gameMap.Height*gameMap.TileHeight) - 16);
 
-            _tint = Color.White;
-
             _idleAnim.Update(gameTime);
             _upAnim.Update(gameTime);
             _downAnim.Update(gameTime);
+            _idleHitAnim.Update(gameTime);
+            _upHitAnim.Update(gameTime);
+            _downHitAnim.Update(gameTime);
 
             CheckMapCollisions(gameMap);
 
             Speed.X = MathHelper.Clamp(Speed.X, -5f, 5f);
             Speed.Y = MathHelper.Clamp(Speed.Y, -1.5f, 1.5f);
 
+            if (_hitAlpha > 0f) _hitAlpha -= 0.05f;
+
+            if (Life <= 0f) Die();
+
             base.Update(gameTime, gameMap);
         }
 
         public override void HandleInput(InputState input)
         {
+            if (!Active) return;
+
             Speed.X = MathHelper.Lerp(Speed.X, 0f, 0.01f);
             Speed.Y = MathHelper.Lerp(Speed.Y, 0f, 0.01f);
 
@@ -123,48 +143,58 @@ namespace LD29.Entities
             {
                 Speed.Y -= 0.05f;
                 _upAnim.Play();
+                _upHitAnim.Play();
                 if (!underWater)
                     ParticleController.Instance.Add(Position + new Vector2(0f, 3f),
-                                            new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, 1f)),
-                                            0, Helper.RandomFloat(500, 1000), 500,
-                                            false, true,
-                                            particleRect,
-                                            new Color(new Vector3(1f) * (0.5f + Helper.RandomFloat(0.5f))),
-                                            ParticleFunctions.Smoke,
-                                            underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+                        new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, 1f)),
+                        0, Helper.RandomFloat(500, 1000), 500,
+                        false, true,
+                        particleRect,
+                        new Color(new Vector3(1f)*(0.5f + Helper.RandomFloat(0.5f))),
+                        ParticleFunctions.Smoke,
+                        underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
                 ParticleController.Instance.Add(Position + new Vector2(0f, 3f),
-                                            new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, 0.2f)),
-                                            0, underWater ? Helper.RandomFloat(500, 1000) : Helper.RandomFloat(50, 150), 50,
-                                            false, true,
-                                            particleRect,
-                                            underWater?Color.White:Color.Orange,
-                                            ParticleFunctions.FadeInOut,
-                                            underWater ? 0.2f : 0.75f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+                    new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, 0.2f)),
+                    0, underWater ? Helper.RandomFloat(500, 1000) : Helper.RandomFloat(50, 150), 50,
+                    false, true,
+                    particleRect,
+                    underWater ? Color.White : Color.Orange,
+                    ParticleFunctions.FadeInOut,
+                    underWater ? 0.2f : 0.75f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
             }
-            else _upAnim.Reset();
+            else
+            {
+                _upAnim.Reset();
+                _upHitAnim.Reset();
+            }
             if (input.CurrentKeyboardState.IsKeyDown(Keys.Down))
             {
                 Speed.Y += 0.05f;
                 _downAnim.Play();
+                _downHitAnim.Play();
                 if (!underWater)
                     ParticleController.Instance.Add(Position + new Vector2(0f, -3f),
-                                            new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, -1f)),
-                                            0, Helper.RandomFloat(500, 1000), 500,
-                                            false, true,
-                                            particleRect,
-                                            new Color(new Vector3(1f) * (0.5f + Helper.RandomFloat(0.5f))),
-                                            ParticleFunctions.Smoke,
-                                            underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+                        new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, -1f)),
+                        0, Helper.RandomFloat(500, 1000), 500,
+                        false, true,
+                        particleRect,
+                        new Color(new Vector3(1f)*(0.5f + Helper.RandomFloat(0.5f))),
+                        ParticleFunctions.Smoke,
+                        underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
                 ParticleController.Instance.Add(Position + new Vector2(0f, -3f),
-                                            new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, -0.2f)),
-                                            0, underWater ? Helper.RandomFloat(500, 1000) : Helper.RandomFloat(50, 150), 50,
-                                            false, true,
-                                            particleRect,
-                                            underWater ? Color.White : Color.Orange,
-                                            ParticleFunctions.FadeInOut,
-                                            underWater ? 0.2f : 0.75f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+                    new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, -0.2f)),
+                    0, underWater ? Helper.RandomFloat(500, 1000) : Helper.RandomFloat(50, 150), 50,
+                    false, true,
+                    particleRect,
+                    underWater ? Color.White : Color.Orange,
+                    ParticleFunctions.FadeInOut,
+                    underWater ? 0.2f : 0.75f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
             }
-            else _downAnim.Reset();
+            else
+            {
+                _downAnim.Reset();
+                _downHitAnim.Reset();
+            }
 
 
 
@@ -184,7 +214,7 @@ namespace LD29.Entities
                             ((Projectile)entity).EnemyOwner = false; 
                             ((Projectile)entity).Damage = 1f;
                             entity.Speed = new Vector2(6f*faceDir,0f);
-                            entity.Position = Position + new Vector2(faceDir*8, 0);
+                            entity.Position = Position + new Vector2(faceDir*10, 0);
                             
                         });
 
@@ -198,7 +228,7 @@ namespace LD29.Entities
                             ((Projectile)entity).EnemyOwner = false;
                             ((Projectile)entity).Damage = 1f;
                             entity.Speed = new Vector2(6f * faceDir, 0f);
-                            entity.Position = Position + new Vector2(faceDir * 8, -5);
+                            entity.Position = Position + new Vector2(faceDir * 10, -2);
 
                         });
                         ProjectileController.Instance.Spawn(entity =>
@@ -209,7 +239,7 @@ namespace LD29.Entities
                             ((Projectile)entity).EnemyOwner = false;
                             ((Projectile)entity).Damage = 1f;
                             entity.Speed = new Vector2(6f * faceDir, 0f);
-                            entity.Position = Position + new Vector2(faceDir * 8, 5);
+                            entity.Position = Position + new Vector2(faceDir * 10, 2);
 
                         });
                     }
@@ -224,7 +254,7 @@ namespace LD29.Entities
                             ((Projectile)entity).EnemyOwner = false;
                             ((Projectile)entity).Damage = 1f;
                             entity.Speed = new Vector2(6f*faceDir, -0.5f);
-                            entity.Position = Position + new Vector2(faceDir*8, 0);
+                            entity.Position = Position + new Vector2(faceDir*10, 0);
                         });
                         ProjectileController.Instance.Spawn(entity =>
                         {
@@ -234,7 +264,7 @@ namespace LD29.Entities
                             ((Projectile)entity).EnemyOwner = false;
                             ((Projectile)entity).Damage = 1f;
                             entity.Speed = new Vector2(6f * faceDir, 0.5f);
-                            entity.Position = Position + new Vector2(faceDir * 8, 0);
+                            entity.Position = Position + new Vector2(faceDir * 10, 0);
                         });
                     }
 
@@ -268,25 +298,83 @@ namespace LD29.Entities
 
         public override void OnBoxCollision(Entity collided, Rectangle intersect)
         {
-            _tint = Color.Red;
+            _hitAlpha = 1f;
+            Life -= 1f;
 
             base.OnBoxCollision(collided, intersect);
         }
 
         public override void OnPolyCollision(Entity collided)
         {
-            _tint = Color.Red;
 
             base.OnPolyCollision(collided);
         }
 
         public override void Draw(SpriteBatch sb, Map gameMap)
         {
+            if (!Active) return;
+
             if(_upAnim.State== SpriteAnimState.Playing) _upAnim.Draw(sb, Position, faceDir==-1?SpriteEffects.FlipHorizontally : SpriteEffects.None);
             else if(_downAnim.State== SpriteAnimState.Playing) _downAnim.Draw(sb, Position, faceDir==-1?SpriteEffects.FlipHorizontally : SpriteEffects.None);
             else _idleAnim.Draw(sb, Position, faceDir==-1?SpriteEffects.FlipHorizontally : SpriteEffects.None);
 
+            if (_hitAlpha > 0f)
+            {
+                if (_upHitAnim.State == SpriteAnimState.Playing)
+                    _upHitAnim.Draw(sb, Position, faceDir == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1f, 0f, Color.White * _hitAlpha);
+                else if (_downHitAnim.State == SpriteAnimState.Playing)
+                    _downHitAnim.Draw(sb, Position, faceDir == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1f, 0f, Color.White * _hitAlpha);
+                else
+                    _idleHitAnim.Draw(sb, Position, faceDir == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1f, 0f, Color.White * _hitAlpha);
+            }
+
             base.Draw(sb, gameMap);
+        }
+
+        public void Die()
+        {
+            Life = 0f;
+            Active = false;
+
+         
+            for (float a = 0f; a <= MathHelper.TwoPi; a += 0.1f)
+            {
+                Vector2 loc = Helper.PointOnCircle(ref Position, 7, a);
+                Vector2 speed = loc - Position;
+                speed.Normalize();
+
+                Color c = new Color(new Vector3(1.0f, (float)Helper.Random.NextDouble(), 0.0f)) * (0.7f + ((float)Helper.Random.NextDouble() * 0.3f));
+                ParticleController.Instance.Add(loc,
+                    speed * Helper.RandomFloat(1f, 3f),
+                    100, 3000, 1000,
+                    true, true,
+                    new Rectangle(0, 0, 2, 2),
+                    c,
+                    part =>
+                    {
+                        ParticleFunctions.FadeInOut(part);
+                    },
+                    1f, 0f, 0f,
+                    1, ParticleBlend.Additive);
+
+                loc = Helper.PointOnCircle(ref Position, 3, a);
+                speed = loc - Position;
+                speed.Normalize();
+
+                c = new Color(new Vector3(1.0f, (float)Helper.Random.NextDouble(), 0.0f)) * (0.7f + ((float)Helper.Random.NextDouble() * 0.3f));
+                ParticleController.Instance.Add(loc,
+                    speed * Helper.RandomFloat(1f, 3f),
+                    100, 3000, 1000,
+                    true, true,
+                    new Rectangle(0, 0, 2, 2),
+                    c,
+                    part =>
+                    {
+                        ParticleFunctions.FadeInOut(part);
+                    },
+                    1f, 0f, 0f,
+                    1, ParticleBlend.Additive);
+            }
         }
 
         private void CheckMapCollisions(Map gameMap)

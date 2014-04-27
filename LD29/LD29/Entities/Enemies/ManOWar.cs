@@ -13,9 +13,10 @@ namespace LD29.Entities.Enemies
         public ManOWar(Texture2D spritesheet, Rectangle hitbox, List<Vector2> hitPolyPoints, Vector2 hitboxoffset)
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
         {
-            _idleAnim = new SpriteAnim(spritesheet, 1, 4, 16,16,500,new Vector2(8,8));
-            _idleAnim.CurrentFrame = Helper.Random.Next(4);
+            _idleAnim = new SpriteAnim(spritesheet, 1, 4, 16, 16, 500, new Vector2(8, 8), true, false, Helper.Random.Next(4));
             _idleAnim.Play();
+            _hitAnim = new SpriteAnim(spritesheet, 7, 4, 16, 16, 500, new Vector2(8, 8), true, false, _idleAnim.CurrentFrame);
+            _hitAnim.Play();
 
             Speed.X = Helper.RandomFloat(-0.1f, 0.1f);
         }

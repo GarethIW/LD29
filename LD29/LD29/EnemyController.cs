@@ -97,7 +97,10 @@ namespace LD29.EntityPools
                 switch (enemyNum)
                 {
                     case 0:
-
+                        Gorger gor = new Gorger(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
+                        gor.Life = 20f;
+                        gor.Spawn(spawnLoc);
+                        Enemies.Add(gor);
                         break;
                 }
             }

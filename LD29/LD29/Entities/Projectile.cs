@@ -12,7 +12,8 @@ namespace LD29.Entities
     public enum ProjectileType
     {
         Forward1,
-        Bomb
+        Bomb,
+        GorgerAcid
     }
 
     class Projectile : Entity
@@ -72,6 +73,19 @@ namespace LD29.Entities
                                    ParticleFunctions.Smoke,
                                    0.25f, 0f, 0f,
                                    1, Position.Y > 260 ? ParticleBlend.Alpha :ParticleBlend.Additive);
+                    break;
+                case ProjectileType.GorgerAcid:
+                    Speed.X = MathHelper.Lerp(Speed.X,0f,0.1f);
+                    if(Helper.Random.Next(20)==0)
+                    ParticleController.Instance.Add(Position,
+                                   Vector2.Zero,
+                                   500, 500, 500,
+                                   false, false,
+                                   new Rectangle(0, 0, 16, 16),
+                                   new Color(new Vector3(0f,1f,0f) * (0.25f + Helper.RandomFloat(0.5f))),
+                                   ParticleFunctions.Acid,
+                                   0.25f, Helper.RandomFloat(0f,MathHelper.Pi), Helper.RandomFloat(-0.01f,0.01f),
+                                   1, ParticleBlend.Additive);
                     break;
             }
 

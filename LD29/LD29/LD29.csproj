@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioController.cs" />
+    <Compile Include="Entities\Enemies\Gorger.cs" />
     <Compile Include="Entities\Enemies\ManOWar.cs" />
     <Compile Include="Entities\Enemy.cs" />
     <Compile Include="Entities\Projectile.cs" />
