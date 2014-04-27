@@ -21,6 +21,8 @@ namespace LD29.Entities
         public Rectangle SourceRect;
         public float Scale = 1f;
         public double Life = 0;
+        public bool EnemyOwner = false;
+        public float Damage = 1f;
 
         public Projectile(Texture2D spritesheet, Rectangle hitbox, List<Vector2> hitPolyPoints, Vector2 hitboxoffset) 
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
@@ -108,9 +110,18 @@ namespace LD29.Entities
 
         public override void OnBoxCollision(Entity collided, Rectangle intersect)
         {
-            if (collided is Ship) return;
+            if (collided is Ship && !EnemyOwner) return;
 
-            if(Type== ProjectileType.Bomb) Explode();
+            if (Type == ProjectileType.Forward1)
+            {
+                Active = false;
+            }
+
+            if (Type == ProjectileType.Bomb)
+            {
+                Active = false;
+                Explode();
+            }
             base.OnBoxCollision(collided, intersect);
         }
 

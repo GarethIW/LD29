@@ -73,6 +73,8 @@ namespace LD29.EntityPools
             // Then, run the spawn function to set new values (position, etc)
             spawnFunc(retEntity);
 
+            retEntity.HitBox.Location = new Point((int)retEntity.Position.X, (int)retEntity.Position.Y);
+
             // Make it alive!
             retEntity.Active = true;
 

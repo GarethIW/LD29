@@ -35,7 +35,14 @@ namespace LD29
             TileLayer layer = (TileLayer)gameMap.GetLayer("fg");
 
             for(int x=0;x<gameMap.Width;x++)
-                for (int y = 0; y < gameMap.Height; y++) layer.Tiles[x, y] = null;
+                for (int y = 0; y < gameMap.Height; y++)
+                {
+                    layer.Tiles[x, y] = null;
+                    if (y == gameMap.Height - 1) layer.Tiles[x, y] = gameMap.Tiles[EDGE_UP];
+
+                }
+
+
 
             int numIslands = Helper.Random.Next(2) == 0 ? Helper.Random.Next(2) == 0 ? 2 : 3 : 5;
 
@@ -184,6 +191,9 @@ namespace LD29
                         }
                 }
             }
+
+            for(int x=0;x<gameMap.Width;x++)
+                layer.Tiles[x, gameMap.Height-1] = gameMap.Tiles[EDGE_UP];
         }
 
         static int GetTileIndex(Map map, TileLayer layer, int x, int y)
@@ -202,7 +212,8 @@ namespace LD29
 
             for (int yy = y - 1; yy <= y + 1; yy++)
                 for (int xx = x - 1; xx <= x + 1; xx++)
-                    if (layer.Tiles[xx, yy] != null && !(x == xx && y == yy)) count++;
+                    if(xx>=0 && xx<map.Width&&yy>=0 && yy<map.Height)
+                        if (layer.Tiles[xx, yy] != null && !(x == xx && y == yy)) count++;
 
             return count;
         }

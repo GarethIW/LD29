@@ -31,12 +31,25 @@ namespace LD29.EntityPools
 
             _spriteSheet = spriteSheet;
 
+            Enemies = new List<Enemy>();
             BoxCollidesWith = new List<object>();
             PolyCollidesWith = new List<object>();
         }
 
         public void Update(GameTime gameTime, Map gameMap)
         {
+            if (numToSpawn > 0)
+            {
+                _spawnTime += gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_spawnTime >= _spawnInterval)
+                {
+                    _spawnTime = 0;
+                 
+                    SpawnRandom(gameMap);
+                    numToSpawn--;
+                }
+            }
+
             foreach (Enemy e in Enemies.Where(ent => ent.Active))
             {
                 e.Update(gameTime, gameMap);
@@ -56,34 +69,42 @@ namespace LD29.EntityPools
 
         public void SpawnInitial(int level, Map gameMap)
         {
-            numToSpawn = (int)Math.Pow(level, 1.1);
+            numToSpawn = (int)Math.Pow(level + 5, 1.2);
 
             for (int i = 0; i < numToSpawn; i++)
             {
-                bool underWater = Helper.Random.Next(2) == 0;
-                int enemyNum = 0;
+                SpawnRandom(gameMap);
+            }
 
-                Vector2 spawnLoc = FindSpawnLoc(gameMap, underWater);
+            numToSpawn = (int)Math.Pow(level + 10, 1.2);
+        }
 
-                if (underWater)
+        public void SpawnRandom(Map gameMap)
+        {
+            bool underWater = Helper.Random.Next(2) == 0;
+            int enemyNum = 0;
+
+            Vector2 spawnLoc = FindSpawnLoc(gameMap, underWater);
+
+            if (underWater)
+            {
+                switch (enemyNum)
                 {
-                    switch (enemyNum)
-                    {
-                        case 0:
-                            
-                            break;
-                    }
+                    case 0:
+
+                        break;
                 }
-                else
+            }
+            else
+            {
+                switch (enemyNum)
                 {
-                    switch (enemyNum)
-                    {
-                        case 0:
-                            ManOWar mow = new ManOWar(_spriteSheet, new Rectangle(0,0,10,10), null, Vector2.Zero);
-                            mow.Spawn(spawnLoc);
-                            Enemies.Add(mow);
-                            break;
-                    }
+                    case 0:
+                        ManOWar mow = new ManOWar(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
+                        mow.Life = 3f;
+                        mow.Spawn(spawnLoc);
+                        Enemies.Add(mow);
+                        break;
                 }
             }
         }
@@ -94,12 +115,16 @@ namespace LD29.EntityPools
 
             while (true)
             {
-                if (underWater) returnLoc.Y = Helper.RandomFloat(64, 200);
+                if (!underWater) returnLoc.Y = Helper.RandomFloat(64, 200);
                 else returnLoc.Y = Helper.RandomFloat(300, (gameMap.TileHeight*gameMap.Height) - 64);
 
-                returnLoc.X = Helper.RandomFloat(64, (gameMap.TileHeight*gameMap.Height) - 64);
+                returnLoc.X = Helper.RandomFloat(64, (gameMap.TileWidth*gameMap.Width) - 64);
 
-                if (!gameMap.CheckTileCollision(returnLoc)) break;
+                bool coll = false;
+                for(float a = 0;a<MathHelper.TwoPi;a+=0.1f)
+                    if (gameMap.CheckCollision(Helper.PointOnCircle(ref returnLoc, 16, a))!=null) coll = true;
+
+                if (!coll) break;
             }
 
             return returnLoc;

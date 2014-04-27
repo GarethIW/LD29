@@ -88,7 +88,7 @@ namespace LD29.Entities
         // Reset values to defaults when an entity is spawned from a pool
         public virtual void Reset()
         {
-            
+
         }
     }
 }

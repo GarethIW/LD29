@@ -13,10 +13,7 @@
    <property name="Collision" value="On"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3BAQ0AAADCoPdP7ewBFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN7SqhPfAXQAA
+   H4sIAAAAAAAAC+3DAQkAAAwDoPH+oZ9gBYaCCQAAAAAAAAAAAAAAAAAAAAAAAAAAAOw5tQa6BwUyrOPAXQAA
   </data>
  </layer>
- <objectgroup name="spawn" width="200" height="30">
-  <object x="736" y="192" width="16" height="16"/>
- </objectgroup>
 </map>

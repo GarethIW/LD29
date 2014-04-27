@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TiledLib;
 using TimersAndTweens;
+using LD29.Entities.Enemies;
 
 namespace LD29.Screens
 {
@@ -43,8 +44,11 @@ namespace LD29.Screens
             ContentManager content = ScreenManager.Game.Content;
 
             map = content.Load<Map>("map");
+            MapGeneration.Generate(map);
 
             camera = new Camera(ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight, map);
+
+            //camera.Zoom = 0.5f;
 
             waterLevel = ScreenManager.Game.RenderHeight;
             waterParallax = new Parallax(content.Load<Texture2D>("abovewater-parallax"), 12, 0.5f, waterLevel, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false, true);
@@ -62,9 +66,14 @@ namespace LD29.Screens
 
             enemyController = new EnemyController(content.Load<Texture2D>("enemies"));
             enemyController.BoxCollidesWith.Add(playerShip);
-            enemyController.BoxCollidesWith.Add(particleController);
+            enemyController.BoxCollidesWith.Add(projectileController);
 
-            MapGeneration.Generate(map);
+            //enemyController.SpawnInitial(1, map);
+
+            ManOWar mow = new ManOWar(content.Load<Texture2D>("enemies"), new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
+            mow.Life = 3f;
+            mow.Spawn(new Vector2(3000,90));
+            enemyController.Enemies.Add(mow);
 
             base.LoadContent();
         }

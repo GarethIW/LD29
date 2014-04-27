@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using TiledLib;
 
 namespace LD29.Entities.Enemies
 {
@@ -13,7 +14,28 @@ namespace LD29.Entities.Enemies
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
         {
             _idleAnim = new SpriteAnim(spritesheet, 1, 4, 16,16,500,new Vector2(8,8));
+            _idleAnim.CurrentFrame = Helper.Random.Next(4);
             _idleAnim.Play();
+
+            Speed.X = Helper.RandomFloat(-0.1f, 0.1f);
+        }
+
+        public override void Update(GameTime gameTime, Map gameMap)
+        {
+            if(Helper.Random.Next(10)==0)
+                ParticleController.Instance.Add(Position + new Vector2(0,5),
+                                   new Vector2(Helper.RandomFloat(-0.1f,0.1f), 0f),
+                                   100, 3000, 1000,
+                                   true, true,
+                                   new Rectangle(0, 0, 2, 2),
+                                   new Color(new Vector3(1f, 0f, 0f) * (0.25f + Helper.RandomFloat(0.5f))),
+                                    part => { ParticleFunctions.FadeInOut(part);
+                                                if (part.Position.Y > 260) part.State = ParticleState.Done;
+                                    }  ,
+                                   1f, 0f, 0f,
+                                   1, ParticleBlend.Alpha);
+
+            base.Update(gameTime, gameMap);
         }
     }
 }

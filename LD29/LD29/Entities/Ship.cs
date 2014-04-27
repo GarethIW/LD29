@@ -101,7 +101,7 @@ namespace LD29.Entities
                 faceDir = 1;
                 if (!underWater)
                     ParticleController.Instance.Add(Position + new Vector2(-5f, 0f),
-                                            new Vector2(Helper.RandomFloat(0f, 1f), Helper.RandomFloat(-0.2f, 0.2f)),
+                                            new Vector2(Helper.RandomFloat(0f, -1f), Helper.RandomFloat(-0.2f, 0.2f)),
                                             0, Helper.RandomFloat(500, 1000), 500,
                                             false, true,
                                             particleRect,
@@ -181,9 +181,11 @@ namespace LD29.Entities
                             ((Projectile) entity).Type = ProjectileType.Forward1;
                             ((Projectile) entity).SourceRect = new Rectangle(0,0,16,8);
                             ((Projectile) entity).Life = 1000;
+                            ((Projectile)entity).EnemyOwner = false; 
+                            ((Projectile)entity).Damage = 1f;
                             entity.Speed = new Vector2(8f*faceDir,0f);
                             entity.Position = Position + new Vector2(faceDir*8, 0);
-
+                            
                         });
 
                     if (powerUpLevel == 1)
@@ -193,6 +195,8 @@ namespace LD29.Entities
                             ((Projectile)entity).Type = ProjectileType.Forward1;
                             ((Projectile)entity).SourceRect = new Rectangle(0, 0, 16, 8);
                             ((Projectile)entity).Life = 1000;
+                            ((Projectile)entity).EnemyOwner = false;
+                            ((Projectile)entity).Damage = 1f;
                             entity.Speed = new Vector2(8f * faceDir, 0f);
                             entity.Position = Position + new Vector2(faceDir * 8, -5);
 
@@ -202,6 +206,8 @@ namespace LD29.Entities
                             ((Projectile)entity).Type = ProjectileType.Forward1;
                             ((Projectile)entity).SourceRect = new Rectangle(0, 0, 16, 8);
                             ((Projectile)entity).Life = 1000;
+                            ((Projectile)entity).EnemyOwner = false;
+                            ((Projectile)entity).Damage = 1f;
                             entity.Speed = new Vector2(8f * faceDir, 0f);
                             entity.Position = Position + new Vector2(faceDir * 8, 5);
 
@@ -215,6 +221,8 @@ namespace LD29.Entities
                             ((Projectile) entity).Type = ProjectileType.Forward1;
                             ((Projectile) entity).SourceRect = new Rectangle(0, 0, 16, 8);
                             ((Projectile) entity).Life = 1000;
+                            ((Projectile)entity).EnemyOwner = false;
+                            ((Projectile)entity).Damage = 1f;
                             entity.Speed = new Vector2(8f*faceDir, -1f);
                             entity.Position = Position + new Vector2(faceDir*8, 0);
                         });
@@ -223,6 +231,8 @@ namespace LD29.Entities
                             ((Projectile)entity).Type = ProjectileType.Forward1;
                             ((Projectile)entity).SourceRect = new Rectangle(0, 0, 16, 8);
                             ((Projectile)entity).Life = 1000;
+                            ((Projectile)entity).EnemyOwner = false;
+                            ((Projectile)entity).Damage = 1f;
                             entity.Speed = new Vector2(8f * faceDir, 1f);
                             entity.Position = Position + new Vector2(faceDir * 8, 0);
                         });
@@ -244,6 +254,8 @@ namespace LD29.Entities
                             ((Projectile) entity).SourceRect = new Rectangle(16, 0, 8, 8);
                             ((Projectile) entity).Life = 5000;
                             ((Projectile) entity).Scale = 0.5f;
+                            ((Projectile)entity).EnemyOwner = false;
+                            ((Projectile)entity).Damage = 3f;
                             entity.Speed = new Vector2(1f*faceDir, 0f);
                             entity.Position = Position + new Vector2(0, 5);
                         });
