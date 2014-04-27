@@ -20,6 +20,8 @@ namespace LD29.Screens
 
         private ParticleController particleController = new ParticleController();
 
+        private ProjectileController projectileController;
+
         private Parallax waterParallax;
         private Parallax underwaterBGParallax;
         private Parallax rocksParallax;
@@ -49,11 +51,13 @@ namespace LD29.Screens
             rocksParallax = new Parallax(content.Load<Texture2D>("seabed-rocks"), 16, 0.35f, (map.TileHeight*map.Height) -15, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false, false);
             cloudsParallax = new Parallax(content.Load<Texture2D>("clouds"), 16, 0.35f, 25, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false, false, true);
             
-
             playerShip = new Ship(content.Load<Texture2D>("playership"), new Rectangle(0,0,10,10), null, Vector2.Zero);
             playerShip.Position = new Vector2(64, 190);
 
             particleController.LoadContent(content);
+
+            projectileController = new ProjectileController(1000, sheet => new Projectile(sheet, new Rectangle(0, 0, 4, 4), null, new Vector2(0, 0)) , content.Load<Texture2D>("projectiles"));
+            projectileController.BoxCollidesWith.Add(playerShip);
 
             MapGeneration.Generate(map);
 
@@ -74,13 +78,15 @@ namespace LD29.Screens
             {
                 playerShip.Position.X = (map.TileWidth * map.Width) + playerShip.Speed.X;
                 camera.Position.X = (playerShip.Position.X + playerShip.Speed.X * 20f) - (camera.Target.X - camera.Position.X);
-                particleController.Wrap((map.TileWidth*map.Width));
+                //particleController.Wrap((map.TileWidth*map.Width));
+                //projectileController.Wrap((map.TileWidth * map.Width));
             }
             if (playerShip.Position.X >= (map.TileWidth * map.Width))
             {
                 playerShip.Position.X = 0f + playerShip.Speed.X;
                 camera.Position.X = (playerShip.Position.X + playerShip.Speed.X * 20f) - (camera.Target.X - camera.Position.X);
-                particleController.Wrap(-(map.TileWidth * map.Width));
+                //particleController.Wrap(-(map.TileWidth * map.Width));
+                //projectileController.Wrap(-(map.TileWidth * map.Width));
                 //camera.Target.X += playerShip.Speed.X * 20f;
             }
 
@@ -113,6 +119,8 @@ namespace LD29.Screens
             }
 
             particleController.Update(gameTime, map);
+
+            projectileController.Update(gameTime, map);
 
             waterParallax.Update(gameTime, playerShip.Speed.X, (int)camera.Position.X);
             underwaterBGParallax.Update(gameTime,playerShip.Speed.X*0.5f,(int)camera.Position.X);
@@ -149,14 +157,16 @@ namespace LD29.Screens
             rocksParallax.Draw(sb, false, camera.Position.Y);
             cloudsParallax.Draw(sb, true, camera.Position.Y);
 
-            particleController.Draw(sb, camera, 0);
+            particleController.Draw(sb, camera, map, 0);
 
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.CameraMatrix);
             map.DrawLayer(sb, "fg", camera);
-            playerShip.Draw(sb);
+            playerShip.Draw(sb, map);
             sb.End();
 
-            particleController.Draw(sb, camera, 1);
+            particleController.Draw(sb, camera, map, 1);
+
+            projectileController.Draw(sb, camera, map);
 
             rocksParallax.Draw(sb, true, camera.Position.Y);
             cloudsParallax.Draw(sb, false, camera.Position.Y);

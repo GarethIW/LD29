@@ -73,16 +73,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioController.cs" />
+    <Compile Include="Entities\Projectile.cs" />
     <Compile Include="Entities\Ship.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\EntityPool.cs" />
-    <Compile Include="Entities\Hero.cs" />
-    <Compile Include="Entities\RotBox.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="MapGeneration.cs" />
     <Compile Include="Parallax.cs" />
     <Compile Include="ParticleController.cs" />
+    <Compile Include="ProjectileController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ScreenManager\GameScreen.cs" />

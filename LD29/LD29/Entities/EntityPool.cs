@@ -10,10 +10,8 @@ using TiledLib;
 
 namespace LD29.EntityPools
 {
-    class EntityPool
+    public class EntityPool
     {
-        public static EntityPool Instance;
-
         public List<Entity> Entities;
         public List<object> BoxCollidesWith;
         public List<object> PolyCollidesWith;
@@ -23,8 +21,6 @@ namespace LD29.EntityPools
 
         public EntityPool(int maxEntities, Func<Texture2D, Entity> createFunc, Texture2D spriteSheet)
         {
-            Instance = this;
-
             _maxEntities = maxEntities;
 
             Entities = new List<Entity>();
@@ -56,10 +52,10 @@ namespace LD29.EntityPools
             foreach (Entity e in Entities.Where(ent => ent.Active)) e.HandleInput(input);
         }
 
-        public virtual void Draw(SpriteBatch sb, Camera camera)
+        public virtual void Draw(SpriteBatch sb, Camera camera, Map gameMap)
         {
             sb.Begin(SpriteSortMode.Deferred, null,SamplerState.PointClamp,null,null,null,camera.CameraMatrix);
-            foreach (Entity e in Entities.Where(ent=>ent.Active)) e.Draw(sb); 
+            foreach (Entity e in Entities.Where(ent=>ent.Active)) e.Draw(sb, gameMap); 
             sb.End();
         }
 
@@ -83,7 +79,11 @@ namespace LD29.EntityPools
             return retEntity;
         }
 
-       
+        internal void Wrap(float off)
+        {
+            foreach (Entity e in Entities)
+                e.Position.X += off;
+        }
 
         private void CheckCollisions(Entity e)
         {

@@ -122,6 +122,9 @@ namespace LD29
                 p.Position += p.Velocity;
                 p.Rotation += p.RotationSpeed;
 
+                if (p.Position.X < 0) p.Position.X = (gameMap.Width * gameMap.TileWidth) + p.Position.X;
+                if (p.Position.X >= (gameMap.Width * gameMap.TileWidth)) p.Position.X = p.Position.X - (gameMap.Width * gameMap.TileWidth);
+
                 switch (p.State)
                 {
                     case ParticleState.Attack:
@@ -171,7 +174,7 @@ namespace LD29
             }
             sb.End();
         }
-        public void Draw(SpriteBatch sb, Camera gameCamera, int depth)
+        public void Draw(SpriteBatch sb, Camera gameCamera, Map gameMap, int depth)
         {
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, gameCamera.CameraMatrix);
             foreach (Particle p in Particles)
@@ -182,6 +185,14 @@ namespace LD29
 
                 sb.Draw(_texParticles,
                     p.Position,
+                    p.SourceRect, p.Color * p.Alpha, p.Rotation, new Vector2(p.SourceRect.Width / 2f, p.SourceRect.Height / 2f), p.Scale, SpriteEffects.None, 0);
+                if (p.Position.X >= 0 && p.Position.X < 200) 
+                    sb.Draw(_texParticles,
+                    p.Position + new Vector2(gameMap.Width * gameMap.TileWidth, 0),
+                    p.SourceRect, p.Color * p.Alpha, p.Rotation, new Vector2(p.SourceRect.Width / 2f, p.SourceRect.Height / 2f), p.Scale, SpriteEffects.None, 0);
+                if (p.Position.X >= (gameMap.Width * gameMap.TileWidth) - 200 && p.Position.X < (gameMap.Width * gameMap.TileWidth))
+                    sb.Draw(_texParticles,
+                    p.Position - new Vector2(gameMap.Width * gameMap.TileWidth, 0),
                     p.SourceRect, p.Color * p.Alpha, p.Rotation, new Vector2(p.SourceRect.Width / 2f, p.SourceRect.Height / 2f), p.Scale, SpriteEffects.None, 0);
             }
             sb.End();
@@ -195,6 +206,14 @@ namespace LD29
                 sb.Draw(_texParticles,
                     p.Position,
                     p.SourceRect, p.Color * p.Alpha, p.Rotation, new Vector2(p.SourceRect.Width / 2f, p.SourceRect.Height / 2f), p.Scale, SpriteEffects.None, 0);
+                if (p.Position.X >= 0 && p.Position.X < 200)
+                    sb.Draw(_texParticles,
+                    p.Position + new Vector2(gameMap.Width * gameMap.TileWidth, 0),
+                    p.SourceRect, p.Color * p.Alpha, p.Rotation, new Vector2(p.SourceRect.Width / 2f, p.SourceRect.Height / 2f), p.Scale, SpriteEffects.None, 0);
+                if (p.Position.X >= (gameMap.Width * gameMap.TileWidth) - 200 && p.Position.X < (gameMap.Width * gameMap.TileWidth))
+                    sb.Draw(_texParticles,
+                    p.Position - new Vector2(gameMap.Width * gameMap.TileWidth, 0),
+                    p.SourceRect, p.Color * p.Alpha, p.Rotation, new Vector2(p.SourceRect.Width / 2f, p.SourceRect.Height / 2f), p.Scale, SpriteEffects.None, 0);
             }
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, multiplicativeBlend, SamplerState.PointClamp, null, null, null, gameCamera.CameraMatrix);
@@ -207,6 +226,14 @@ namespace LD29
                 sb.Draw(_texParticles,
                     p.Position,
                     p.SourceRect, p.Color, p.Rotation, new Vector2(p.SourceRect.Width / 2f, p.SourceRect.Height / 2f), p.Scale, SpriteEffects.None, 0);
+                if (p.Position.X >= 0 && p.Position.X < 200)
+                    sb.Draw(_texParticles,
+                    p.Position + new Vector2(gameMap.Width * gameMap.TileWidth, 0),
+                    p.SourceRect, p.Color * p.Alpha, p.Rotation, new Vector2(p.SourceRect.Width / 2f, p.SourceRect.Height / 2f), p.Scale, SpriteEffects.None, 0);
+                if (p.Position.X >= (gameMap.Width * gameMap.TileWidth) - 200 && p.Position.X < (gameMap.Width * gameMap.TileWidth))
+                    sb.Draw(_texParticles,
+                    p.Position - new Vector2(gameMap.Width * gameMap.TileWidth, 0),
+                    p.SourceRect, p.Color * p.Alpha, p.Rotation, new Vector2(p.SourceRect.Width / 2f, p.SourceRect.Height / 2f), p.Scale, SpriteEffects.None, 0);
             }
             sb.End();
         }

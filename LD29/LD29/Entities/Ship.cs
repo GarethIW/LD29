@@ -24,6 +24,14 @@ namespace LD29.Entities
         private SpriteAnim _upAnim;
         private SpriteAnim _downAnim;
 
+        private double projectileCoolDown1 = 250;
+        private double projectileCoolDown2 = 2000;
+
+        private double projectileTime1;
+        private double projectileTime2;
+
+        private int powerUpLevel = 3;
+
         public Ship(Texture2D spritesheet, Rectangle hitbox, List<Vector2> hitPolyPoints, Vector2 hitboxoffset) 
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
         {
@@ -39,6 +47,9 @@ namespace LD29.Entities
 
         public override void Update(GameTime gameTime, Map gameMap)
         {
+            projectileTime1 -= gameTime.ElapsedGameTime.TotalMilliseconds;
+            projectileTime2 -= gameTime.ElapsedGameTime.TotalMilliseconds;
+
             Position.Y = MathHelper.Clamp(Position.Y, 16, (gameMap.Height*gameMap.TileHeight) - 16);
 
             _tint = Color.White;
@@ -48,6 +59,9 @@ namespace LD29.Entities
             _downAnim.Update(gameTime);
 
             CheckMapCollisions(gameMap);
+
+            Speed.X = MathHelper.Clamp(Speed.X, -5f, 5f);
+            Speed.Y = MathHelper.Clamp(Speed.Y, -1.5f, 1.5f);
 
             base.Update(gameTime, gameMap);
         }
@@ -115,10 +129,92 @@ namespace LD29.Entities
             }
             else _downAnim.Reset();
 
-            Speed.X = MathHelper.Clamp(Speed.X, -5f, 5f);
-            Speed.Y = MathHelper.Clamp(Speed.Y, -1.5f, 1.5f);
+
+
+            if (input.CurrentKeyboardState.IsKeyDown(Keys.X))
+            {
+                if (projectileTime1 <= 0)
+                {
+                    projectileTime1 = projectileCoolDown1;
+
+
+                    if (powerUpLevel != 1)
+                        ProjectileController.Instance.Spawn(entity =>
+                        {
+                            ((Projectile) entity).Type = ProjectileType.Forward1;
+                            ((Projectile) entity).SourceRect = new Rectangle(0,0,16,8);
+                            ((Projectile) entity).Life = 1000;
+                            entity.Speed = new Vector2(8f*faceDir,0f);
+                            entity.Position = Position + new Vector2(faceDir*8, 0);
+
+                        });
+
+                    if (powerUpLevel == 1)
+                    {
+                        ProjectileController.Instance.Spawn(entity =>
+                        {
+                            ((Projectile)entity).Type = ProjectileType.Forward1;
+                            ((Projectile)entity).SourceRect = new Rectangle(0, 0, 16, 8);
+                            ((Projectile)entity).Life = 1000;
+                            entity.Speed = new Vector2(8f * faceDir, 0f);
+                            entity.Position = Position + new Vector2(faceDir * 8, -5);
+
+                        });
+                        ProjectileController.Instance.Spawn(entity =>
+                        {
+                            ((Projectile)entity).Type = ProjectileType.Forward1;
+                            ((Projectile)entity).SourceRect = new Rectangle(0, 0, 16, 8);
+                            ((Projectile)entity).Life = 1000;
+                            entity.Speed = new Vector2(8f * faceDir, 0f);
+                            entity.Position = Position + new Vector2(faceDir * 8, 5);
+
+                        });
+                    }
+
+                    if (powerUpLevel >= 2)
+                    {
+                        ProjectileController.Instance.Spawn(entity =>
+                        {
+                            ((Projectile) entity).Type = ProjectileType.Forward1;
+                            ((Projectile) entity).SourceRect = new Rectangle(0, 0, 16, 8);
+                            ((Projectile) entity).Life = 1000;
+                            entity.Speed = new Vector2(8f*faceDir, -1f);
+                            entity.Position = Position + new Vector2(faceDir*8, 0);
+                        });
+                        ProjectileController.Instance.Spawn(entity =>
+                        {
+                            ((Projectile)entity).Type = ProjectileType.Forward1;
+                            ((Projectile)entity).SourceRect = new Rectangle(0, 0, 16, 8);
+                            ((Projectile)entity).Life = 1000;
+                            entity.Speed = new Vector2(8f * faceDir, 1f);
+                            entity.Position = Position + new Vector2(faceDir * 8, 0);
+                        });
+                    }
+
+                    if (powerUpLevel >= 3)
+                    {
+                        ProjectileController.Instance.Spawn(entity =>
+                        {
+                            ((Projectile)entity).Type = ProjectileType.Bomb;
+                            ((Projectile)entity).SourceRect = new Rectangle(16, 0, 8, 8);
+                            ((Projectile)entity).Life = 5000;
+                            ((Projectile)entity).Scale = 0.5f;
+                            entity.Speed = new Vector2(1f * faceDir, 0f);
+                            entity.Position = Position + new Vector2(0, 5);
+                        });
+                    }
+
+                }
+            }
 
             base.HandleInput(input);
+        }
+
+        public override void OnBoxCollision(Entity collided, Rectangle intersect)
+        {
+            _tint = Color.Red;
+
+            base.OnBoxCollision(collided, intersect);
         }
 
         public override void OnPolyCollision(Entity collided)
@@ -128,13 +224,13 @@ namespace LD29.Entities
             base.OnPolyCollision(collided);
         }
 
-        public override void Draw(SpriteBatch sb)
+        public override void Draw(SpriteBatch sb, Map gameMap)
         {
             if(_upAnim.State== SpriteAnimState.Playing) _upAnim.Draw(sb, Position, faceDir==-1?SpriteEffects.FlipHorizontally : SpriteEffects.None);
             else if(_downAnim.State== SpriteAnimState.Playing) _downAnim.Draw(sb, Position, faceDir==-1?SpriteEffects.FlipHorizontally : SpriteEffects.None);
             else _idleAnim.Draw(sb, Position, faceDir==-1?SpriteEffects.FlipHorizontally : SpriteEffects.None);
 
-            base.Draw(sb);
+            base.Draw(sb, gameMap);
         }
 
         private void CheckMapCollisions(Map gameMap)

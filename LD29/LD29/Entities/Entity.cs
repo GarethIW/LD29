@@ -9,7 +9,7 @@ using TiledLib;
 
 namespace LD29.Entities
 {
-    class Entity
+    public class Entity
     {
         public Vector2 Position;
         public Vector2 Speed;
@@ -51,6 +51,8 @@ namespace LD29.Entities
 
             Position += Speed;
 
+            
+
             HitBox.Location = new Point((int)Position.X,(int)Position.Y) + new Point(-(HitBox.Width/2),-(HitBox.Height/2)) + new Point((int)_hitboxOffset.X, (int)_hitboxOffset.Y);
 
             for (int index = 0; index < _normalPolyPoints.Count; index++)
@@ -62,6 +64,9 @@ namespace LD29.Entities
         }
         public virtual void Update(GameTime gameTime, Map gameMap)
         {
+            if (Position.X < 0) Position.X = (gameMap.Width * gameMap.TileWidth) + Position.X;
+            if (Position.X >= (gameMap.Width * gameMap.TileWidth)) Position.X = Position.X - (gameMap.Width * gameMap.TileWidth);
+
             Update(gameTime);
         }
 
@@ -75,7 +80,7 @@ namespace LD29.Entities
             
         }
 
-        public virtual void Draw(SpriteBatch sb)
+        public virtual void Draw(SpriteBatch sb, Map gameMap)
         {
             if (!Active) return;
         }
