@@ -24,7 +24,7 @@ namespace LD29.Entities
         private SpriteAnim _upAnim;
         private SpriteAnim _downAnim;
 
-        private double projectileCoolDown1 = 250;
+        private double projectileCoolDown1 = 50;
         private double projectileCoolDown2 = 1000;
 
         private double projectileTime1;
@@ -179,11 +179,11 @@ namespace LD29.Entities
                         ProjectileController.Instance.Spawn(entity =>
                         {
                             ((Projectile) entity).Type = ProjectileType.Forward1;
-                            ((Projectile) entity).SourceRect = new Rectangle(0,0,16,8);
+                            ((Projectile)entity).SourceRect = new Rectangle(8, 8, 20, 8);
                             ((Projectile) entity).Life = 1000;
                             ((Projectile)entity).EnemyOwner = false; 
                             ((Projectile)entity).Damage = 1f;
-                            entity.Speed = new Vector2(8f*faceDir,0f);
+                            entity.Speed = new Vector2(6f*faceDir,0f);
                             entity.Position = Position + new Vector2(faceDir*8, 0);
                             
                         });
@@ -193,22 +193,22 @@ namespace LD29.Entities
                         ProjectileController.Instance.Spawn(entity =>
                         {
                             ((Projectile)entity).Type = ProjectileType.Forward1;
-                            ((Projectile)entity).SourceRect = new Rectangle(0, 0, 16, 8);
+                            ((Projectile)entity).SourceRect = new Rectangle(8, 8, 20, 8);
                             ((Projectile)entity).Life = 1000;
                             ((Projectile)entity).EnemyOwner = false;
                             ((Projectile)entity).Damage = 1f;
-                            entity.Speed = new Vector2(8f * faceDir, 0f);
+                            entity.Speed = new Vector2(6f * faceDir, 0f);
                             entity.Position = Position + new Vector2(faceDir * 8, -5);
 
                         });
                         ProjectileController.Instance.Spawn(entity =>
                         {
                             ((Projectile)entity).Type = ProjectileType.Forward1;
-                            ((Projectile)entity).SourceRect = new Rectangle(0, 0, 16, 8);
+                            ((Projectile)entity).SourceRect = new Rectangle(8, 8, 20, 8);
                             ((Projectile)entity).Life = 1000;
                             ((Projectile)entity).EnemyOwner = false;
                             ((Projectile)entity).Damage = 1f;
-                            entity.Speed = new Vector2(8f * faceDir, 0f);
+                            entity.Speed = new Vector2(6f * faceDir, 0f);
                             entity.Position = Position + new Vector2(faceDir * 8, 5);
 
                         });
@@ -219,21 +219,21 @@ namespace LD29.Entities
                         ProjectileController.Instance.Spawn(entity =>
                         {
                             ((Projectile) entity).Type = ProjectileType.Forward1;
-                            ((Projectile) entity).SourceRect = new Rectangle(0, 0, 16, 8);
+                            ((Projectile)entity).SourceRect = new Rectangle(8, 8, 20, 8);
                             ((Projectile) entity).Life = 1000;
                             ((Projectile)entity).EnemyOwner = false;
                             ((Projectile)entity).Damage = 1f;
-                            entity.Speed = new Vector2(8f*faceDir, -1f);
+                            entity.Speed = new Vector2(6f*faceDir, -0.5f);
                             entity.Position = Position + new Vector2(faceDir*8, 0);
                         });
                         ProjectileController.Instance.Spawn(entity =>
                         {
                             ((Projectile)entity).Type = ProjectileType.Forward1;
-                            ((Projectile)entity).SourceRect = new Rectangle(0, 0, 16, 8);
+                            ((Projectile)entity).SourceRect = new Rectangle(8, 8, 20, 8);
                             ((Projectile)entity).Life = 1000;
                             ((Projectile)entity).EnemyOwner = false;
                             ((Projectile)entity).Damage = 1f;
-                            entity.Speed = new Vector2(8f * faceDir, 1f);
+                            entity.Speed = new Vector2(6f * faceDir, 0.5f);
                             entity.Position = Position + new Vector2(faceDir * 8, 0);
                         });
                     }
@@ -295,8 +295,12 @@ namespace LD29.Entities
             if (Speed.Y < 0)
                 for (int x = HitBox.Left + 2; x <= HitBox.Right - 2; x += 2)
                 {
-                    bool? coll = gameMap.CheckCollision(new Vector2(x, HitBox.Top - Speed.Y));
-                    if (coll.HasValue && coll.Value) Speed.Y = 0;
+                    bool? coll = gameMap.CheckCollision(new Vector2(x, HitBox.Top + Speed.Y));
+                    if (coll.HasValue && coll.Value)
+                    {
+                        Speed.Y = -Speed.Y/2;
+                        return;
+                    }
                 }
 
             // Check downward collision
@@ -304,17 +308,22 @@ namespace LD29.Entities
                 for (int x = HitBox.Left + 2; x <= HitBox.Right - 2; x += 2)
                 {
                     bool? coll = gameMap.CheckCollision(new Vector2(x, HitBox.Bottom + Speed.Y));
-                    if (coll.HasValue && coll.Value) Speed.Y = 0;
+                    if (coll.HasValue && coll.Value)
+                    {
+                        Speed.Y = -Speed.Y/2;
+                        return;
+                    }
                 }
 
             // Check left collision
             if (Speed.X < 0)
                 for (int y = HitBox.Top + 2; y <= HitBox.Bottom - 2; y += 2)
                 {
-                    bool? coll = gameMap.CheckCollision(new Vector2(HitBox.Left - Speed.X, y));
+                    bool? coll = gameMap.CheckCollision(new Vector2(HitBox.Left + Speed.X, y));
                     if (coll.HasValue && coll.Value)
                     {
-                        Speed.X = 0;
+                        Speed.X = -Speed.X/2;
+                        return;
                     }
                 }
 
@@ -325,7 +334,8 @@ namespace LD29.Entities
                     bool? coll = gameMap.CheckCollision(new Vector2(HitBox.Right + Speed.X, y));
                     if (coll.HasValue && coll.Value)
                     {
-                        Speed.X = 0;
+                        Speed.X = -Speed.X/2;
+                        return;
                     }
                 }
         }

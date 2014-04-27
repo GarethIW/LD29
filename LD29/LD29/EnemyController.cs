@@ -50,6 +50,12 @@ namespace LD29.EntityPools
                 }
             }
 
+            if (Enemies.Count == 0 && numToSpawn > 0)
+            {
+                SpawnRandom(gameMap);
+                numToSpawn--;
+            }
+
             foreach (Enemy e in Enemies.Where(ent => ent.Active))
             {
                 e.Update(gameTime, gameMap);
@@ -101,7 +107,7 @@ namespace LD29.EntityPools
                 {
                     case 0:
                         ManOWar mow = new ManOWar(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
-                        mow.Life = 3f;
+                        mow.Life = 20f;
                         mow.Spawn(spawnLoc);
                         Enemies.Add(mow);
                         break;

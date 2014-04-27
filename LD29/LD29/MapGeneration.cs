@@ -10,7 +10,8 @@ namespace LD29
     static class MapGeneration
     {
         const int CENTER_BLOCK = 10;
-        const int EDGE_UP = 2;
+        const int EDGE_UP = 33;
+        const int EDGE_UP_ALT = 34;
         const int EDGE_DOWN = 18;
         const int EDGE_LEFT = 9;
         const int EDGE_RIGHT = 11;
@@ -25,8 +26,8 @@ namespace LD29
         const int CORNER_INSIDE_BL = 29;
         const int CORNER_INSIDE_BR = 31;
 
-        const int CORNER_OUTSIDE_TL = 1;
-        const int CORNER_OUTSIDE_TR = 3;
+        const int CORNER_OUTSIDE_TL = 25;
+        const int CORNER_OUTSIDE_TR = 26;
         const int CORNER_OUTSIDE_BL = 17;
         const int CORNER_OUTSIDE_BR = 19;
 
@@ -139,7 +140,7 @@ namespace LD29
 
                         if (layer.Tiles[x, y - 1] == null)
                             if (layer.Tiles[x - 1, y] != null)
-                                if (layer.Tiles[x + 1, y] != null) layer.Tiles[x, y] = gameMap.Tiles[EDGE_UP];
+                                if (layer.Tiles[x + 1, y] != null) layer.Tiles[x, y] = gameMap.Tiles[Helper.Random.Next(2)==0?EDGE_UP:EDGE_UP_ALT];
 
                         // Corners - inside
                         if (layer.Tiles[x - 1, y - 1] == null)

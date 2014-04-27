@@ -47,17 +47,31 @@ namespace LD29.Entities
 
             switch (Type)
             {
+                case ProjectileType.Forward1:
+                    if(Position.Y>260 && Helper.Random.Next(5)==0)
+                        ParticleController.Instance.Add(Position,
+                                   -Speed * Helper.RandomFloat(0f,0.3f),
+                                   0, 200 + Helper.Random.NextDouble() * 500, 100,
+                                   false, false,
+                                   new Rectangle(0, 0, 2, 2),
+                                   new Color(new Vector3(1f) * (0.25f + Helper.RandomFloat(0.5f))),
+                                   ParticleFunctions.Smoke,
+                                   1f, 0f, 0f,
+                                   1, ParticleBlend.Additive);
+                    break;
                 case ProjectileType.Bomb:
-                    Speed.Y += 0.1f;
+                    Speed.Y += (Position.Y > 260 ? 0.01f : 0.1f);
+                    Rectangle particleRect = Position.Y > 260 ? new Rectangle(128, 0, 16, 16) : new Rectangle(0, 0, 16, 16);
                     ParticleController.Instance.Add(Position,
                                    new Vector2(-0.05f + Helper.RandomFloat(0.1f), -0.1f),
                                    0, Helper.Random.NextDouble() * 1000, Helper.Random.NextDouble() * 1000,
                                    false, false,
-                                   new Rectangle(0, 0, 16, 16),
+                                   particleRect,
                                    new Color(new Vector3(1f) * (0.25f + Helper.RandomFloat(0.5f))),
+                                   //(Position.Y > 260) ? ParticleFunctions.FadeInOut : ParticleFunctions.Smoke,
                                    ParticleFunctions.Smoke,
                                    0.25f, 0f, 0f,
-                                   1, ParticleBlend.Additive);
+                                   1, Position.Y > 260 ? ParticleBlend.Alpha :ParticleBlend.Additive);
                     break;
             }
 
@@ -69,10 +83,10 @@ namespace LD29.Entities
             for (int i = 0; i < 10; i++)
             {
                 Color c = new Color(new Vector3(1.0f, (float)Helper.Random.NextDouble(), 0.0f)) * (0.7f + ((float)Helper.Random.NextDouble() * 0.3f));
-                ParticleController.Instance.Add(Position, 
-                                                new Vector2(-0.2f + ((float)Helper.Random.NextDouble() * 0.4f), -((float)Helper.Random.NextDouble() * 0.5f)),
+                ParticleController.Instance.Add(Position + new Vector2(0f,-3f), 
+                                                new Vector2(-1f + ((float)Helper.Random.NextDouble() * 2f), Helper.RandomFloat(-0.5f,-2f)),
                                                 0, Helper.Random.NextDouble() * 1000, Helper.Random.NextDouble() * 1000,
-                                               false, false,
+                                               true, true,
                                                new Rectangle(0, 0, 3, 3),
                                                c,
                                                ParticleFunctions.FadeInOut,
@@ -82,10 +96,10 @@ namespace LD29.Entities
             for (int i = 0; i < 10; i++)
             {
                 Color c = new Color(new Vector3(1.0f, (float)Helper.Random.NextDouble(), 0.0f)) * (0.7f + ((float)Helper.Random.NextDouble() * 0.3f));
-                ParticleController.Instance.Add(Position, 
-                                                new Vector2(-0.05f + ((float)Helper.Random.NextDouble() * 0.1f), -((float)Helper.Random.NextDouble() * 1f)),
+                ParticleController.Instance.Add(Position + new Vector2(0f, -3f),
+                                                new Vector2(-0.5f + ((float)Helper.Random.NextDouble() * 1f), Helper.RandomFloat(-0.5f, -3f)),
                                                 0, Helper.Random.NextDouble() * 1000, Helper.Random.NextDouble() * 1000,
-                                               false, false,
+                                               true, true,
                                                new Rectangle(0, 0, 3, 3),
                                                c,
                                                ParticleFunctions.FadeInOut,
@@ -111,6 +125,8 @@ namespace LD29.Entities
         public override void OnBoxCollision(Entity collided, Rectangle intersect)
         {
             if (collided is Ship && !EnemyOwner) return;
+
+            collided.OnBoxCollision(this, intersect);
 
             if (Type == ProjectileType.Forward1)
             {

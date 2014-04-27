@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -47,17 +48,63 @@ namespace LD29.Entities
 
             CheckMapCollisions(gameMap);
 
+            if (Life <= 0f) Die();
+
             base.Update(gameTime, gameMap);
+        }
+
+        public void Die()
+        {
+            Active = false;
+
+            for (float a = 0f; a <= MathHelper.TwoPi; a += 0.1f)
+            {
+                Vector2 loc = Helper.PointOnCircle(ref Position, 7, a);
+                Vector2 speed = loc - Position;
+                speed.Normalize();
+                
+                ParticleController.Instance.Add(loc,
+                    speed*Helper.RandomFloat(1f,3f),
+                    100, 3000, 1000,
+                    true, true,
+                    new Rectangle(0, 0, 2, 2),
+                    new Color(new Vector3(1f, 0f, 0f)*(0.25f + Helper.RandomFloat(0.5f))),
+                    part =>
+                    {
+                        ParticleFunctions.FadeInOut(part);
+                        if (part.Position.Y > 260) part.State = ParticleState.Done;
+                    },
+                    1f, 0f, 0f,
+                    1, ParticleBlend.Alpha);
+
+                loc = Helper.PointOnCircle(ref Position, 3, a);
+                speed = loc - Position;
+                speed.Normalize();
+
+                ParticleController.Instance.Add(loc,
+                    speed * Helper.RandomFloat(1f, 3f),
+                    100, 3000, 1000,
+                    true, true,
+                    new Rectangle(0, 0, 2, 2),
+                    new Color(new Vector3(1f, 0f, 0f) * (0.25f + Helper.RandomFloat(0.5f))),
+                    part =>
+                    {
+                        ParticleFunctions.FadeInOut(part);
+                        if (part.Position.Y > 260) part.State = ParticleState.Done;
+                    },
+                    1f, 0f, 0f,
+                    1, ParticleBlend.Alpha);
+            }
         }
 
         public override void OnBoxCollision(Entity collided, Rectangle intersect)
         {
             if (collided is Projectile)
             {
-                collided.Active = false;
-
                 if (!((Projectile) collided).EnemyOwner)
                 {
+                    Life -= ((Projectile) collided).Damage;
+
                     TweenController.Instance.Create("", TweenFuncs.Linear, tween =>
                     {
                         _tint = new Color(1f,1f-tween.Value,1f-tween.Value);
@@ -83,7 +130,7 @@ namespace LD29.Entities
             if (Speed.Y < 0)
                 for (int x = HitBox.Left + 2; x <= HitBox.Right - 2; x += 2)
                 {
-                    bool? coll = gameMap.CheckCollision(new Vector2(x, HitBox.Top - Speed.Y));
+                    bool? coll = gameMap.CheckCollision(new Vector2(x, HitBox.Top + Speed.Y));
                     if (coll.HasValue && coll.Value) Speed.Y = -Speed.Y;
                 }
 
@@ -99,7 +146,7 @@ namespace LD29.Entities
             if (Speed.X < 0)
                 for (int y = HitBox.Top + 2; y <= HitBox.Bottom - 2; y += 2)
                 {
-                    bool? coll = gameMap.CheckCollision(new Vector2(HitBox.Left - Speed.X, y));
+                    bool? coll = gameMap.CheckCollision(new Vector2(HitBox.Left + Speed.X, y));
                     if (coll.HasValue && coll.Value)
                     {
                         Speed.X = -Speed.X;

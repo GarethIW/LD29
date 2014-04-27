@@ -26,6 +26,7 @@ namespace LD29.Screens
 
         private Parallax waterParallax;
         private Parallax underwaterBGParallax;
+        private Parallax skyBGParallax;
         private Parallax rocksParallax;
         private Parallax cloudsParallax;
 
@@ -53,6 +54,7 @@ namespace LD29.Screens
             waterLevel = ScreenManager.Game.RenderHeight;
             waterParallax = new Parallax(content.Load<Texture2D>("abovewater-parallax"), 12, 0.5f, waterLevel, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false, true);
             underwaterBGParallax = new Parallax(content.Load<Texture2D>("underwater-bg"), 4, 1f, waterLevel + 20, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), true, false);
+            skyBGParallax = new Parallax(content.Load<Texture2D>("sky-bg"), 72, 1f, 70, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false, false);
             rocksParallax = new Parallax(content.Load<Texture2D>("seabed-rocks"), 16, 0.35f, (map.TileHeight*map.Height) -15, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false, false);
             cloudsParallax = new Parallax(content.Load<Texture2D>("clouds"), 16, 0.35f, 25, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false, false, true);
             
@@ -62,18 +64,14 @@ namespace LD29.Screens
             particleController.LoadContent(content);
 
             projectileController = new ProjectileController(1000, sheet => new Projectile(sheet, new Rectangle(0, 0, 4, 4), null, new Vector2(0, 0)) , content.Load<Texture2D>("projectiles"));
-            projectileController.BoxCollidesWith.Add(playerShip);
-
             enemyController = new EnemyController(content.Load<Texture2D>("enemies"));
+
+            projectileController.BoxCollidesWith.Add(playerShip);
+            projectileController.BoxCollidesWith.Add(enemyController);
             enemyController.BoxCollidesWith.Add(playerShip);
             enemyController.BoxCollidesWith.Add(projectileController);
 
-            //enemyController.SpawnInitial(1, map);
-
-            ManOWar mow = new ManOWar(content.Load<Texture2D>("enemies"), new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
-            mow.Life = 3f;
-            mow.Spawn(new Vector2(3000,90));
-            enemyController.Enemies.Add(mow);
+            enemyController.SpawnInitial(1, map);
 
             base.LoadContent();
         }
@@ -136,8 +134,10 @@ namespace LD29.Screens
             enemyController.Update(gameTime, map);
             projectileController.Update(gameTime, map);
 
+
             waterParallax.Update(gameTime, playerShip.Speed.X, (int)camera.Position.X);
-            underwaterBGParallax.Update(gameTime,playerShip.Speed.X*0.5f,(int)camera.Position.X);
+            underwaterBGParallax.Update(gameTime, playerShip.Speed.X * 0.5f, (int)camera.Position.X);
+            skyBGParallax.Update(gameTime, playerShip.Speed.X * 0.1f, (int)camera.Position.X);
             rocksParallax.Update(gameTime, playerShip.Speed.X, (int)camera.Position.X);
             cloudsParallax.Update(gameTime, playerShip.Speed.X, (int)camera.Position.X);
 
@@ -160,13 +160,14 @@ namespace LD29.Screens
             Vector2 center = new Vector2(ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight) / 2f;
             SpriteBatch sb = ScreenManager.SpriteBatch;
 
-            ScreenManager.Game.GraphicsDevice.Clear(new Color(91,143,217));
+            ScreenManager.Game.GraphicsDevice.Clear(new Color(37,59,89));
 
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
             sb.Draw(ScreenManager.blankTexture, new Rectangle(0,(int)waterLevel-((int)camera.Position.Y-ScreenManager.Game.RenderHeight/2),ScreenManager.Game.RenderWidth, ((map.TileHeight*map.Height)+10)-(int)waterLevel), null, new Color(0,16,65));
             sb.End();
 
             underwaterBGParallax.Draw(sb, camera.Position.Y);
+            skyBGParallax.Draw(sb, camera.Position.Y);
             waterParallax.Draw(sb, false, camera.Position.Y);
             rocksParallax.Draw(sb, false, camera.Position.Y);
             cloudsParallax.Draw(sb, true, camera.Position.Y);

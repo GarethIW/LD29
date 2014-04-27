@@ -105,6 +105,19 @@ namespace LD29.EntityPools
                     }
                 }
 
+                if (o is EnemyController)
+                {
+                    foreach (Enemy collEnt in ((EnemyController)o).Enemies)
+                    {
+                        if (!collEnt.Active) continue;
+                        if (collEnt == e) continue;
+
+                        Rectangle intersect = Rectangle.Intersect(e.HitBox, collEnt.HitBox);
+                        if (intersect.IsEmpty) continue;
+
+                        e.OnBoxCollision(collEnt, intersect);
+                    }
+                }
                 if (o is Entity)
                 {
                     Entity collEnt = (Entity)o;
