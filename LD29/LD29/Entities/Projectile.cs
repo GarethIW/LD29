@@ -13,7 +13,8 @@ namespace LD29.Entities
     {
         Forward1,
         Bomb,
-        GorgerAcid
+        GorgerAcid,
+        ManOWarLaser
     }
 
     class Projectile : Entity
@@ -76,16 +77,31 @@ namespace LD29.Entities
                     break;
                 case ProjectileType.GorgerAcid:
                     Speed.X = MathHelper.Lerp(Speed.X,0f,0.1f);
-                    if(Helper.Random.Next(20)==0)
-                    ParticleController.Instance.Add(Position,
-                                   Vector2.Zero,
-                                   500, 500, 500,
-                                   false, false,
-                                   new Rectangle(0, 0, 16, 16),
-                                   new Color(new Vector3(0f,1f,0f) * (0.25f + Helper.RandomFloat(0.5f))),
-                                   ParticleFunctions.Acid,
-                                   0.25f, Helper.RandomFloat(0f,MathHelper.Pi), Helper.RandomFloat(-0.01f,0.01f),
-                                   1, ParticleBlend.Additive);
+                    if (Speed.X < -0.1f || Speed.X > 0.1f)
+                    {
+                        ParticleController.Instance.Add(Position,
+                            Vector2.Zero,
+                            100, 0, 100,
+                            false, false,
+                            new Rectangle(0, 0, 3, 3),
+                            new Color(new Vector3(0f, 1f, 0f)*(0.25f + Helper.RandomFloat(0.5f))),
+                            ParticleFunctions.FadeInOut,
+                            1f, Helper.RandomFloat(0f, MathHelper.Pi), Helper.RandomFloat(-0.01f, 0.01f),
+                            1, ParticleBlend.Alpha);
+                    }
+                    else
+                    {
+                        if (Helper.Random.Next(20) == 0)
+                            ParticleController.Instance.Add(Position,
+                                Vector2.Zero,
+                                50, 1000, 500,
+                                false, false,
+                                new Rectangle(0, 0, 16, 16),
+                                new Color(new Vector3(0f, 1f, 0f)*(0.25f + Helper.RandomFloat(0.5f))),
+                                ParticleFunctions.Acid,
+                                0.25f, Helper.RandomFloat(0f, MathHelper.Pi), Helper.RandomFloat(-0.01f, 0.01f),
+                                1, ParticleBlend.Additive);
+                    }
                     break;
             }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using LD29.Entities.Enemies;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TiledLib;
@@ -48,8 +49,11 @@ namespace LD29.Entities
             _idleAnim.Update(gameTime);
             _hitAnim.Update(gameTime);
 
-            if (Speed.X <= 0f) _faceDir = -1;
-            else _faceDir = 1;
+            if (!(this is Gorger) && !(this is Lunger))
+            {
+                if (Speed.X <= 0f) _faceDir = -1;
+                else _faceDir = 1;
+            }
 
             CheckMapCollisions(gameMap);
 
@@ -117,14 +121,14 @@ namespace LD29.Entities
 
         public override void Draw(SpriteBatch sb, Map gameMap)
         {
-            _idleAnim.Draw(sb,Position, _faceDir==-1?SpriteEffects.None:SpriteEffects.FlipHorizontally,_scale,0f,_tint);
-            if (Position.X >= 0 && Position.X < 200) _idleAnim.Draw(sb, Position + new Vector2(gameMap.Width * gameMap.TileWidth, 0), _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, 0f, _tint);
-            if (Position.X >= (gameMap.Width * gameMap.TileWidth) - 200 && Position.X < (gameMap.Width * gameMap.TileWidth)) _idleAnim.Draw(sb, Position - new Vector2(gameMap.Width * gameMap.TileWidth, 0), _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, 0f, _tint);
+            _idleAnim.Draw(sb,Position, _faceDir==-1?SpriteEffects.None:SpriteEffects.FlipHorizontally,_scale,Rotation,_tint);
+            if (Position.X >= 0 && Position.X < 200) _idleAnim.Draw(sb, Position + new Vector2(gameMap.Width * gameMap.TileWidth, 0), _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, Rotation, _tint);
+            if (Position.X >= (gameMap.Width * gameMap.TileWidth) - 200 && Position.X < (gameMap.Width * gameMap.TileWidth)) _idleAnim.Draw(sb, Position - new Vector2(gameMap.Width * gameMap.TileWidth, 0), _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, Rotation, _tint);
             if (_hitAlpha > 0f)
             {
-                _hitAnim.Draw(sb, Position, _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, 0f, _tint*_hitAlpha);
-                if (Position.X >= 0 && Position.X < 200) _hitAnim.Draw(sb, Position + new Vector2(gameMap.Width * gameMap.TileWidth, 0), _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, 0f, _tint * _hitAlpha);
-                if (Position.X >= (gameMap.Width * gameMap.TileWidth) - 200 && Position.X < (gameMap.Width * gameMap.TileWidth)) _hitAnim.Draw(sb, Position - new Vector2(gameMap.Width * gameMap.TileWidth, 0), _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, 0f, _tint * _hitAlpha); 
+                _hitAnim.Draw(sb, Position, _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, Rotation, _tint * _hitAlpha);
+                if (Position.X >= 0 && Position.X < 200) _hitAnim.Draw(sb, Position + new Vector2(gameMap.Width * gameMap.TileWidth, 0), _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, Rotation, _tint * _hitAlpha);
+                if (Position.X >= (gameMap.Width * gameMap.TileWidth) - 200 && Position.X < (gameMap.Width * gameMap.TileWidth)) _hitAnim.Draw(sb, Position - new Vector2(gameMap.Width * gameMap.TileWidth, 0), _faceDir == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, _scale, Rotation, _tint * _hitAlpha); 
             }
             base.Draw(sb, gameMap);
         }

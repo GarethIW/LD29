@@ -88,7 +88,7 @@ namespace LD29.EntityPools
         public void SpawnRandom(Map gameMap)
         {
             bool underWater = Helper.Random.Next(2) == 0;
-            int enemyNum = 0;
+            int enemyNum = Helper.Random.Next(2);
 
             Vector2 spawnLoc = FindSpawnLoc(gameMap, underWater);
 
@@ -102,6 +102,12 @@ namespace LD29.EntityPools
                         gor.Spawn(spawnLoc);
                         Enemies.Add(gor);
                         break;
+                    case 1:
+                        Lunger lun = new Lunger(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
+                        lun.Life = 10f;
+                        lun.Spawn(spawnLoc);
+                        Enemies.Add(lun);
+                        break;
                 }
             }
             else
@@ -109,6 +115,7 @@ namespace LD29.EntityPools
                 switch (enemyNum)
                 {
                     case 0:
+                    case 1:
                         ManOWar mow = new ManOWar(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
                         mow.Life = 20f;
                         mow.Spawn(spawnLoc);

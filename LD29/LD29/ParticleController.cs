@@ -327,13 +327,13 @@ namespace LD29
             switch (p.State)
             {
                 case ParticleState.Attack:
-                    p.Alpha += 0.001f;
+                    p.Alpha = (p.AttackValue * 0.5f);
                     break;
                 case ParticleState.Alive:
-                    if (p.Alpha < 0.2f) p.Alpha += 0.001f;
+                    if (p.Alpha < 0.5f) p.Alpha += 0.001f;
                     break;
                 case ParticleState.Decay:
-                    p.Alpha = 0.2f - (p.DecayValue * 0.2f);
+                    p.Alpha = 0.5f - (p.DecayValue * 0.5f);
                     break;
             }
         }

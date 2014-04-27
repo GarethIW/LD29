@@ -15,6 +15,8 @@ namespace LD29.Entities
 {
     class Ship : Entity
     {
+        public static Ship Instance;
+
         public bool underWater = false;
         public float Life = 100f;
 
@@ -39,6 +41,8 @@ namespace LD29.Entities
         public Ship(Texture2D spritesheet, Rectangle hitbox, List<Vector2> hitPolyPoints, Vector2 hitboxoffset) 
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
         {
+            Instance = this;
+
             _idleAnim = new SpriteAnim(spritesheet, 0, 1, 16, 16, 100, new Vector2(8, 8));
             _idleAnim.Play();
             _upAnim = new SpriteAnim(spritesheet, 1, 2, 16, 16, 500, new Vector2(8, 8), false, false, 0);
@@ -285,7 +289,7 @@ namespace LD29.Entities
                             ((Projectile) entity).Life = 5000;
                             ((Projectile) entity).Scale = 0.5f;
                             ((Projectile)entity).EnemyOwner = false;
-                            ((Projectile)entity).Damage = 3f;
+                            ((Projectile)entity).Damage = 10f;
                             entity.Speed = new Vector2(1f*faceDir, 0f);
                             entity.Position = Position + new Vector2(0, 5);
                         });

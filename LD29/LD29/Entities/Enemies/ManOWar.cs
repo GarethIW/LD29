@@ -36,6 +36,21 @@ namespace LD29.Entities.Enemies
                                    1f, 0f, 0f,
                                    1, ParticleBlend.Alpha);
 
+            if (Helper.Random.Next(200) == 0)
+            {
+                ProjectileController.Instance.Spawn(entity =>
+                {
+                    ((Projectile)entity).Type = ProjectileType.ManOWarLaser;
+                    ((Projectile)entity).SourceRect = new Rectangle(0, 158, 23, 2);
+                    entity.HitBox = new Rectangle(0, 0, 23, 2);
+                    ((Projectile)entity).Life = 2000;
+                    ((Projectile)entity).EnemyOwner = true;
+                    ((Projectile)entity).Damage = 5f;
+                    entity.Speed = new Vector2(_faceDir * 5f, 0f);
+                    entity.Position = Position + new Vector2(_faceDir * 20, -2);
+                });
+            }
+
             base.Update(gameTime, gameMap);
         }
     }

@@ -30,25 +30,27 @@ namespace LD29.Entities.Enemies
 
             if (_idleAnim.State == SpriteAnimState.Paused)
             {
-                if (_idleAnim.CurrentFrame == 5)
-                {
-                    ProjectileController.Instance.Spawn(entity =>
-                    {
-                        ((Projectile)entity).Type = ProjectileType.GorgerAcid;
-                        ((Projectile)entity).SourceRect = new Rectangle(0, 0, 1, 1);
-                        entity.HitBox = new Rectangle(0, 0, 16, 16);
-                        ((Projectile)entity).Life = 10000;
-                        ((Projectile)entity).EnemyOwner = true;
-                        ((Projectile)entity).Damage = 1f;
-                        entity.Speed = new Vector2(Helper.RandomFloat(1f,4f) * _faceDir, 0f);
-                        entity.Position = Position + new Vector2(_faceDir * 10, 0);
-                    });
-                }
+                
 
                 _idleAnim.Reset();
                 _hitAnim.Reset();
                 _idleAnim.Play();
                 _hitAnim.Play();
+            }
+
+            if (_idleAnim.CurrentFrame == 4 && (_idleAnim.TargetFrameTime - _idleAnim.CurrentFrameTime) <= 10)
+            {
+                ProjectileController.Instance.Spawn(entity =>
+                {
+                    ((Projectile)entity).Type = ProjectileType.GorgerAcid;
+                    ((Projectile)entity).SourceRect = new Rectangle(0, 0, 1, 1);
+                    entity.HitBox = new Rectangle(0, 0, 16, 16);
+                    ((Projectile)entity).Life = 10000;
+                    ((Projectile)entity).EnemyOwner = true;
+                    ((Projectile)entity).Damage = 1f;
+                    entity.Speed = new Vector2(Helper.RandomFloat(1f, 4f) * _faceDir, 0f);
+                    entity.Position = Position + new Vector2(_faceDir * 10, 0);
+                });
             }
 
             if (_idleAnim.CurrentFrame == 1 && (_idleAnim.TargetFrameTime - _idleAnim.CurrentFrameTime) <= 10)
