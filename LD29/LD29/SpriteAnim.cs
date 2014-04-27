@@ -7,19 +7,19 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace LD29
 {
-    enum SpriteAnimState
+    public enum SpriteAnimState
     {
         Playing,
         Paused
     }
 
-    enum SpriteAnimDirection
+    public enum SpriteAnimDirection
     {
         Forward,
         Reverse
     }
 
-    class SpriteAnim
+    public class SpriteAnim
     {
         public Texture2D SpriteSheet;
         public Vector2 Offset;
@@ -165,6 +165,18 @@ namespace LD29
                     0);
         }
         public void Draw(SpriteBatch sb, Vector2 pos, SpriteEffects effects, float scale, float rotation, Color tint)
+        {
+            sb.Draw(SpriteSheet,
+                    pos,
+                    new Rectangle(CurrentFrame * CellWidth, SheetRow * CellHeight, CellWidth, CellHeight),
+                    tint,
+                    rotation,
+                    Offset,
+                    scale,
+                    effects,
+                    0);
+        }
+        public void Draw(SpriteBatch sb, Vector2 pos, SpriteEffects effects, Vector2 scale, float rotation, Color tint)
         {
             sb.Draw(SpriteSheet,
                     pos,

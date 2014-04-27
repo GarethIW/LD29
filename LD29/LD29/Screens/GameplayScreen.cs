@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using GameStateManagement;
 using LD29.Entities;
+using LD29.EntityPools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,7 +20,7 @@ namespace LD29.Screens
         private Map map;
 
         private ParticleController particleController = new ParticleController();
-
+        private EnemyController enemyController;
         private ProjectileController projectileController;
 
         private Parallax waterParallax;
@@ -58,6 +59,10 @@ namespace LD29.Screens
 
             projectileController = new ProjectileController(1000, sheet => new Projectile(sheet, new Rectangle(0, 0, 4, 4), null, new Vector2(0, 0)) , content.Load<Texture2D>("projectiles"));
             projectileController.BoxCollidesWith.Add(playerShip);
+
+            enemyController = new EnemyController(content.Load<Texture2D>("enemies"));
+            enemyController.BoxCollidesWith.Add(playerShip);
+            enemyController.BoxCollidesWith.Add(particleController);
 
             MapGeneration.Generate(map);
 
@@ -119,7 +124,7 @@ namespace LD29.Screens
             }
 
             particleController.Update(gameTime, map);
-
+            enemyController.Update(gameTime, map);
             projectileController.Update(gameTime, map);
 
             waterParallax.Update(gameTime, playerShip.Speed.X, (int)camera.Position.X);
@@ -164,8 +169,9 @@ namespace LD29.Screens
             playerShip.Draw(sb, map);
             sb.End();
 
-            particleController.Draw(sb, camera, map, 1);
+            enemyController.Draw(sb, camera, map);
 
+            particleController.Draw(sb, camera, map, 1);
             projectileController.Draw(sb, camera, map);
 
             rocksParallax.Draw(sb, true, camera.Position.Y);

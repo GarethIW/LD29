@@ -25,7 +25,7 @@ namespace LD29.Entities
         private SpriteAnim _downAnim;
 
         private double projectileCoolDown1 = 250;
-        private double projectileCoolDown2 = 2000;
+        private double projectileCoolDown2 = 1000;
 
         private double projectileTime1;
         private double projectileTime2;
@@ -76,25 +76,44 @@ namespace LD29.Entities
             {
                 Speed.X-=0.05f;
                 faceDir = -1;
-                ParticleController.Instance.Add(Position + new Vector2(5f,0f),
+                if (!underWater)
+                    ParticleController.Instance.Add(Position + new Vector2(5f, 0f),
                                             new Vector2(Helper.RandomFloat(0f, 1f), Helper.RandomFloat(-0.2f, 0.2f)),
                                             0, Helper.RandomFloat(500, 1000), 500,
+                                            false, true,
+                                            particleRect,
+                                            new Color(new Vector3(1f) * (0.5f + Helper.RandomFloat(0.5f))),
+                                            ParticleFunctions.Smoke,
+                                            underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+                ParticleController.Instance.Add(Position + new Vector2(5f,0f),
+                                            new Vector2(Helper.RandomFloat(0f, 0.2f), Helper.RandomFloat(-0.2f, 0.2f)),
+                                            0, underWater?Helper.RandomFloat(500, 1000):Helper.RandomFloat(50, 150), 50,
                                             false, true,
                                             particleRect,
                                             underWater?Color.White:Color.Orange,
                                             ParticleFunctions.FadeInOut,
                                             underWater?0.3f:1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+                
             }
             if (input.CurrentKeyboardState.IsKeyDown(Keys.Right))
             {
                 Speed.X+=0.05f;
                 faceDir = 1;
-                ParticleController.Instance.Add(Position + new Vector2(-5f, 0f),
-                                            new Vector2(Helper.RandomFloat(0f, -1f), Helper.RandomFloat(-0.2f, 0.2f)),
+                if (!underWater)
+                    ParticleController.Instance.Add(Position + new Vector2(-5f, 0f),
+                                            new Vector2(Helper.RandomFloat(0f, 1f), Helper.RandomFloat(-0.2f, 0.2f)),
                                             0, Helper.RandomFloat(500, 1000), 500,
                                             false, true,
                                             particleRect,
-                                            underWater?Color.White:Color.Orange,
+                                            new Color(new Vector3(1f) * (0.5f + Helper.RandomFloat(0.5f))),
+                                            ParticleFunctions.Smoke,
+                                            underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+                ParticleController.Instance.Add(Position + new Vector2(-5f, 0f),
+                                            new Vector2(Helper.RandomFloat(0f, -0.2f), Helper.RandomFloat(-0.2f, 0.2f)),
+                                            0, underWater ? Helper.RandomFloat(500, 1000) : Helper.RandomFloat(50, 150), 50,
+                                            false, true,
+                                            particleRect,
+                                            underWater ? Color.White : Color.Orange,
                                             ParticleFunctions.FadeInOut,
                                             underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
             }
@@ -104,9 +123,18 @@ namespace LD29.Entities
             {
                 Speed.Y -= 0.05f;
                 _upAnim.Play();
-                ParticleController.Instance.Add(Position + new Vector2(0f, 3f),
+                if (!underWater)
+                    ParticleController.Instance.Add(Position + new Vector2(0f, 3f),
                                             new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, 1f)),
                                             0, Helper.RandomFloat(500, 1000), 500,
+                                            false, true,
+                                            particleRect,
+                                            new Color(new Vector3(1f) * (0.5f + Helper.RandomFloat(0.5f))),
+                                            ParticleFunctions.Smoke,
+                                            underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+                ParticleController.Instance.Add(Position + new Vector2(0f, 3f),
+                                            new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, 0.2f)),
+                                            0, underWater ? Helper.RandomFloat(500, 1000) : Helper.RandomFloat(50, 150), 50,
                                             false, true,
                                             particleRect,
                                             underWater?Color.White:Color.Orange,
@@ -118,12 +146,21 @@ namespace LD29.Entities
             {
                 Speed.Y += 0.05f;
                 _downAnim.Play();
-                ParticleController.Instance.Add(Position + new Vector2(0f, -3f),
+                if (!underWater)
+                    ParticleController.Instance.Add(Position + new Vector2(0f, -3f),
                                             new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, -1f)),
                                             0, Helper.RandomFloat(500, 1000), 500,
                                             false, true,
                                             particleRect,
-                                            underWater?Color.White:Color.Orange,
+                                            new Color(new Vector3(1f) * (0.5f + Helper.RandomFloat(0.5f))),
+                                            ParticleFunctions.Smoke,
+                                            underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+                ParticleController.Instance.Add(Position + new Vector2(0f, -3f),
+                                            new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, -0.2f)),
+                                            0, underWater ? Helper.RandomFloat(500, 1000) : Helper.RandomFloat(50, 150), 50,
+                                            false, true,
+                                            particleRect,
+                                            underWater ? Color.White : Color.Orange,
                                             ParticleFunctions.FadeInOut,
                                             underWater ? 0.2f : 0.75f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
             }
@@ -191,19 +228,26 @@ namespace LD29.Entities
                         });
                     }
 
+                    
+
+                }
+
+                if (projectileTime2 <= 0)
+                {
+                    projectileTime2 = projectileCoolDown2;
+
                     if (powerUpLevel >= 3)
                     {
                         ProjectileController.Instance.Spawn(entity =>
                         {
-                            ((Projectile)entity).Type = ProjectileType.Bomb;
-                            ((Projectile)entity).SourceRect = new Rectangle(16, 0, 8, 8);
-                            ((Projectile)entity).Life = 5000;
-                            ((Projectile)entity).Scale = 0.5f;
-                            entity.Speed = new Vector2(1f * faceDir, 0f);
+                            ((Projectile) entity).Type = ProjectileType.Bomb;
+                            ((Projectile) entity).SourceRect = new Rectangle(16, 0, 8, 8);
+                            ((Projectile) entity).Life = 5000;
+                            ((Projectile) entity).Scale = 0.5f;
+                            entity.Speed = new Vector2(1f*faceDir, 0f);
                             entity.Position = Position + new Vector2(0, 5);
                         });
                     }
-
                 }
             }
 
