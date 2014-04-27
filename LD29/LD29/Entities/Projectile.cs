@@ -155,6 +155,7 @@ namespace LD29.Entities
         public override void OnBoxCollision(Entity collided, Rectangle intersect)
         {
             if (collided is Ship && !EnemyOwner) return;
+            if (collided is Enemy && EnemyOwner) return;
 
             collided.OnBoxCollision(this, intersect);
 

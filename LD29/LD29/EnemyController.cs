@@ -115,11 +115,18 @@ namespace LD29.EntityPools
                 switch (enemyNum)
                 {
                     case 0:
-                    case 1:
+                    
                         ManOWar mow = new ManOWar(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
                         mow.Life = 20f;
                         mow.Spawn(spawnLoc);
                         Enemies.Add(mow);
+                        break;
+                    case 1:
+                        spawnLoc = FindTileSpawnLoc(gameMap);
+                        Turret tur = new Turret(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
+                        tur.Life = 15f;
+                        tur.Spawn(spawnLoc);
+                        Enemies.Add(tur);
                         break;
                 }
             }
@@ -144,6 +151,19 @@ namespace LD29.EntityPools
             }
 
             return returnLoc;
+        }
+
+        private Vector2 FindTileSpawnLoc(Map gameMap)
+        {
+            TileLayer fg = (TileLayer) gameMap.GetLayer("fg");
+
+            int x = 0;
+            while (true)
+            {
+                x = Helper.Random.Next(gameMap.Width);
+                for(int y=0;y<16;y++)
+                    if(fg.Tiles[x,y]== gameMap.Tiles[33] || fg.Tiles[x,y]== gameMap.Tiles[34]) return new Vector2((x*gameMap.TileWidth)+8, (y*gameMap.TileHeight));
+            }
         }
      
         private void CheckCollisions(Entity e)

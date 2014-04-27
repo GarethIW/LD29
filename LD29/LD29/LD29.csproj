@@ -73,6 +73,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioController.cs" />
+    <Compile Include="Entities\Enemies\Flyer.cs" />
+    <Compile Include="Entities\Enemies\Turret.cs" />
     <Compile Include="Entities\Enemies\Lunger.cs" />
     <Compile Include="Entities\Enemies\Gorger.cs" />
     <Compile Include="Entities\Enemies\ManOWar.cs" />

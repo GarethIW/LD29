@@ -81,7 +81,7 @@ namespace LD29.Entities
             Speed.X = MathHelper.Clamp(Speed.X, -5f, 5f);
             Speed.Y = MathHelper.Clamp(Speed.Y, -1.5f, 1.5f);
 
-            if (_hitAlpha > 0f) _hitAlpha -= 0.05f;
+            if (_hitAlpha > 0f) _hitAlpha -= 0.01f;
 
             if (Life <= 0f) Die();
 

@@ -74,6 +74,7 @@ namespace LD29.EntityPools
             spawnFunc(retEntity);
 
             retEntity.HitBox = new Rectangle(0, 0, 4, 4);
+            retEntity.Rotation = 0f;
 
             // Make it alive!
             retEntity.Active = true;
