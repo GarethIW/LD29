@@ -57,15 +57,32 @@ namespace LD29.Entities
             Speed.X = MathHelper.Lerp(Speed.X, 0f, 0.01f);
             Speed.Y = MathHelper.Lerp(Speed.Y, 0f, 0.01f);
 
+            Rectangle particleRect = underWater ? new Rectangle(128, 0, 16, 16) : new Rectangle(0, 0, 3, 3);
             if (input.CurrentKeyboardState.IsKeyDown(Keys.Left))
             {
                 Speed.X-=0.05f;
                 faceDir = -1;
+                ParticleController.Instance.Add(Position + new Vector2(5f,0f),
+                                            new Vector2(Helper.RandomFloat(0f, 1f), Helper.RandomFloat(-0.2f, 0.2f)),
+                                            0, Helper.RandomFloat(500, 1000), 500,
+                                            false, true,
+                                            particleRect,
+                                            underWater?Color.White:Color.Orange,
+                                            ParticleFunctions.FadeInOut,
+                                            underWater?0.3f:1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
             }
             if (input.CurrentKeyboardState.IsKeyDown(Keys.Right))
             {
                 Speed.X+=0.05f;
                 faceDir = 1;
+                ParticleController.Instance.Add(Position + new Vector2(-5f, 0f),
+                                            new Vector2(Helper.RandomFloat(0f, -1f), Helper.RandomFloat(-0.2f, 0.2f)),
+                                            0, Helper.RandomFloat(500, 1000), 500,
+                                            false, true,
+                                            particleRect,
+                                            underWater?Color.White:Color.Orange,
+                                            ParticleFunctions.FadeInOut,
+                                            underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
             }
 
             _idleAnim.CurrentFrame = 0;
@@ -73,12 +90,28 @@ namespace LD29.Entities
             {
                 Speed.Y -= 0.05f;
                 _upAnim.Play();
+                ParticleController.Instance.Add(Position + new Vector2(0f, 3f),
+                                            new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, 1f)),
+                                            0, Helper.RandomFloat(500, 1000), 500,
+                                            false, true,
+                                            particleRect,
+                                            underWater?Color.White:Color.Orange,
+                                            ParticleFunctions.FadeInOut,
+                                            underWater ? 0.2f : 0.75f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
             }
             else _upAnim.Reset();
             if (input.CurrentKeyboardState.IsKeyDown(Keys.Down))
             {
                 Speed.Y += 0.05f;
                 _downAnim.Play();
+                ParticleController.Instance.Add(Position + new Vector2(0f, -3f),
+                                            new Vector2(Helper.RandomFloat(-0.3f, 0.3f), Helper.RandomFloat(0f, -1f)),
+                                            0, Helper.RandomFloat(500, 1000), 500,
+                                            false, true,
+                                            particleRect,
+                                            underWater?Color.White:Color.Orange,
+                                            ParticleFunctions.FadeInOut,
+                                            underWater ? 0.2f : 0.75f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
             }
             else _downAnim.Reset();
 

@@ -52,6 +52,7 @@ namespace LD29
 
         public float Scale;
         public float Rotation;
+        public float RotationSpeed;
         public Color Color;
         public Rectangle SourceRect;
 
@@ -62,6 +63,8 @@ namespace LD29
     {
         const int MAX_PARTICLES = 3000;
 
+        public static ParticleController Instance;
+
         public Particle[] Particles;
         public Random Rand = new Random();
 
@@ -71,6 +74,7 @@ namespace LD29
 
         public ParticleController()
         {
+            Instance = this;
             Particles = new Particle[MAX_PARTICLES];
         }
 
@@ -79,10 +83,10 @@ namespace LD29
             _texParticles = content.Load<Texture2D>("particles");
 
             for (int i = 0; i < MAX_PARTICLES; i++)
-                Particles[i] = new Particle() {State = ParticleState.Done};
+                Particles[i] = new Particle() { State = ParticleState.Done };
 
             multiplicativeBlend = new BlendState();
-           
+
             multiplicativeBlend.ColorDestinationBlend = Blend.SourceColor;
             multiplicativeBlend.ColorSourceBlend = Blend.DestinationColor;
             //multiplicativeBlend.AlphaSourceBlend = Blend.One;
@@ -100,27 +104,28 @@ namespace LD29
 
                 if (p.AffectedByGravity) p.Velocity.Y += 0.05f;
 
-                if (p.CanCollide && gameMap!=null)
+                if (p.CanCollide && gameMap != null)
                 {
                     if (gameMap.CheckCollision(p.Position + new Vector2(p.Velocity.X, 0)).GetValueOrDefault())
                     {
-                        p.Velocity.X = -(p.Velocity.X*(0.1f + Helper.RandomFloat(0.4f)));
+                        p.Velocity.X = -(p.Velocity.X * (0.1f + Helper.RandomFloat(0.4f)));
                         p.Velocity.Y *= 0.9f;
                     }
 
                     if (gameMap.CheckCollision(p.Position + new Vector2(0, p.Velocity.Y)).GetValueOrDefault())
                     {
-                        p.Velocity.Y = -(p.Velocity.Y*(0.1f + Helper.RandomFloat(0.4f)));
+                        p.Velocity.Y = -(p.Velocity.Y * (0.1f + Helper.RandomFloat(0.4f)));
                         p.Velocity.X *= 0.9f;
                     }
                 }
 
                 p.Position += p.Velocity;
+                p.Rotation += p.RotationSpeed;
 
                 switch (p.State)
                 {
                     case ParticleState.Attack:
-                        p.AttackValue = (1f/(float) p.AttackTime)*(float)p.CurrentTime;
+                        p.AttackValue = (1f / (float)p.AttackTime) * (float)p.CurrentTime;
                         if (p.CurrentTime >= p.AttackTime)
                         {
                             p.CurrentTime = 0;
@@ -128,7 +133,7 @@ namespace LD29
                         }
                         break;
                     case ParticleState.Alive:
-                        p.LifeValue = (1f/(float) p.LifeTime)*(float)p.CurrentTime;
+                        p.LifeValue = (1f / (float)p.LifeTime) * (float)p.CurrentTime;
                         if (p.CurrentTime >= p.LifeTime)
                         {
                             p.CurrentTime = 0;
@@ -136,7 +141,7 @@ namespace LD29
                         }
                         break;
                     case ParticleState.Decay:
-                        p.DecayValue = (1f/(float) p.DecayTime)*(float)p.CurrentTime;
+                        p.DecayValue = (1f / (float)p.DecayTime) * (float)p.CurrentTime;
                         if (p.CurrentTime >= p.DecayTime)
                         {
                             p.CurrentTime = 0;
@@ -175,7 +180,7 @@ namespace LD29
                 if (p.Depth != depth) continue;
                 if (p.Blend != ParticleBlend.Alpha) continue;
 
-                sb.Draw(_texParticles, 
+                sb.Draw(_texParticles,
                     p.Position,
                     p.SourceRect, p.Color * p.Alpha, p.Rotation, new Vector2(p.SourceRect.Width / 2f, p.SourceRect.Height / 2f), p.Scale, SpriteEffects.None, 0);
             }
@@ -207,10 +212,10 @@ namespace LD29
         }
 
 
-        public void Add(Vector2 spawnPos, Vector2 velocity, double attackTime, double lifeTime, double decayTime, bool affectedbygravity, bool canCollide, Rectangle sourcerect, Color col, Action<Particle> particleFunc, float startScale, float startRot, int depth, ParticleBlend blend)
+        public void Add(Vector2 spawnPos, Vector2 velocity, double attackTime, double lifeTime, double decayTime, bool affectedbygravity, bool canCollide, Rectangle sourcerect, Color col, Action<Particle> particleFunc, float startScale, float startRot, float rotSpeed, int depth, ParticleBlend blend)
         {
             Particle p = Particles.FirstOrDefault(part => part.State == ParticleState.Done);
-            if (p!=null)
+            if (p != null)
             {
                 p.Position = spawnPos;
                 p.Velocity = velocity;
@@ -229,6 +234,7 @@ namespace LD29
                 p.State = ParticleState.Attack;
                 p.Scale = startScale;
                 p.Rotation = startRot;
+                p.RotationSpeed = rotSpeed;
                 p.Color = col;
                 p.ParticleFunction = particleFunc;
                 p.ParticleFunction(p);
@@ -244,12 +250,10 @@ namespace LD29
             }
         }
 
-        internal void Wrap(int off)
+        internal void Wrap(float off)
         {
-            foreach (var particle in Particles)
-            {
-                particle.Position.X += off;
-            }
+            foreach (Particle p in Particles)
+                p.Position.X += off;
         }
     }
 

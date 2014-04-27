@@ -105,7 +105,7 @@ namespace LD29.Screens
                                                col, particle => { ParticleFunctions.FadeInOut(particle);
                                                                     if (particle.Position.Y > waterLevel)
                                                                         particle.State = ParticleState.Done;
-                                               } ,1f,0f,1,ParticleBlend.Alpha);
+                                               }, 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 1, ParticleBlend.Alpha);
                     }
                 }
 
@@ -148,6 +148,8 @@ namespace LD29.Screens
             waterParallax.Draw(sb, false, camera.Position.Y);
             rocksParallax.Draw(sb, false, camera.Position.Y);
             cloudsParallax.Draw(sb, true, camera.Position.Y);
+
+            particleController.Draw(sb, camera, 0);
 
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.CameraMatrix);
             map.DrawLayer(sb, "fg", camera);
