@@ -24,6 +24,7 @@ namespace LD29
 
         private bool wavyEffect = false;
         private bool cutoff = false;
+        private bool reverse = false;
 
         public Parallax(Texture2D tex, int layerheight, float heightscale, float ypos, int mapwidth, Viewport viewport, bool wavy, bool cut)
         {
@@ -44,6 +45,13 @@ namespace LD29
             if (wavyEffect) TweenController.Instance.Create("", TweenFuncs.Linear, WaveCallback, 5000, true, true);
         }
 
+        public Parallax(Texture2D tex, int layerheight, float heightscale, float ypos, int mapwidth, Viewport viewport,
+            bool wavy, bool cut, bool rev)
+            :this(tex, layerheight, heightscale, ypos, mapwidth, viewport, wavy, cut)
+        {
+            reverse = rev;
+        }
+
         private void WaveCallback(Tween tween)
         {
             for (int i = 0; i < numLayers; i++)
@@ -57,21 +65,36 @@ namespace LD29
             if (!wavyEffect)
             {
                 float offsetStep = 1.6f/(float) numLayers;
-                for (int i = 0; i < numLayers; i++)
+                if (!reverse)
                 {
-                    offsets[i] -= (xSpeed*(((float) i + 1f)*offsetStep));
-                    if (offsets[i] >= texBG.Width) offsets[i] = offsets[i] - texBG.Width;
-                    if (offsets[i] < 0f) offsets[i] = texBG.Width + offsets[i];
+                    for (int i = 0; i < numLayers; i++)
+                    {
+                        offsets[i] -= (xSpeed*(((float) i + 1f)*offsetStep));
+                        if (offsets[i] >= texBG.Width) offsets[i] = offsets[i] - texBG.Width;
+                        if (offsets[i] < 0f) offsets[i] = texBG.Width + offsets[i];
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < numLayers; i++)
+                    {
+                        offsets[i] -= (xSpeed * (((float)(numLayers-i) + 1f) * offsetStep));
+                        if (offsets[i] >= texBG.Width) offsets[i] = offsets[i] - texBG.Width;
+                        if (offsets[i] < 0f) offsets[i] = texBG.Width + offsets[i];
+                    }
                 }
             }
             else
             {
-                for (int i = 0; i < numLayers; i++)
-                {
-                    offsets[i] -= xSpeed;
-                    if (offsets[i] >= texBG.Width) offsets[i] = offsets[i] - texBG.Width;
-                    if (offsets[i] < 0f) offsets[i] = texBG.Width + offsets[i];
-                }
+          
+                    for (int i = 0; i < numLayers; i++)
+                    {
+                        offsets[i] -= xSpeed;
+                        if (offsets[i] >= texBG.Width) offsets[i] = offsets[i] - texBG.Width;
+                        if (offsets[i] < 0f) offsets[i] = texBG.Width + offsets[i];
+                    }
+               
+                
             }
 
 
@@ -87,17 +110,46 @@ namespace LD29
             int mid = numLayers>1?numLayers/2:1;
             int start = fg ? mid : 0;
 
-            for (int layer = start; layer < start + mid; layer++)
+            if (!reverse)
             {
-                int xoff = (int) offsets[layer];// + (int)waveoffsets[layer];
-                for (int x = xoff-mapWidth; x <xoff+mapWidth; x += texBG.Width)
+                for (int layer = start; layer < start + mid; layer++)
                 {
-                     //if(x>=Position.X-(vp.Width*2) && x<=Position.X+(vp.Width*2))
-                         sb.Draw(texBG,
-                             new Vector2(x, ((Position.Y - ((numLayers / 2) * (layerHeight * HeightScale))) + (layer * (layerHeight * HeightScale))) - (camY-(vp.Height/2))),
-                             new Rectangle(0,layerHeight*layer,texBG.Width,(cutoff && HeightScale<0.5f)?(int)(((float)layerHeight/5f)*(HeightScale*10f)):layerHeight),
-                                Color.White,
-                                0f, new Vector2(texBG.Width, layerHeight)/2, 1f, SpriteEffects.None, 0);
+                    int xoff = (int) offsets[layer]; // + (int)waveoffsets[layer];
+                    for (int x = xoff - mapWidth; x < xoff + mapWidth; x += texBG.Width)
+                    {
+                        //if(x>=Position.X-(vp.Width*2) && x<=Position.X+(vp.Width*2))
+                        sb.Draw(texBG,
+                            new Vector2(x,
+                                ((Position.Y - ((numLayers/2)*(layerHeight*HeightScale))) +
+                                 (layer*(layerHeight*HeightScale))) - (camY - (vp.Height/2))),
+                            new Rectangle(0, layerHeight*layer, texBG.Width,
+                                (cutoff && HeightScale < 0.5f)
+                                    ? (int) (((float) layerHeight/5f)*(HeightScale*10f))
+                                    : layerHeight),
+                            Color.White,
+                            0f, new Vector2(texBG.Width, layerHeight)/2, 1f, SpriteEffects.None, 0);
+                    }
+                }
+            }
+            else
+            {
+                for (int layer = start+mid-1; layer >=start ; layer--)
+                {
+                    int xoff = (int)offsets[layer]; // + (int)waveoffsets[layer];
+                    for (int x = xoff - mapWidth; x < xoff + mapWidth; x += texBG.Width)
+                    {
+                        //if(x>=Position.X-(vp.Width*2) && x<=Position.X+(vp.Width*2))
+                        sb.Draw(texBG,
+                            new Vector2(x,
+                                ((Position.Y - ((numLayers / 2) * (layerHeight * HeightScale))) +
+                                 (layer * (layerHeight * HeightScale))) - (camY - (vp.Height / 2))),
+                            new Rectangle(0, layerHeight * layer, texBG.Width,
+                                (cutoff && HeightScale < 0.5f)
+                                    ? (int)(((float)layerHeight / 5f) * (HeightScale * 10f))
+                                    : layerHeight),
+                            Color.White,
+                            0f, new Vector2(texBG.Width, layerHeight) / 2, 1f, SpriteEffects.None, 0);
+                    }
                 }
             }
             sb.End();
@@ -108,17 +160,42 @@ namespace LD29
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
             int start = 0;
 
-            for (int layer = start; layer < numLayers; layer++)
+            if (!reverse)
             {
-                int xoff = (int) offsets[layer] + (int)waveoffsets[layer];
-                for (int x = xoff - mapWidth; x < xoff + mapWidth; x += texBG.Width)
+                for (int layer = start; layer < numLayers; layer++)
                 {
-                    //if(x>=Position.X-(vp.Width*2) && x<=Position.X+(vp.Width*2))
-                    sb.Draw(texBG,
-                        new Vector2(x, ((Position.Y - ((numLayers / 2) * (layerHeight * HeightScale))) + (layer * (layerHeight * HeightScale))) - (camY - (vp.Height / 2))),
-                        new Rectangle(0, layerHeight * layer, texBG.Width, HeightScale < 0.5f ? (int)(((float)layerHeight / 5f) * (HeightScale * 10f)) : layerHeight),
-                           Color.White,
-                           0f, new Vector2(texBG.Width, layerHeight) / 2, 1f, SpriteEffects.None, 0);
+                    int xoff = (int) offsets[layer] + (int) waveoffsets[layer];
+                    for (int x = xoff - mapWidth; x < xoff + mapWidth; x += texBG.Width)
+                    {
+                        //if(x>=Position.X-(vp.Width*2) && x<=Position.X+(vp.Width*2))
+                        sb.Draw(texBG,
+                            new Vector2(x,
+                                ((Position.Y - ((numLayers/2)*(layerHeight*HeightScale))) +
+                                 (layer*(layerHeight*HeightScale))) - (camY - (vp.Height/2))),
+                            new Rectangle(0, layerHeight*layer, texBG.Width,
+                                HeightScale < 0.5f ? (int) (((float) layerHeight/5f)*(HeightScale*10f)) : layerHeight),
+                            Color.White,
+                            0f, new Vector2(texBG.Width, layerHeight)/2, 1f, SpriteEffects.None, 0);
+                    }
+                }
+            }
+            else
+            {
+                for (int layer = numLayers-1; layer >=start; layer--)
+                {
+                    int xoff = (int)offsets[layer] + (int)waveoffsets[layer];
+                    for (int x = xoff - mapWidth; x < xoff + mapWidth; x += texBG.Width)
+                    {
+                        //if(x>=Position.X-(vp.Width*2) && x<=Position.X+(vp.Width*2))
+                        sb.Draw(texBG,
+                            new Vector2(x,
+                                ((Position.Y - ((numLayers / 2) * (layerHeight * HeightScale))) +
+                                 (layer * (layerHeight * HeightScale))) - (camY - (vp.Height / 2))),
+                            new Rectangle(0, layerHeight * layer, texBG.Width,
+                                HeightScale < 0.5f ? (int)(((float)layerHeight / 5f) * (HeightScale * 10f)) : layerHeight),
+                            Color.White,
+                            0f, new Vector2(texBG.Width, layerHeight) / 2, 1f, SpriteEffects.None, 0);
+                    }
                 }
             }
             sb.End();

@@ -243,6 +243,14 @@ namespace LD29
                 p.State = ParticleState.Done;
             }
         }
+
+        internal void Wrap(int off)
+        {
+            foreach (var particle in Particles)
+            {
+                particle.Position.X += off;
+            }
+        }
     }
 
     public static class ParticleFunctions
