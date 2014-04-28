@@ -55,7 +55,7 @@ namespace LD29.Entities
                 else _faceDir = 1;
             }
 
-            CheckMapCollisions(gameMap);
+            if(!(this is Boss)) CheckMapCollisions(gameMap);
 
             if (Life <= 0f) Die();
 
