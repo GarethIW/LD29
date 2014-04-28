@@ -38,6 +38,8 @@ namespace LD29.Entities.Enemies
 
             if (Helper.Random.Next(200) == 0)
             {
+                AudioController.PlaySFX("laser", 1f, -0.1f, 0.1f, Camera.Instance, Position);
+
                 ProjectileController.Instance.Spawn(entity =>
                 {
                     ((Projectile)entity).Type = ProjectileType.ManOWarLaser;
@@ -45,7 +47,7 @@ namespace LD29.Entities.Enemies
                     entity.HitBox = new Rectangle(0, 0, 23, 2);
                     ((Projectile)entity).Life = 2000;
                     ((Projectile)entity).EnemyOwner = true;
-                    ((Projectile)entity).Damage = 10f;
+                    ((Projectile)entity).Damage = 5f;
                     entity.Speed = new Vector2(_faceDir * 5f, 0f);
                     entity.Position = Position + new Vector2(_faceDir * 20, -2);
                 });

@@ -68,6 +68,8 @@ namespace LD29.Entities
         {
             Active = false;
 
+            AudioController.PlaySFX("explosion", 1f, -0.1f, 0.1f, Camera.Instance, Position);
+
             for (float a = 0f; a <= MathHelper.TwoPi; a += 0.1f)
             {
                 Vector2 loc = Helper.PointOnCircle(ref Position, 7, a);

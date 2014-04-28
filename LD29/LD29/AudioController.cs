@@ -30,9 +30,9 @@ namespace LD29
             set { _musicVolume = MathHelper.Clamp(value, 0f, 1f); }
         }
 
-        private static Dictionary<string, SoundEffect> _effects;
+        public static Dictionary<string, SoundEffect> _effects;
 
-        private static Dictionary<string, SoundEffectInstance> _songs;
+        public static Dictionary<string, SoundEffectInstance> _songs;
 
         private static string _playingTrack = "";
         private static bool _isPlaying;
@@ -41,7 +41,14 @@ namespace LD29
         {
             _effects = new Dictionary<string, SoundEffect>();
 
-            //_effects.Add("explode", content.Load<SoundEffect>("sfx/explode"));
+            _effects.Add("boost", content.Load<SoundEffect>("sfx/boost"));
+            _effects.Add("explosion", content.Load<SoundEffect>("sfx/explosion"));
+            _effects.Add("laser", content.Load<SoundEffect>("sfx/laser"));
+            _effects.Add("minigun", content.Load<SoundEffect>("sfx/minigun"));
+            _effects.Add("gun_winddown", content.Load<SoundEffect>("sfx/gun_winddown"));
+            _effects.Add("seeker", content.Load<SoundEffect>("sfx/minigun"));
+            _effects.Add("projectileexplosion", content.Load<SoundEffect>("sfx/projectileexplosion"));
+            _effects.Add("shiphit", content.Load<SoundEffect>("sfx/shiphit"));
             
 
             _songs = new Dictionary<string, SoundEffectInstance>();

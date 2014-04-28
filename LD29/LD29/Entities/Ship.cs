@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using GameStateManagement;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TiledLib;
@@ -47,10 +48,23 @@ namespace LD29.Entities
 
         private float _powerUpText = 0f;
 
+        private SoundEffectInstance engineLoop;
+        private SoundEffectInstance gunLoop;
+
         public Ship(Texture2D spritesheet, Rectangle hitbox, List<Vector2> hitPolyPoints, Vector2 hitboxoffset) 
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
         {
             Instance = this;
+
+            engineLoop = new SoundEffectInstance(AudioController._effects["boost"]);
+            engineLoop.IsLooped = true;
+            engineLoop.Play();
+            engineLoop.Pause();
+            gunLoop = new SoundEffectInstance(AudioController._effects["minigun"]);
+            gunLoop.IsLooped = true;
+            gunLoop.Volume = 0.3f;
+            gunLoop.Play();
+            gunLoop.Pause();
 
             _idleAnim = new SpriteAnim(spritesheet, 0, 1, 16, 16, 100, new Vector2(8, 8));
             _idleAnim.Play();
@@ -77,6 +91,11 @@ namespace LD29.Entities
                 Speed = Vector2.Zero;
                 return;
             }
+
+            Vector2 screenPos = Vector2.Transform(Position, Camera.Instance.CameraMatrix);
+            engineLoop.Pan = (screenPos.X - (Camera.Instance.Width / 2f)) / (Camera.Instance.Width / 2f);
+            gunLoop.Pan = (screenPos.X - (Camera.Instance.Width / 2f)) / (Camera.Instance.Width / 2f);
+            
 
             projectileTime1 -= gameTime.ElapsedGameTime.TotalMilliseconds;
             projectileTime2 -= gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -122,6 +141,8 @@ namespace LD29.Entities
             base.Update(gameTime, gameMap);
         }
 
+        private bool isFiring = false;
+
         public override void HandleInput(InputState input)
         {
             if (!Active) return;
@@ -130,50 +151,57 @@ namespace LD29.Entities
             Speed.Y = MathHelper.Lerp(Speed.Y, 0f, 0.01f);
 
             Rectangle particleRect = underWater ? new Rectangle(128, 0, 16, 16) : new Rectangle(0, 0, 3, 3);
+
+            engineLoop.Pause();
+
             if (input.CurrentKeyboardState.IsKeyDown(Keys.Left))
             {
-                Speed.X-=0.05f;
+                Speed.X -= 0.05f;
                 faceDir = -1;
                 if (!underWater)
                     ParticleController.Instance.Add(Position + new Vector2(5f, 0f),
-                                            new Vector2(Helper.RandomFloat(0f, 1f), Helper.RandomFloat(-0.2f, 0.2f)),
-                                            0, Helper.RandomFloat(500, 1000), 500,
-                                            false, true,
-                                            particleRect,
-                                            new Color(new Vector3(1f) * (0.5f + Helper.RandomFloat(0.5f))),
-                                            ParticleFunctions.Smoke,
-                                            underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
-                ParticleController.Instance.Add(Position + new Vector2(5f,0f),
-                                            new Vector2(Helper.RandomFloat(0f, 0.2f), Helper.RandomFloat(-0.2f, 0.2f)),
-                                            0, underWater?Helper.RandomFloat(500, 1000):Helper.RandomFloat(50, 150), 50,
-                                            false, true,
-                                            particleRect,
-                                            underWater?Color.White:Color.Orange,
-                                            ParticleFunctions.FadeInOut,
-                                            underWater?0.3f:1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
-                
+                        new Vector2(Helper.RandomFloat(0f, 1f), Helper.RandomFloat(-0.2f, 0.2f)),
+                        0, Helper.RandomFloat(500, 1000), 500,
+                        false, true,
+                        particleRect,
+                        new Color(new Vector3(1f)*(0.5f + Helper.RandomFloat(0.5f))),
+                        ParticleFunctions.Smoke,
+                        underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+                ParticleController.Instance.Add(Position + new Vector2(5f, 0f),
+                    new Vector2(Helper.RandomFloat(0f, 0.2f), Helper.RandomFloat(-0.2f, 0.2f)),
+                    0, underWater ? Helper.RandomFloat(500, 1000) : Helper.RandomFloat(50, 150), 50,
+                    false, true,
+                    particleRect,
+                    underWater ? Color.White : Color.Orange,
+                    ParticleFunctions.FadeInOut,
+                    underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+
+                engineLoop.Resume();
+
             }
             if (input.CurrentKeyboardState.IsKeyDown(Keys.Right))
             {
-                Speed.X+=0.05f;
+                Speed.X += 0.05f;
                 faceDir = 1;
                 if (!underWater)
                     ParticleController.Instance.Add(Position + new Vector2(-5f, 0f),
-                                            new Vector2(Helper.RandomFloat(0f, -1f), Helper.RandomFloat(-0.2f, 0.2f)),
-                                            0, Helper.RandomFloat(500, 1000), 500,
-                                            false, true,
-                                            particleRect,
-                                            new Color(new Vector3(1f) * (0.5f + Helper.RandomFloat(0.5f))),
-                                            ParticleFunctions.Smoke,
-                                            underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+                        new Vector2(Helper.RandomFloat(0f, -1f), Helper.RandomFloat(-0.2f, 0.2f)),
+                        0, Helper.RandomFloat(500, 1000), 500,
+                        false, true,
+                        particleRect,
+                        new Color(new Vector3(1f)*(0.5f + Helper.RandomFloat(0.5f))),
+                        ParticleFunctions.Smoke,
+                        underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
                 ParticleController.Instance.Add(Position + new Vector2(-5f, 0f),
-                                            new Vector2(Helper.RandomFloat(0f, -0.2f), Helper.RandomFloat(-0.2f, 0.2f)),
-                                            0, underWater ? Helper.RandomFloat(500, 1000) : Helper.RandomFloat(50, 150), 50,
-                                            false, true,
-                                            particleRect,
-                                            underWater ? Color.White : Color.Orange,
-                                            ParticleFunctions.FadeInOut,
-                                            underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+                    new Vector2(Helper.RandomFloat(0f, -0.2f), Helper.RandomFloat(-0.2f, 0.2f)),
+                    0, underWater ? Helper.RandomFloat(500, 1000) : Helper.RandomFloat(50, 150), 50,
+                    false, true,
+                    particleRect,
+                    underWater ? Color.White : Color.Orange,
+                    ParticleFunctions.FadeInOut,
+                    underWater ? 0.3f : 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+
+                engineLoop.Resume();
             }
 
             _idleAnim.CurrentFrame = 0;
@@ -199,6 +227,8 @@ namespace LD29.Entities
                     underWater ? Color.White : Color.Orange,
                     ParticleFunctions.FadeInOut,
                     underWater ? 0.2f : 0.75f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+
+                engineLoop.Resume();
             }
             else
             {
@@ -227,6 +257,8 @@ namespace LD29.Entities
                     underWater ? Color.White : Color.Orange,
                     ParticleFunctions.FadeInOut,
                     underWater ? 0.2f : 0.75f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 0, ParticleBlend.Alpha);
+
+                engineLoop.Resume();
             }
             else
             {
@@ -247,37 +279,37 @@ namespace LD29.Entities
                         ProjectileController.Instance.Spawn(entity =>
                         {
                             ((Projectile) entity).Type = ProjectileType.Forward1;
-                            ((Projectile)entity).SourceRect = new Rectangle(8, 8, 20, 8);
+                            ((Projectile) entity).SourceRect = new Rectangle(8, 8, 20, 8);
                             ((Projectile) entity).Life = 1000;
-                            ((Projectile)entity).EnemyOwner = false; 
-                            ((Projectile)entity).Damage = 1f;
-                            entity.Speed = new Vector2(6f*faceDir,0f);
+                            ((Projectile) entity).EnemyOwner = false;
+                            ((Projectile) entity).Damage = 1f;
+                            entity.Speed = new Vector2(6f*faceDir, 0f);
                             entity.Position = Position + new Vector2(faceDir*10, 0);
-                            
+
                         });
 
                     if (PowerUpLevel == 1)
                     {
                         ProjectileController.Instance.Spawn(entity =>
                         {
-                            ((Projectile)entity).Type = ProjectileType.Forward1;
-                            ((Projectile)entity).SourceRect = new Rectangle(8, 8, 20, 8);
-                            ((Projectile)entity).Life = 1000;
-                            ((Projectile)entity).EnemyOwner = false;
-                            ((Projectile)entity).Damage = 1f;
-                            entity.Speed = new Vector2(6f * faceDir, 0f);
-                            entity.Position = Position + new Vector2(faceDir * 10, -2);
+                            ((Projectile) entity).Type = ProjectileType.Forward1;
+                            ((Projectile) entity).SourceRect = new Rectangle(8, 8, 20, 8);
+                            ((Projectile) entity).Life = 1000;
+                            ((Projectile) entity).EnemyOwner = false;
+                            ((Projectile) entity).Damage = 1f;
+                            entity.Speed = new Vector2(6f*faceDir, 0f);
+                            entity.Position = Position + new Vector2(faceDir*10, -2);
 
                         });
                         ProjectileController.Instance.Spawn(entity =>
                         {
-                            ((Projectile)entity).Type = ProjectileType.Forward1;
-                            ((Projectile)entity).SourceRect = new Rectangle(8, 8, 20, 8);
-                            ((Projectile)entity).Life = 1000;
-                            ((Projectile)entity).EnemyOwner = false;
-                            ((Projectile)entity).Damage = 1f;
-                            entity.Speed = new Vector2(6f * faceDir, 0f);
-                            entity.Position = Position + new Vector2(faceDir * 10, 2);
+                            ((Projectile) entity).Type = ProjectileType.Forward1;
+                            ((Projectile) entity).SourceRect = new Rectangle(8, 8, 20, 8);
+                            ((Projectile) entity).Life = 1000;
+                            ((Projectile) entity).EnemyOwner = false;
+                            ((Projectile) entity).Damage = 1f;
+                            entity.Speed = new Vector2(6f*faceDir, 0f);
+                            entity.Position = Position + new Vector2(faceDir*10, 2);
 
                         });
                     }
@@ -287,22 +319,22 @@ namespace LD29.Entities
                         ProjectileController.Instance.Spawn(entity =>
                         {
                             ((Projectile) entity).Type = ProjectileType.Forward1;
-                            ((Projectile)entity).SourceRect = new Rectangle(8, 8, 20, 8);
+                            ((Projectile) entity).SourceRect = new Rectangle(8, 8, 20, 8);
                             ((Projectile) entity).Life = 1000;
-                            ((Projectile)entity).EnemyOwner = false;
-                            ((Projectile)entity).Damage = 1f;
+                            ((Projectile) entity).EnemyOwner = false;
+                            ((Projectile) entity).Damage = 1f;
                             entity.Speed = new Vector2(6f*faceDir, -0.5f);
                             entity.Position = Position + new Vector2(faceDir*10, 0);
                         });
                         ProjectileController.Instance.Spawn(entity =>
                         {
-                            ((Projectile)entity).Type = ProjectileType.Forward1;
-                            ((Projectile)entity).SourceRect = new Rectangle(8, 8, 20, 8);
-                            ((Projectile)entity).Life = 1000;
-                            ((Projectile)entity).EnemyOwner = false;
-                            ((Projectile)entity).Damage = 1f;
-                            entity.Speed = new Vector2(6f * faceDir, 0.5f);
-                            entity.Position = Position + new Vector2(faceDir * 10, 0);
+                            ((Projectile) entity).Type = ProjectileType.Forward1;
+                            ((Projectile) entity).SourceRect = new Rectangle(8, 8, 20, 8);
+                            ((Projectile) entity).Life = 1000;
+                            ((Projectile) entity).EnemyOwner = false;
+                            ((Projectile) entity).Damage = 1f;
+                            entity.Speed = new Vector2(6f*faceDir, 0.5f);
+                            entity.Position = Position + new Vector2(faceDir*10, 0);
                         });
                     }
 
@@ -320,8 +352,8 @@ namespace LD29.Entities
                             ((Projectile) entity).SourceRect = new Rectangle(16, 0, 8, 8);
                             ((Projectile) entity).Life = 5000;
                             ((Projectile) entity).Scale = 0.5f;
-                            ((Projectile)entity).EnemyOwner = false;
-                            ((Projectile)entity).Damage = 20f;
+                            ((Projectile) entity).EnemyOwner = false;
+                            ((Projectile) entity).Damage = 20f;
                             entity.Speed = new Vector2(1f*faceDir, 0f);
                             entity.Position = Position + new Vector2(0, 5);
                         });
@@ -336,18 +368,28 @@ namespace LD29.Entities
                     {
                         ProjectileController.Instance.Spawn(entity =>
                         {
-                            ((Projectile)entity).Type = ProjectileType.Seeker;
-                            ((Projectile)entity).SourceRect = new Rectangle(1, 18, 8, 4);
-                            ((Projectile)entity).Life = 3000;
-                            ((Projectile)entity).Scale = 1f;
-                            ((Projectile)entity).EnemyOwner = false;
-                            ((Projectile)entity).Damage = 5f;
-                            ((Projectile)entity).Target = Position + new Vector2(faceDir * 300, 0); ;
+                            ((Projectile) entity).Type = ProjectileType.Seeker;
+                            ((Projectile) entity).SourceRect = new Rectangle(1, 18, 8, 4);
+                            ((Projectile) entity).Life = 3000;
+                            ((Projectile) entity).Scale = 1f;
+                            ((Projectile) entity).EnemyOwner = false;
+                            ((Projectile) entity).Damage = 5f;
+                            ((Projectile) entity).Target = Position + new Vector2(faceDir*300, 0);
+                            ;
                             entity.Speed = new Vector2(0f, -0.5f);
-                            entity.Position = Position + new Vector2(0,0);
+                            entity.Position = Position + new Vector2(0, 0);
                         });
                     }
                 }
+
+                isFiring = true;
+                gunLoop.Resume();
+            }
+            else if (isFiring)
+            {
+                isFiring = false;
+                gunLoop.Pause();
+                AudioController.PlaySFX("gun_winddown", gunLoop.Volume, -0.1f, 0.1f, Camera.Instance, Position);
             }
 
             base.HandleInput(input);
@@ -359,12 +401,13 @@ namespace LD29.Entities
             {
                 _hitAlpha = 1f;
                 Life -= 0.5f;
+
             }
 
             if (collided is Projectile && ((Projectile) collided).EnemyOwner)
             {
                 _hitAlpha = 1f;
-                Life -= 1f;
+                Life -= ((Projectile)collided).Damage;
             }
 
             if (collided is Powerup)
@@ -384,6 +427,7 @@ namespace LD29.Entities
 
         public override void Reset()
         {
+            engineLoop.Pause();
             Position = new Vector2(64, 190);
             underWater = false;
             Speed = Vector2.Zero;
@@ -422,6 +466,7 @@ namespace LD29.Entities
             Life = 0f;
             Active = false;
 
+            engineLoop.Stop();
          
             for (float a = 0f; a <= MathHelper.TwoPi; a += 0.1f)
             {

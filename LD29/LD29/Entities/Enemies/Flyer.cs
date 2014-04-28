@@ -124,7 +124,7 @@ namespace LD29.Entities.Enemies
                 if (Helper.Random.Next(50) == 0) _firing = true;
             }
 
-            if(Helper.Random.Next(200)==0 && GameController.Wave>=6)
+            if(Helper.Random.Next(200)==0 && GameController.Wave>=8)
                 ProjectileController.Instance.Spawn(entity =>
                 {
                     ((Projectile)entity).Type = ProjectileType.Seeker;
