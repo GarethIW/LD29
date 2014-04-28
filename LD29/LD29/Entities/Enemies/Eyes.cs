@@ -39,6 +39,9 @@ namespace LD29.Entities.Enemies
 
             if (Helper.Random.Next(200) == 0)
             {
+                if (Ship.Instance.Position.Y > 260)
+                    AudioController.PlaySFX("eyespew", 1f, -0.1f, 0.1f, Camera.Instance, Position);
+
                 float start = Helper.RandomFloat(0f, 0.25f);
                 for (float a = start; a < start + MathHelper.TwoPi; a += 0.25f)
                     ProjectileController.Instance.Spawn(entity =>

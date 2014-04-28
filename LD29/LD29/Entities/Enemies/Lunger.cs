@@ -41,6 +41,9 @@ namespace LD29.Entities.Enemies
 
                 if (Helper.Random.Next(100) == 0)
                 {
+                    if (Ship.Instance.Position.Y > 260)
+                        AudioController.PlaySFX("lancer", 1f, -0.1f, 0.1f, Camera.Instance, Position);
+
                     _target = Position + new Vector2(Helper.RandomFloat(-30, 30), Helper.RandomFloat(-30, 30));
                     if (_target.Y < 280) _target.Y = 280;
 
@@ -54,6 +57,9 @@ namespace LD29.Entities.Enemies
 
                 if (Vector2.Distance(Ship.Instance.Position, Position) < 100f)
                 {
+                    if (Ship.Instance.Position.Y > 260)
+                        AudioController.PlaySFX("lancer", 1f, -0.1f, 0.1f, Camera.Instance, Position);
+
                     _target = Ship.Instance.Position;
                     if (_target.Y < 280) _target.Y = 280;
 

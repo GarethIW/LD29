@@ -40,6 +40,9 @@ namespace LD29.Entities.Enemies
 
             if (_idleAnim.CurrentFrame == 4 && (_idleAnim.TargetFrameTime - _idleAnim.CurrentFrameTime) <= 10)
             {
+                if(Ship.Instance.Position.Y>260)
+                    AudioController.PlaySFX("gorgershoot", 1f, -0.1f, 0.1f, Camera.Instance, Position);
+
                 ProjectileController.Instance.Spawn(entity =>
                 {
                     ((Projectile)entity).Type = ProjectileType.GorgerAcid;
@@ -47,7 +50,7 @@ namespace LD29.Entities.Enemies
                     entity.HitBox = new Rectangle(0, 0, 16, 16);
                     ((Projectile)entity).Life = 10000;
                     ((Projectile)entity).EnemyOwner = true;
-                    ((Projectile)entity).Damage = 0.1f;
+                    ((Projectile)entity).Damage = 0.5f;
                     entity.Speed = new Vector2(Helper.RandomFloat(1f, 4f) * _faceDir, 0f);
                     entity.Position = Position + new Vector2(_faceDir * 10, 0);
                 });

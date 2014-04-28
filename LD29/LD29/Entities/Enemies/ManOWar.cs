@@ -38,7 +38,8 @@ namespace LD29.Entities.Enemies
 
             if (Helper.Random.Next(200) == 0)
             {
-                AudioController.PlaySFX("laser", 1f, -0.1f, 0.1f, Camera.Instance, Position);
+                if (Ship.Instance.Position.Y <= 260)
+                    AudioController.PlaySFX("laser", 1f, -0.1f, 0.1f, Camera.Instance, Position);
 
                 ProjectileController.Instance.Spawn(entity =>
                 {

@@ -92,9 +92,9 @@ namespace LD29.Entities
                 return;
             }
 
-            Vector2 screenPos = Vector2.Transform(Position, Camera.Instance.CameraMatrix);
-            engineLoop.Pan = (screenPos.X - (Camera.Instance.Width / 2f)) / (Camera.Instance.Width / 2f);
-            gunLoop.Pan = (screenPos.X - (Camera.Instance.Width / 2f)) / (Camera.Instance.Width / 2f);
+            //Vector2 screenPos = Vector2.Transform(Position, Camera.Instance.CameraMatrix);
+            //engineLoop.Pan = (screenPos.X - (Camera.Instance.Width / 2f)) / (Camera.Instance.Width / 2f);
+            //gunLoop.Pan = (screenPos.X - (Camera.Instance.Width / 2f)) / (Camera.Instance.Width / 2f);
             
 
             projectileTime1 -= gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -123,6 +123,8 @@ namespace LD29.Entities
 
             if (PowerUpMeter >= 20 && PowerUpLevel<4)
             {
+                AudioController.PlaySFX("powerup", 1f, 0f, 0f);
+
                 _powerUpText = 1f;
                 PowerUpLevel++;
                 if(PowerUpLevel<4)
@@ -366,6 +368,8 @@ namespace LD29.Entities
 
                     if (PowerUpLevel >= 4)
                     {
+                        AudioController.PlaySFX("seeker", 0.5f, -0.1f, 0.1f);
+
                         ProjectileController.Instance.Spawn(entity =>
                         {
                             ((Projectile) entity).Type = ProjectileType.Seeker;
@@ -389,7 +393,7 @@ namespace LD29.Entities
             {
                 isFiring = false;
                 gunLoop.Pause();
-                AudioController.PlaySFX("gun_winddown", gunLoop.Volume, -0.1f, 0.1f, Camera.Instance, Position);
+                AudioController.PlaySFX("gun_winddown", gunLoop.Volume, -0.1f, 0.1f);
             }
 
             base.HandleInput(input);
@@ -401,6 +405,7 @@ namespace LD29.Entities
             {
                 _hitAlpha = 1f;
                 Life -= 0.5f;
+                AudioController.PlaySFX("shiphit", 0.5f, -0.1f, 0.1f);
 
             }
 
@@ -408,12 +413,18 @@ namespace LD29.Entities
             {
                 _hitAlpha = 1f;
                 Life -= ((Projectile)collided).Damage;
+
+                AudioController.PlaySFX("shiphit", 0.5f, -0.1f, 0.1f);
+
             }
 
             if (collided is Powerup)
             {
                 collided.Active = false;
                 PowerUpMeter++;
+
+                AudioController.PlaySFX("pickup", 1f, -0.1f, 0.1f);
+
             }
 
             base.OnBoxCollision(collided, intersect);
@@ -428,6 +439,7 @@ namespace LD29.Entities
         public override void Reset()
         {
             engineLoop.Pause();
+            gunLoop.Pause();
             Position = new Vector2(64, 190);
             underWater = false;
             Speed = Vector2.Zero;
@@ -467,6 +479,7 @@ namespace LD29.Entities
             Active = false;
 
             engineLoop.Stop();
+            gunLoop.Stop();
          
             for (float a = 0f; a <= MathHelper.TwoPi; a += 0.1f)
             {

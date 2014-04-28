@@ -194,7 +194,7 @@ namespace LD29.EntityPools
                     if(fg.Tiles[x,y]== gameMap.Tiles[MapGeneration.EDGE_UP] 
                         || fg.Tiles[x,y]== gameMap.Tiles[MapGeneration.EDGE_UP_ALT]
                         || fg.Tiles[x, y] == gameMap.Tiles[MapGeneration.CASTLE_ONE[1]]
-                        || fg.Tiles[x, y] == gameMap.Tiles[MapGeneration.CASTLE_TWO[1]]) return new Vector2((x * gameMap.TileWidth) + 8, (y * gameMap.TileHeight) + (fg.Tiles[x, y] == gameMap.Tiles[MapGeneration.CASTLE_ONE[1]] ? 8 : 0));
+                        || fg.Tiles[x, y] == gameMap.Tiles[MapGeneration.CASTLE_TWO[1]]) return new Vector2((x * gameMap.TileWidth) + 8, (y * gameMap.TileHeight) + (fg.Tiles[x, y] == gameMap.Tiles[MapGeneration.CASTLE_ONE[1]] || fg.Tiles[x, y] == gameMap.Tiles[MapGeneration.CASTLE_TWO[1]] ? 6 : 0));
             }
         }
      

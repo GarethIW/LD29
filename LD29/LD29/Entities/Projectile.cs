@@ -151,6 +151,8 @@ namespace LD29.Entities
 
         private void Explode()
         {
+            AudioController.PlaySFX("projectileexplosion", 0.5f, -0.1f, 0.1f, Camera.Instance, Position);
+
             for (int i = 0; i < 10; i++)
             {
                 Color c = new Color(new Vector3(1.0f, (float)Helper.Random.NextDouble(), 0.0f)) * (0.7f + ((float)Helper.Random.NextDouble() * 0.3f));
@@ -209,6 +211,9 @@ namespace LD29.Entities
             {
                 //Active = false;
                 Explode();
+
+                
+
             }
             base.OnBoxCollision(collided, intersect);
         }
