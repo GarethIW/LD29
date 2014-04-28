@@ -51,7 +51,7 @@ namespace LD29.Entities.Enemies
                         entity.HitBox = new Rectangle(0, 0, 6, 6);
                         ((Projectile) entity).Life = 5000;
                         ((Projectile) entity).EnemyOwner = true;
-                        ((Projectile) entity).Damage = 5f;
+                        ((Projectile) entity).Damage = 3f;
                         entity.Speed = Helper.AngleToVector(a, 1f);
                         entity.Position = Position + Helper.AngleToVector(a, 5f);
                     });
