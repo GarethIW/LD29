@@ -82,7 +82,7 @@ namespace LD29.Screens
             particleController.LoadContent(content);
 
             projectileController = new ProjectileController(1000, sheet => new Projectile(sheet, new Rectangle(0, 0, 4, 4), null, new Vector2(0, 0)) , content.Load<Texture2D>("projectiles"));
-            enemyController = new EnemyController(content.Load<Texture2D>("enemies"));
+            enemyController = new EnemyController(content.Load<Texture2D>("enemies"), content.Load<Texture2D>("boss"));
             powerupController = new PowerupController(1000,sheet => new Powerup(sheet, new Rectangle(0, 0, 6, 6), null, Vector2.Zero),content.Load<Texture2D>("powerup"));
 
             powerupController.BoxCollidesWith.Add(playerShip);
@@ -232,7 +232,7 @@ namespace LD29.Screens
 
         public override void HandleInput(InputState input)
         {
-            //if(input.IsNewKeyPress(Keys.Back)) MapGeneration.Generate(map);
+            if(input.IsNewKeyPress(Keys.Back)) MapGeneration.Generate(map);
             if (_endOfWave && _waveFade>=1f) return;
 
             if (_gameOver && _goTimer >= 1f)
@@ -266,7 +266,7 @@ namespace LD29.Screens
 
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.CameraMatrix);
             map.DrawLayer(sb, "fg", camera);
-            playerShip.Draw(sb, map);
+            playerShip.Draw(sb, map, ScreenManager.Font);
             sb.End();
 
             enemyController.Draw(sb, camera, map);
@@ -307,7 +307,7 @@ namespace LD29.Screens
                 sb.End();
             }
 
-            hud.Draw(sb, new Viewport(0,0,ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), camera, !_endOfWave);
+            hud.Draw(sb, new Viewport(0,0,ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), camera, !_endOfWave, ScreenManager.Font);
 
             ScreenManager.FadeBackBufferToBlack(1f - TransitionAlpha);
 

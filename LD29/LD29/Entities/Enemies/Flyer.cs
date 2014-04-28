@@ -124,6 +124,20 @@ namespace LD29.Entities.Enemies
                 if (Helper.Random.Next(50) == 0) _firing = true;
             }
 
+            if(Helper.Random.Next(200)==0 && GameController.Wave>=6)
+                ProjectileController.Instance.Spawn(entity =>
+                {
+                    ((Projectile)entity).Type = ProjectileType.Seeker;
+                    ((Projectile)entity).SourceRect = new Rectangle(1, 18, 8, 4);
+                    ((Projectile)entity).Life = 2000;
+                    ((Projectile)entity).Scale = 1f;
+                    ((Projectile)entity).EnemyOwner = true;
+                    ((Projectile)entity).Damage = 5f;
+                    ((Projectile)entity).Target = Position + new Vector2(_faceDir * 300, 0); ;
+                    entity.Speed = new Vector2(0f, -0.5f);
+                    entity.Position = Position + new Vector2(0, 0);
+                });
+
             //if (Vector2.Distance(Position, _target) < 1f)
             //{
             //    _idleAnim.Pause();

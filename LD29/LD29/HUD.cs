@@ -51,7 +51,7 @@ namespace LD29
             prevHealth = (int)Ship.Instance.Life;
         }
 
-        public void Draw(SpriteBatch sb, Viewport vp, Camera gameCamera, bool radar)
+        public void Draw(SpriteBatch sb, Viewport vp, Camera gameCamera, bool radar, SpriteFont font)
         {
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
             sb.Draw(_sheet, new Vector2(vp.Bounds.Center.X - 100, hbPos), new Rectangle(0, 0, 201, 4), Color.White);
@@ -80,6 +80,13 @@ namespace LD29
                         SpriteEffects.None, 0);
                 }
             }
+
+            pos = new Vector2(8,vp.Bounds.Bottom - 28);
+            sb.DrawString(font, Ship.Instance.Multiplier.ToString() + "x", pos + Vector2.One, Color.Black, 0f, Vector2.Zero, 1.6f, SpriteEffects.None, 0);
+            sb.DrawString(font, Ship.Instance.Multiplier.ToString() + "x", pos, Color.White, 0f, Vector2.Zero, 1.6f, SpriteEffects.None, 0);
+            pos = new Vector2(vp.Bounds.Right - 58, vp.Bounds.Bottom - 20);
+            sb.DrawString(font, Ship.Instance.Score.ToString("000000"), pos + Vector2.One, Color.Black, 0f, Vector2.Zero,1f, SpriteEffects.None,0);
+            sb.DrawString(font, Ship.Instance.Score.ToString("000000"), pos, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
 
             sb.End();
         }

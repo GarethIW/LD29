@@ -59,6 +59,8 @@ namespace LD29.Entities
 
             if (Life <= 0f) Die();
 
+            if (Position.Y > (gameMap.Height*gameMap.TileHeight)) Die();
+
             base.Update(gameTime, gameMap);
         }
 
@@ -116,6 +118,8 @@ namespace LD29.Entities
                     });
                 }
             }
+
+            Ship.Instance.AddScore();
         }
 
         public override void OnBoxCollision(Entity collided, Rectangle intersect)

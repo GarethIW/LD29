@@ -24,12 +24,14 @@ namespace LD29.EntityPools
         public int NumToSpawn = 0;
 
         private Texture2D _spriteSheet;
+        private Texture2D _bossSheet;
 
-        public EnemyController(Texture2D spriteSheet)
+        public EnemyController(Texture2D spriteSheet, Texture2D bossSheet)
         {
             Instance = this;
 
             _spriteSheet = spriteSheet;
+            _bossSheet = bossSheet;
 
             Enemies = new List<Enemy>();
             BoxCollidesWith = new List<object>();
@@ -84,12 +86,24 @@ namespace LD29.EntityPools
             }
 
             NumToSpawn = (int)Math.Pow(level + 1, 1.2);
+
+            if (GameController.Wave == 6 || (GameController.Wave > 6 && GameController.Wave%3 == 0))
+            {
+                Boss.Generate(_bossSheet, new Vector2(1000,200));
+            }
         }
 
         public void SpawnRandom(Map gameMap)
         {
             bool underWater = Helper.Random.Next(2) == 0;
-            int enemyNum = Helper.Random.Next(3);
+            int enemyNumOW = Helper.Random.Next(3);
+            int enemyNumUW = Helper.Random.Next(3);
+
+            if (enemyNumOW > 0 && GameController.Wave < 3) enemyNumOW = 0;
+            if (enemyNumOW > 1 && GameController.Wave < 5) enemyNumOW = 1;
+
+            if (enemyNumUW > 0 && GameController.Wave < 2) enemyNumUW = 0;
+            if (enemyNumUW > 1 && GameController.Wave < 4) enemyNumUW = 1;
 
             Vector2 spawnLoc = FindSpawnLoc(gameMap, underWater);
 
@@ -97,7 +111,7 @@ namespace LD29.EntityPools
 
             if (underWater)
             {
-                switch (enemyNum)
+                switch (enemyNumUW)
                 {
                     case 0:
                         Gorger gor = new Gorger(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
@@ -121,7 +135,7 @@ namespace LD29.EntityPools
             }
             else
             {
-                switch (enemyNum)
+                switch (enemyNumOW)
                 {
                     case 0:
                     
@@ -177,7 +191,10 @@ namespace LD29.EntityPools
             {
                 x = Helper.Random.Next(gameMap.Width);
                 for(int y=0;y<16;y++)
-                    if(fg.Tiles[x,y]== gameMap.Tiles[33] || fg.Tiles[x,y]== gameMap.Tiles[34]) return new Vector2((x*gameMap.TileWidth)+8, (y*gameMap.TileHeight));
+                    if(fg.Tiles[x,y]== gameMap.Tiles[MapGeneration.EDGE_UP] 
+                        || fg.Tiles[x,y]== gameMap.Tiles[MapGeneration.EDGE_UP_ALT]
+                        || fg.Tiles[x, y] == gameMap.Tiles[MapGeneration.CASTLE_ONE[1]]
+                        || fg.Tiles[x, y] == gameMap.Tiles[MapGeneration.CASTLE_TWO[1]]) return new Vector2((x * gameMap.TileWidth) + 8, (y * gameMap.TileHeight) + (fg.Tiles[x, y] == gameMap.Tiles[MapGeneration.CASTLE_ONE[1]] ? 8 : 0));
             }
         }
      

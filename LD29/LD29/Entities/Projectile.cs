@@ -84,9 +84,18 @@ namespace LD29.Entities
                                    1, Position.Y > 260 ? ParticleBlend.Alpha :ParticleBlend.Additive);
                     break;
                 case ProjectileType.Seeker:
-                    Enemy e = EnemyController.Instance.Enemies.OrderBy(en => Vector2.Distance(en.Position, Position)).FirstOrDefault();
-                    if (e != null)
-                        Target = e.Position;
+                    if (!EnemyOwner)
+                    {
+                        Enemy e =
+                            EnemyController.Instance.Enemies.OrderBy(en => Vector2.Distance(en.Position, Position))
+                                .FirstOrDefault();
+                        if (e != null)
+                            Target = e.Position;
+                    }
+                    else
+                    {
+                        Target = Ship.Instance.Position;
+                    }
                     Vector2 dir = Target - Position;
                     dir.Normalize();
                     Speed += dir*0.5f;

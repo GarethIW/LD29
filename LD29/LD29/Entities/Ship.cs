@@ -38,9 +38,14 @@ namespace LD29.Entities
         private double projectileTime2;
         private double projectileTime3;
 
-        public int PowerUpMeter = 0;
+        public int Score = 0;
+        public int Multiplier = 1;
+        public double MultiplierTime = 0;
 
+        public int PowerUpMeter = 0;
         public int PowerUpLevel = 0;
+
+        private float _powerUpText = 0f;
 
         public Ship(Texture2D spritesheet, Rectangle hitbox, List<Vector2> hitPolyPoints, Vector2 hitboxoffset) 
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
@@ -95,14 +100,24 @@ namespace LD29.Entities
 
             if (Life <= 0f) Die();
 
+            if (_powerUpText > 0f) _powerUpText -= 0.01f;
+
             if (PowerUpMeter >= 20 && PowerUpLevel<4)
             {
+                _powerUpText = 1f;
                 PowerUpLevel++;
                 if(PowerUpLevel<4)
                     PowerUpMeter = PowerUpMeter-20;
             }
 
             Life = MathHelper.Clamp(Life, 0f, 100f);
+
+            MultiplierTime -= gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (MultiplierTime <= 0f && Multiplier > 1)
+            {
+                MultiplierTime = 1000;
+                Multiplier--;
+            }
 
             base.Update(gameTime, gameMap);
         }
@@ -375,7 +390,7 @@ namespace LD29.Entities
             base.Reset();
         }
 
-        public override void Draw(SpriteBatch sb, Map gameMap)
+        public void Draw(SpriteBatch sb, Map gameMap, SpriteFont font)
         {
             if (!Active) return;
 
@@ -391,6 +406,12 @@ namespace LD29.Entities
                     _downHitAnim.Draw(sb, Position, faceDir == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1f, 0f, Color.White * _hitAlpha);
                 else
                     _idleHitAnim.Draw(sb, Position, faceDir == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1f, 0f, Color.White * _hitAlpha);
+            }
+
+            if (_powerUpText > 0f)
+            {
+                sb.DrawString(font, "POWER UP", Position + new Vector2(0f, -10f + (5f * _powerUpText)) + Vector2.One, Color.Black * _powerUpText, 0f, font.MeasureString("POWER UP") / 2, 1f, SpriteEffects.None, 0);
+                sb.DrawString(font, "POWER UP", Position + new Vector2(0f, -10f + (5f * _powerUpText)), Color.White * _powerUpText, 0f, font.MeasureString("POWER UP") / 2, 1f, SpriteEffects.None, 0);
             }
 
             base.Draw(sb, gameMap);
@@ -491,6 +512,13 @@ namespace LD29.Entities
                         return;
                     }
                 }
+        }
+
+        internal void AddScore()
+        {
+            Score += 100*Multiplier;
+            if(Multiplier<10) Multiplier++;
+            MultiplierTime = 10000;
         }
     }
 }

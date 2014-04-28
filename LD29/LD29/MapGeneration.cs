@@ -7,29 +7,32 @@ using TiledLib;
 
 namespace LD29
 {
-    static class MapGeneration
+    internal static class MapGeneration
     {
-        const int CENTER_BLOCK = 10;
-        const int EDGE_UP = 33;
-        const int EDGE_UP_ALT = 34;
-        const int EDGE_DOWN = 18;
-        const int EDGE_LEFT = 9;
-        const int EDGE_RIGHT = 11;
+        public const int CENTER_BLOCK = 10;
+        public const int EDGE_UP = 25;
+        public const int EDGE_UP_ALT = 26;
+        public const int EDGE_DOWN = 18;
+        public const int EDGE_LEFT = 9;
+        public const int EDGE_RIGHT = 11;
 
-        const int EDGE_INSIDE_UP = 5;
-        const int EDGE_INSIDE_DOWN = 17;
-        const int EDGE_INSIDE_LEFT = 10;
-        const int EDGE_INSIDE_RIGHT = 12;
+        public const int EDGE_INSIDE_UP = 5;
+        public const int EDGE_INSIDE_DOWN = 17;
+        public const int EDGE_INSIDE_LEFT = 10;
+        public const int EDGE_INSIDE_RIGHT = 12;
 
-        const int CORNER_INSIDE_TL = 13;
-        const int CORNER_INSIDE_TR = 15;
-        const int CORNER_INSIDE_BL = 29;
-        const int CORNER_INSIDE_BR = 31;
+        public const int CORNER_INSIDE_TL = 13;
+        public const int CORNER_INSIDE_TR = 15;
+        public const int CORNER_INSIDE_BL = 29;
+        public const int CORNER_INSIDE_BR = 31;
 
-        const int CORNER_OUTSIDE_TL = 25;
-        const int CORNER_OUTSIDE_TR = 26;
-        const int CORNER_OUTSIDE_BL = 17;
-        const int CORNER_OUTSIDE_BR = 19;
+        public const int CORNER_OUTSIDE_TL = 79;
+        public const int CORNER_OUTSIDE_TR = 80;
+        public const int CORNER_OUTSIDE_BL = 17;
+        public const int CORNER_OUTSIDE_BR = 19;
+
+        public static int[] CASTLE_ONE = new int[] { 97, 98, 99, 105, 106, 107, 113, 114, 115 };
+        public static int[] CASTLE_TWO = new int[] { 101, 102, 103, 109, 110, 111, 117, 118, 119 };
 
         public static void Generate(Map gameMap)
         {
@@ -193,7 +196,27 @@ namespace LD29
                 }
             }
 
-            for(int x=0;x<gameMap.Width;x++)
+            // add castles
+            for (int x = 0; x < gameMap.Width; x++)
+                for (int y = 0; y < gameMap.Height; y++)
+                    if ((layer.Tiles[x, y] == gameMap.Tiles[EDGE_UP] ||layer.Tiles[x, y] == gameMap.Tiles[EDGE_UP_ALT]) &&
+                        (layer.Tiles[x - 1, y] == gameMap.Tiles[EDGE_UP] || layer.Tiles[x-1, y] == gameMap.Tiles[EDGE_UP_ALT]) &&
+                        (layer.Tiles[x + 1, y] == gameMap.Tiles[EDGE_UP] || layer.Tiles[x+1, y] == gameMap.Tiles[EDGE_UP_ALT]) &&
+                        Helper.Random.Next(5) == 0 && y>5)
+                    {
+                        int tile = 0;
+                        int type = Helper.Random.Next(2);
+                        for(int yy=0;yy<3;yy++)
+                            for (int xx = 0; xx < 3; xx++)
+                            {
+                                layer.Tiles[(x - 1) + xx, (y - 2) + yy] = type == 0 ? gameMap.Tiles[CASTLE_ONE[tile]] : gameMap.Tiles[CASTLE_TWO[tile]];
+                                tile++;
+                            }
+                    }
+
+
+
+            for(int x=5;x<gameMap.Width-5;x++)
                 layer.Tiles[x, gameMap.Height-1] = gameMap.Tiles[EDGE_UP];
         }
 
