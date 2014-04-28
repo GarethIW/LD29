@@ -49,7 +49,7 @@ namespace LD29.Entities
             _idleAnim.Update(gameTime);
             _hitAnim.Update(gameTime);
 
-            if (!(this is Gorger) && !(this is Lunger))
+            if (!(this is Gorger) && !(this is Lunger) && !(this is Flyer))
             {
                 if (Speed.X <= 0f) _faceDir = -1;
                 else _faceDir = 1;
