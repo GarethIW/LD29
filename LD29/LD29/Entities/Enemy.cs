@@ -102,6 +102,15 @@ namespace LD29.Entities
                     1f, 0f, 0f,
                     1, ParticleBlend.Alpha);
             }
+
+            for (int i = 0; i < 3; i++)
+            {
+                PowerupController.Instance.Spawn(pup =>
+                {
+                    pup.Position = Position;
+                    pup.Speed = new Vector2(Helper.RandomFloat(-0.5f, 0.5f), Helper.RandomFloat(-0.5f, 0.5f));
+                });
+            }
         }
 
         public override void OnBoxCollision(Entity collided, Rectangle intersect)

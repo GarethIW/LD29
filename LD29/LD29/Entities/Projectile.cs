@@ -159,14 +159,14 @@ namespace LD29.Entities
 
             collided.OnBoxCollision(this, intersect);
 
-            if (Type == ProjectileType.Forward1)
-            {
-                Active = false;
-            }
+            //if (Type == ProjectileType.Forward1)
+            //{
+             if(Type!= ProjectileType.GorgerAcid) Active = false;
+            //}
 
             if (Type == ProjectileType.Bomb)
             {
-                Active = false;
+                //Active = false;
                 Explode();
             }
             base.OnBoxCollision(collided, intersect);

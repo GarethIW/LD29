@@ -73,12 +73,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioController.cs" />
+    <Compile Include="GameController.cs" />
+    <Compile Include="HUD.cs" />
+    <Compile Include="PowerupController.cs" />
     <Compile Include="Entities\Enemies\Flyer.cs" />
     <Compile Include="Entities\Enemies\Turret.cs" />
     <Compile Include="Entities\Enemies\Lunger.cs" />
     <Compile Include="Entities\Enemies\Gorger.cs" />
     <Compile Include="Entities\Enemies\ManOWar.cs" />
     <Compile Include="Entities\Enemy.cs" />
+    <Compile Include="Entities\Powerup.cs" />
     <Compile Include="Entities\Projectile.cs" />
     <Compile Include="Entities\Ship.cs" />
     <Compile Include="Entities\Entity.cs" />

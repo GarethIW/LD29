@@ -36,7 +36,9 @@ namespace LD29.Entities
         private double projectileTime1;
         private double projectileTime2;
 
-        private int powerUpLevel = 0;
+        public int PowerUpMeter = 0;
+
+        public int PowerUpLevel = 0;
 
         public Ship(Texture2D spritesheet, Rectangle hitbox, List<Vector2> hitPolyPoints, Vector2 hitboxoffset) 
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
@@ -89,6 +91,12 @@ namespace LD29.Entities
             if (_hitAlpha > 0f) _hitAlpha -= 0.02f;
 
             if (Life <= 0f) Die();
+
+            if (PowerUpMeter >= 20 && PowerUpLevel<4)
+            {
+                PowerUpLevel++;
+                PowerUpMeter = PowerUpMeter-20;
+            }
 
             base.Update(gameTime, gameMap);
         }
@@ -214,7 +222,7 @@ namespace LD29.Entities
                     projectileTime1 = projectileCoolDown1;
 
 
-                    if (powerUpLevel != 1)
+                    if (PowerUpLevel != 1)
                         ProjectileController.Instance.Spawn(entity =>
                         {
                             ((Projectile) entity).Type = ProjectileType.Forward1;
@@ -227,7 +235,7 @@ namespace LD29.Entities
                             
                         });
 
-                    if (powerUpLevel == 1)
+                    if (PowerUpLevel == 1)
                     {
                         ProjectileController.Instance.Spawn(entity =>
                         {
@@ -253,7 +261,7 @@ namespace LD29.Entities
                         });
                     }
 
-                    if (powerUpLevel >= 2)
+                    if (PowerUpLevel >= 2)
                     {
                         ProjectileController.Instance.Spawn(entity =>
                         {
@@ -285,7 +293,7 @@ namespace LD29.Entities
                 {
                     projectileTime2 = projectileCoolDown2;
 
-                    if (powerUpLevel >= 3)
+                    if (PowerUpLevel >= 3)
                     {
                         ProjectileController.Instance.Spawn(entity =>
                         {
@@ -307,8 +315,23 @@ namespace LD29.Entities
 
         public override void OnBoxCollision(Entity collided, Rectangle intersect)
         {
-            _hitAlpha = 1f;
-            Life -= 1f;
+            if (collided is Enemy)
+            {
+                _hitAlpha = 1f;
+                Life -= 0.5f;
+            }
+
+            if (collided is Projectile && ((Projectile) collided).EnemyOwner)
+            {
+                _hitAlpha = 1f;
+                Life -= 1f;
+            }
+
+            if (collided is Powerup)
+            {
+                collided.Active = false;
+                PowerUpMeter++;
+            }
 
             base.OnBoxCollision(collided, intersect);
         }

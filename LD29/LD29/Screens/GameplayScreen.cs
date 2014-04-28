@@ -23,6 +23,7 @@ namespace LD29.Screens
         private ParticleController particleController = new ParticleController();
         private EnemyController enemyController;
         private ProjectileController projectileController;
+        private PowerupController powerupController;
 
         private Parallax waterParallax;
         private Parallax underwaterBGParallax;
@@ -33,6 +34,8 @@ namespace LD29.Screens
         private float waterLevel;
 
         private Ship playerShip;
+
+        private HUD hud;
 
         public GameplayScreen()
         {
@@ -51,6 +54,8 @@ namespace LD29.Screens
 
             //camera.Zoom = 0.5f;
 
+            hud = new HUD(content.Load<Texture2D>("hud"));
+
             waterLevel = ScreenManager.Game.RenderHeight;
             waterParallax = new Parallax(content.Load<Texture2D>("abovewater-parallax"), 12, 0.5f, waterLevel, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false, true);
             underwaterBGParallax = new Parallax(content.Load<Texture2D>("underwater-bg"), 4, 1f, waterLevel + 20, (map.TileWidth * map.Width), new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), true, false);
@@ -65,7 +70,9 @@ namespace LD29.Screens
 
             projectileController = new ProjectileController(1000, sheet => new Projectile(sheet, new Rectangle(0, 0, 4, 4), null, new Vector2(0, 0)) , content.Load<Texture2D>("projectiles"));
             enemyController = new EnemyController(content.Load<Texture2D>("enemies"));
+            powerupController = new PowerupController(1000,sheet => new Powerup(sheet, new Rectangle(0, 0, 6, 6), null, Vector2.Zero),content.Load<Texture2D>("powerup"));
 
+            powerupController.BoxCollidesWith.Add(playerShip);
             projectileController.BoxCollidesWith.Add(playerShip);
             projectileController.BoxCollidesWith.Add(enemyController);
             enemyController.BoxCollidesWith.Add(playerShip);
@@ -133,6 +140,7 @@ namespace LD29.Screens
             particleController.Update(gameTime, map);
             enemyController.Update(gameTime, map);
             projectileController.Update(gameTime, map);
+            powerupController.Update(gameTime, map);
 
 
             waterParallax.Update(gameTime, playerShip.Speed.X, (int)camera.Position.X);
@@ -144,6 +152,8 @@ namespace LD29.Screens
             camera.Target = playerShip.Position;
             camera.Target.X += playerShip.Speed.X * 20f;
             camera.Update(gameTime, playerShip.underWater, waterLevel);
+
+            hud.Update(gameTime, new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight));
 
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
         }
@@ -183,12 +193,13 @@ namespace LD29.Screens
 
             particleController.Draw(sb, camera, map, 1);
             projectileController.Draw(sb, camera, map);
+            powerupController.Draw(sb,camera,map);
 
             rocksParallax.Draw(sb, true, camera.Position.Y);
             cloudsParallax.Draw(sb, false, camera.Position.Y);
 
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
-            sb.Draw(ScreenManager.blankTexture, new Rectangle(0, (int)waterLevel - ((int)camera.Position.Y - ScreenManager.Game.RenderHeight / 2) - 5, ScreenManager.Game.RenderWidth, ((map.TileHeight * map.Height) + 10) - (int)waterLevel), null, Color.Black * 0.5f);
+            sb.Draw(ScreenManager.blankTexture, new Rectangle(0, (int)waterLevel - ((int)camera.Position.Y - ScreenManager.Game.RenderHeight / 2) - 5, ScreenManager.Game.RenderWidth, ((map.TileHeight * map.Height) + 10) - (int)waterLevel), null, Color.Black * 0.4f);
             sb.End();
 
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
@@ -196,6 +207,7 @@ namespace LD29.Screens
 
             waterParallax.Draw(sb, true, camera.Position.Y);
 
+            hud.Draw(sb, new Viewport(0,0,ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), camera);
 
             ScreenManager.FadeBackBufferToBlack(1f - TransitionAlpha);
 
