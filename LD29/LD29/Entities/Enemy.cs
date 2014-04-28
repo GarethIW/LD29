@@ -64,7 +64,7 @@ namespace LD29.Entities
             base.Update(gameTime, gameMap);
         }
 
-        public void Die()
+        public virtual void Die()
         {
             Active = false;
 

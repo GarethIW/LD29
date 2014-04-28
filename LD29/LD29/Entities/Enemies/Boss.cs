@@ -35,14 +35,14 @@ namespace LD29.Entities.Enemies
             _idleAnim = new SpriteAnim(spritesheet, 0, 1, 32, 32, 0, new Vector2(16,16));
             _hitAnim = new SpriteAnim(spritesheet, 5, 1, 32, 32, 0, new Vector2(16, 16));
 
-            _headGobAnim = new SpriteAnim(spritesheet, 0, 1, 32, 32, 0, new Vector2(16, 16));
-            _headGobAnimHit = new SpriteAnim(spritesheet, 0, 1, 32, 32, 0, new Vector2(16, 16));
-            _headEyeAnim = new SpriteAnim(spritesheet, 0, 1, 32, 32, 0, new Vector2(16, 16));
-            _headEyeAnimHit = new SpriteAnim(spritesheet, 0, 1, 32, 32, 0, new Vector2(16, 16));
-            _bodyAnim = new SpriteAnim(spritesheet, 0, 1, 32, 32, 0, new Vector2(16, 16));
-            _bodyAnimHit = new SpriteAnim(spritesheet, 0, 1, 32, 32, 0, new Vector2(16, 16));
-            _tailAnim = new SpriteAnim(spritesheet, 0, 1, 32, 32, 0, new Vector2(16, 16));
-            _tailAnimHit = new SpriteAnim(spritesheet, 0, 1, 32, 32, 0, new Vector2(16, 16));
+            _headGobAnim = new SpriteAnim(spritesheet, 1, 2, 32, 32, 0, new Vector2(16, 16));
+            _headGobAnimHit = new SpriteAnim(spritesheet, 6, 2, 32, 32, 0, new Vector2(16, 16));
+            _headEyeAnim = new SpriteAnim(spritesheet, 2, 6, 32, 32, 0, new Vector2(16, 16));
+            _headEyeAnimHit = new SpriteAnim(spritesheet, 7, 6, 32, 32, 0, new Vector2(16, 16));
+            _bodyAnim = new SpriteAnim(spritesheet, 3, 1, 32, 32, 0, new Vector2(16, 16));
+            _bodyAnimHit = new SpriteAnim(spritesheet, 8, 1, 32, 32, 0, new Vector2(16, 16));
+            _tailAnim = new SpriteAnim(spritesheet, 4, 1, 32, 32, 0, new Vector2(16, 16));
+            _tailAnimHit = new SpriteAnim(spritesheet, 9, 1, 32, 32, 0, new Vector2(16, 16));
         }
 
         public override void Update(GameTime gameTime, Map gameMap)
@@ -71,17 +71,47 @@ namespace LD29.Entities.Enemies
                     if (((Boss)segs[index]).Ordinal == Ordinal) 
                     {
                         target = segs[index-1].Position;
-                        Position = Vector2.Lerp(Position, target, 0.1f);
+                        Position = Vector2.Lerp(Position, target, 0.15f);
                     }
 
                     
                 }
 
+                if (Tail)
+                    Rotation = Helper.V2ToAngle(Position - target);
 
             }
 
+            
+
 
             base.Update(gameTime, gameMap);
+        }
+
+        public override void Die()
+        {
+            if (Head)
+            {
+                List<Enemy> segs = EnemyController.Instance.Enemies.Where(en => en is Boss).OrderBy(en => ((Boss) en).Ordinal).ToList();
+                bool found = false;
+                for (int index = 1; index < segs.Count; index++)
+                {
+                    if (((Boss) segs[index]).Body)
+                    {
+                        ((Boss) segs[index]).Head = true;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    Enemy tail = EnemyController.Instance.Enemies.FirstOrDefault(en => en is Boss && ((Boss) en).Tail);
+                    if(tail!=null) tail.Die();
+                }
+
+            }
+
+            base.Die();
         }
 
         public override void Draw(SpriteBatch sb, Map gameMap)
@@ -135,7 +165,6 @@ namespace LD29.Entities.Enemies
             head.Ordinal = 0;
             head.Life = 100;
             head.Spawn(pos);
-            EnemyController.Instance.Enemies.Add(head);
 
             for (int i = 0; i < 7; i++)
             {
@@ -154,7 +183,10 @@ namespace LD29.Entities.Enemies
             tail.Ordinal = 8;
             tail.Life = 100;
             tail.Spawn(pos);
+
             EnemyController.Instance.Enemies.Add(tail);
+            EnemyController.Instance.Enemies.Add(head);
+            
         }
     }
 
