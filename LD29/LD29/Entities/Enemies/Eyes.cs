@@ -36,18 +36,25 @@ namespace LD29.Entities.Enemies
                                    ParticleFunctions.FadeInOut,
                                    0.5f, 0f, 0f,
                                    1, ParticleBlend.Alpha);
-                //ProjectileController.Instance.Spawn(entity =>
-                //{
-                //    ((Projectile)entity).Type = ProjectileType.GorgerAcid;
-                //    ((Projectile)entity).SourceRect = new Rectangle(0, 0, 1, 1);
-                //    entity.HitBox = new Rectangle(0, 0, 16, 16);
-                //    ((Projectile)entity).Life = 10000;
-                //    ((Projectile)entity).EnemyOwner = true;
-                //    ((Projectile)entity).Damage = 0.5f;
-                //    entity.Speed = new Vector2(Helper.RandomFloat(1f, 4f) * _faceDir, 0f);
-                //    entity.Position = Position + new Vector2(_faceDir * 10, 0);
-                //});
-            
+
+            if (Helper.Random.Next(200) == 0)
+            {
+                float start = Helper.RandomFloat(0f, 0.25f);
+                for (float a = start; a < start + MathHelper.TwoPi; a += 0.25f)
+                    ProjectileController.Instance.Spawn(entity =>
+                    {
+                        ((Projectile) entity).Type = ProjectileType.EyesPew;
+                        ((Projectile) entity).SourceRect = new Rectangle(44, 3, 4, 10);
+                        entity.HitBox = new Rectangle(0, 0, 6, 6);
+                        ((Projectile) entity).Life = 5000;
+                        ((Projectile) entity).EnemyOwner = true;
+                        ((Projectile) entity).Damage = 5f;
+                        entity.Speed = Helper.AngleToVector(a, 1f);
+                        entity.Position = Position + Helper.AngleToVector(a, 5f);
+                    });
+            }
+
+
 
             base.Update(gameTime, gameMap);
         }

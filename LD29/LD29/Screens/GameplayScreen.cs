@@ -44,6 +44,10 @@ namespace LD29.Screens
         private float _goFade = 0f;
         private float _goTimer = 0f;
 
+        private bool _firstWave = true;
+
+        private Texture2D text;
+
         public GameplayScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
@@ -60,6 +64,8 @@ namespace LD29.Screens
             camera = new Camera(ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight, map);
 
             //camera.Zoom = 0.5f;
+
+            text = content.Load<Texture2D>("titles");
 
             hud = new HUD(content.Load<Texture2D>("hud"));
 
@@ -169,16 +175,18 @@ namespace LD29.Screens
                 _endOfWave = true;
                 TimerController.Instance.Create("", () =>
                 {
+                    GameController.Wave++;
                     TweenController.Instance.Create("", TweenFuncs.QuadraticEaseIn, tweenin =>
                     {
                         _waveFade = tweenin.Value;
                         if (tweenin.State == TweenState.Finished)
                         {
-                            GameController.Wave++;
+                            
                             MapGeneration.Generate(map);
                             enemyController.SpawnInitial(GameController.Wave,map);
                             playerShip.Reset();
                             projectileController.Reset();
+                            _firstWave = false;
 
                             TweenController.Instance.Create("", TweenFuncs.Linear, eowtween =>
                             {
@@ -229,7 +237,7 @@ namespace LD29.Screens
 
             if (_gameOver && _goTimer >= 1f)
             {
-                if (input.IsNewKeyPress(Keys.X) || input.IsNewKeyPress(Keys.Space) || input.IsNewKeyPress(Keys.Escape))
+                if (input.IsNewKeyPress(Keys.X) || input.IsNewKeyPress(Keys.Space) || input.IsNewKeyPress(Keys.Enter) || input.IsNewKeyPress(Keys.Escape))
                     LoadingScreen.Load(ScreenManager, false, new MainMenuScreen());
             }
 
@@ -282,7 +290,20 @@ namespace LD29.Screens
             if (_endOfWave)
             {
                 sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
-                sb.Draw(ScreenManager.blankTexture, new Rectangle(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), null, Color.White * (GameController.Wave==0?1f:_waveFade));
+                sb.Draw(ScreenManager.blankTexture, new Rectangle(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), null, Color.White * (_firstWave?1f:_waveFade));
+                int numdigits = GameController.Wave.ToString().Length;
+                int wavepos = -38 - 10 - (numdigits*8);
+                sb.Draw(text, center + new Vector2(wavepos, -16), new Rectangle(68, 66, 77, 32), Color.White * _waveFade);
+                for(int i=0;i<numdigits;i++)
+                    sb.Draw(text, center + new Vector2(wavepos + 77+10+ (i * 16), -16), new Rectangle(Convert.ToInt32(GameController.Wave.ToString().Substring(i,1))*32, 116, 32, 32), Color.White * _waveFade);
+                sb.End();
+            }
+
+            if (_gameOver)
+            {
+                sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+                sb.Draw(ScreenManager.blankTexture, new Rectangle(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), null, Color.Black * 0.2f* _goFade);
+                sb.Draw(text, center + new Vector2(-47, -32), new Rectangle(196, 0, 94, 65), Color.White * _goFade);
                 sb.End();
             }
 

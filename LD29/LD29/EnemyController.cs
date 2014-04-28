@@ -76,6 +76,7 @@ namespace LD29.EntityPools
         public void SpawnInitial(int level, Map gameMap)
         {
             NumToSpawn = (int)Math.Pow(level + 1, 1.2);
+            if (NumToSpawn > 25) NumToSpawn = 25;
 
             for (int i = 0; i < NumToSpawn; i++)
             {
@@ -92,25 +93,27 @@ namespace LD29.EntityPools
 
             Vector2 spawnLoc = FindSpawnLoc(gameMap, underWater);
 
+            float life = 10f + (GameController.Wave*2);
+
             if (underWater)
             {
                 switch (enemyNum)
                 {
                     case 0:
                         Gorger gor = new Gorger(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
-                        gor.Life = 20f;
+                        gor.Life = life;
                         gor.Spawn(spawnLoc);
                         Enemies.Add(gor);
                         break;
                     case 1:
                         Lunger lun = new Lunger(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
-                        lun.Life = 10f;
+                        lun.Life = life;
                         lun.Spawn(spawnLoc);
                         Enemies.Add(lun);
                         break;
                     case 2:
                         Eyes eye = new Eyes(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
-                        eye.Life = 10f;
+                        eye.Life = life;
                         eye.Spawn(spawnLoc);
                         Enemies.Add(eye);
                         break;
@@ -123,20 +126,20 @@ namespace LD29.EntityPools
                     case 0:
                     
                         ManOWar mow = new ManOWar(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
-                        mow.Life = 20f;
+                        mow.Life = life;
                         mow.Spawn(spawnLoc);
                         Enemies.Add(mow);
                         break;
                     case 1:
                         spawnLoc = FindTileSpawnLoc(gameMap);
                         Turret tur = new Turret(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
-                        tur.Life = 15f;
+                        tur.Life = life;
                         tur.Spawn(spawnLoc);
                         Enemies.Add(tur);
                         break;
                     case 2:
                         Flyer fly = new Flyer(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
-                        fly.Life = 20f;
+                        fly.Life = life;
                         fly.Spawn(spawnLoc);
                         Enemies.Add(fly);
                         break;

@@ -16,7 +16,8 @@ namespace LD29.Entities
         Bomb,
         Seeker,
         GorgerAcid,
-        ManOWarLaser
+        ManOWarLaser,
+        EyesPew
     }
 
     class Projectile : Entity
@@ -130,6 +131,9 @@ namespace LD29.Entities
                                 0.25f, Helper.RandomFloat(0f, MathHelper.Pi), Helper.RandomFloat(-0.01f, 0.01f),
                                 1, ParticleBlend.Additive);
                     }
+                    break;
+                case ProjectileType.EyesPew:
+                    if (Position.Y < 260) Active = false;
                     break;
             }
 

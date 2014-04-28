@@ -52,7 +52,7 @@ namespace GameStateManagement
 
         public override void LoadContent()
         {
-            //ScreenManager.Game.Content.Load<Texture2D>("text");
+            texLogo = ScreenManager.Game.Content.Load<Texture2D>("titles");
             base.LoadContent();
         }
 
@@ -67,6 +67,7 @@ namespace GameStateManagement
         {
             ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
             ScreenManager.SpriteBatch.Draw(ScreenManager.blankTexture, new Rectangle(0,0,ScreenManager.Game.RenderWidth,ScreenManager.Game.RenderHeight), null, new Color(200,0,0));
+            ScreenManager.SpriteBatch.Draw(texLogo, new Vector2(ScreenManager.Game.RenderWidth / 2, (ScreenManager.Game.RenderHeight/2) -20), new Rectangle(0,0,195,65), Color.White, 0f, new Vector2(98,32), 1f, SpriteEffects.None, 0);
             ScreenManager.SpriteBatch.End();
 
             ScreenManager.FadeBackBufferToBlack(1f-TransitionAlpha);
