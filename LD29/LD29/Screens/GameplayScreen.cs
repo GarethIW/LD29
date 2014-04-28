@@ -37,6 +37,13 @@ namespace LD29.Screens
 
         private HUD hud;
 
+        private float _waveFade = 1f;
+        private bool _endOfWave = false;
+        private float _eowTimer = 0f;
+        private bool _gameOver = false;
+        private float _goFade = 0f;
+        private float _goTimer = 0f;
+
         public GameplayScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
@@ -78,7 +85,9 @@ namespace LD29.Screens
             enemyController.BoxCollidesWith.Add(playerShip);
             enemyController.BoxCollidesWith.Add(projectileController);
 
-            enemyController.SpawnInitial(1, map);
+            GameController.Reset();
+
+            //enemyController.SpawnInitial(GameController.Wave, map);
 
             base.LoadContent();
         }
@@ -138,7 +147,7 @@ namespace LD29.Screens
             }
 
             particleController.Update(gameTime, map);
-            enemyController.Update(gameTime, map);
+            if(!_endOfWave) enemyController.Update(gameTime, map);
             projectileController.Update(gameTime, map);
             powerupController.Update(gameTime, map);
 
@@ -155,12 +164,75 @@ namespace LD29.Screens
 
             hud.Update(gameTime, new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight));
 
+            if (enemyController.Enemies.Count == 0 && enemyController.NumToSpawn == 0 && !_endOfWave)
+            {
+                _endOfWave = true;
+                TimerController.Instance.Create("", () =>
+                {
+                    TweenController.Instance.Create("", TweenFuncs.QuadraticEaseIn, tweenin =>
+                    {
+                        _waveFade = tweenin.Value;
+                        if (tweenin.State == TweenState.Finished)
+                        {
+                            GameController.Wave++;
+                            MapGeneration.Generate(map);
+                            enemyController.SpawnInitial(GameController.Wave,map);
+                            playerShip.Reset();
+                            projectileController.Reset();
+
+                            TweenController.Instance.Create("", TweenFuncs.Linear, eowtween =>
+                            {
+                                playerShip.Life += 0.2f;
+                                _eowTimer = eowtween.Value;
+                                if(eowtween.State== TweenState.Finished)
+                                    TweenController.Instance.Create("", TweenFuncs.QuadraticEaseIn, tweenout =>
+                                    {
+                                        _waveFade = 1f - tweenout.Value;
+                                        if (tweenout.State == TweenState.Finished)
+                                        {
+                                            _endOfWave = false;
+                                        
+                                        }
+                                    }, 500, false, false);
+                            }, 2000, false, false);
+                        }
+                    }, 500, false, false);
+                }, GameController.Wave>0?2000:0, false);
+            }
+
+            if (playerShip.Life <= 0f && !_gameOver)
+            {
+                _gameOver = true;
+                TimerController.Instance.Create("", () =>
+                {
+                    TweenController.Instance.Create("", TweenFuncs.QuadraticEaseIn, tweenin =>
+                    {
+                        _goFade = tweenin.Value;
+                        if (tweenin.State == TweenState.Finished)
+                        {
+                            TweenController.Instance.Create("", TweenFuncs.Linear, eowtween =>
+                            {
+                                _goTimer = eowtween.Value;
+                            }, 2000, false, false);
+                        }
+                    }, 1000, false, false);
+                }, 2000, false);
+            }
+
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
         }
 
         public override void HandleInput(InputState input)
         {
-            if(input.IsNewKeyPress(Keys.Back)) MapGeneration.Generate(map);
+            //if(input.IsNewKeyPress(Keys.Back)) MapGeneration.Generate(map);
+            if (_endOfWave && _waveFade>=1f) return;
+
+            if (_gameOver && _goTimer >= 1f)
+            {
+                if (input.IsNewKeyPress(Keys.X) || input.IsNewKeyPress(Keys.Space) || input.IsNewKeyPress(Keys.Escape))
+                    LoadingScreen.Load(ScreenManager, false, new MainMenuScreen());
+            }
+
             playerShip.HandleInput(input);
             base.HandleInput(input);
         }
@@ -207,7 +279,14 @@ namespace LD29.Screens
 
             waterParallax.Draw(sb, true, camera.Position.Y);
 
-            hud.Draw(sb, new Viewport(0,0,ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), camera);
+            if (_endOfWave)
+            {
+                sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+                sb.Draw(ScreenManager.blankTexture, new Rectangle(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), null, Color.White * (GameController.Wave==0?1f:_waveFade));
+                sb.End();
+            }
+
+            hud.Draw(sb, new Viewport(0,0,ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), camera, !_endOfWave);
 
             ScreenManager.FadeBackBufferToBlack(1f - TransitionAlpha);
 

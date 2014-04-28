@@ -158,7 +158,7 @@ namespace GameStateManagement
 
             // Modify the alpha to fade text out during transitions.
             if (enabled)
-                color = Color.Lerp(Color.White, new Color(10,68,123),selectionFade) * screen.TransitionAlpha;//Math.Min(screen.TransitionAlpha, Convert.ToByte(selectionFade)));
+                color = Color.Lerp(new Color(100,0,0), Color.White,selectionFade) * screen.TransitionAlpha;//Math.Min(screen.TransitionAlpha, Convert.ToByte(selectionFade)));
             else
                 color = new Color(color.R, color.G, color.B) * screen.TransitionAlpha * 0.3f;
 
@@ -187,6 +187,10 @@ namespace GameStateManagement
             return screen.ScreenManager.Font.LineSpacing;
         }
 
+        public virtual int GetWidth(MenuScreen screen)
+        {
+            return (int)screen.ScreenManager.Font.MeasureString(text).X;
+        }
 
         #endregion
 

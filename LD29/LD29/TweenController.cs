@@ -20,7 +20,7 @@ namespace TimersAndTweens
 
         public void Update(GameTime gameTime)
         {
-            foreach(Tween t in Tweens) t.Update(gameTime);
+            for(int i=0;i<Tweens.Count;i++) Tweens[i].Update(gameTime);
 
             Tweens.RemoveAll(t => t.State == TweenState.Finished);
         }

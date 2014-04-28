@@ -103,13 +103,18 @@ namespace LD29.Entities
                     1, ParticleBlend.Alpha);
             }
 
-            for (int i = 0; i < 3; i++)
+            if (Ship.Instance.PowerUpLevel < 4)
             {
-                PowerupController.Instance.Spawn(pup =>
+                int amount = 3 - Ship.Instance.PowerUpLevel;
+                if (amount <= 0) amount = 1;
+                for (int i = 0; i < amount; i++)
                 {
-                    pup.Position = Position;
-                    pup.Speed = new Vector2(Helper.RandomFloat(-0.5f, 0.5f), Helper.RandomFloat(-0.5f, 0.5f));
-                });
+                    PowerupController.Instance.Spawn(pup =>
+                    {
+                        pup.Position = Position;
+                        pup.Speed = new Vector2(Helper.RandomFloat(-0.5f, 0.5f), Helper.RandomFloat(-0.5f, 0.5f));
+                    });
+                }
             }
         }
 

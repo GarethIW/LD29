@@ -51,7 +51,7 @@ namespace LD29
             prevHealth = (int)Ship.Instance.Life;
         }
 
-        public void Draw(SpriteBatch sb, Viewport vp, Camera gameCamera)
+        public void Draw(SpriteBatch sb, Viewport vp, Camera gameCamera, bool radar)
         {
             sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
             sb.Draw(_sheet, new Vector2(vp.Bounds.Center.X - 100, hbPos), new Rectangle(0, 0, 201, 4), Color.White);
@@ -67,13 +67,18 @@ namespace LD29
             foreach (var hbs in hbSegments)
                 sb.Draw(_sheet, hbs.Position, new Rectangle(0, 6, hbs.Amount, 2), Color.White * hbs.Alpha);
 
-            foreach (Enemy e in EnemyController.Instance.Enemies)
+            if (radar)
             {
-                Vector2 epos = e.Position - (gameCamera.Position - new Vector2(vp.Width / 2, vp.Height / 2));
-                epos = Vector2.Clamp(epos, Vector2.One, new Vector2(vp.Bounds.Right-1, vp.Bounds.Bottom-1));
-                if (epos.X > 1 && epos.X < vp.Bounds.Right-1 && epos.Y > 1 && epos.Y < vp.Bounds.Bottom-1) continue;
+                foreach (Enemy e in EnemyController.Instance.Enemies)
+                {
+                    Vector2 epos = e.Position - (gameCamera.Position - new Vector2(vp.Width/2, vp.Height/2));
+                    epos = Vector2.Clamp(epos, Vector2.One, new Vector2(vp.Bounds.Right - 2, vp.Bounds.Bottom - 2));
+                    if (epos.X > 1 && epos.X < vp.Bounds.Right - 2 && epos.Y > 1 && epos.Y < vp.Bounds.Bottom - 2)
+                        continue;
 
-                sb.Draw(_sheet, epos, new Rectangle(17,11,3,3), Color.White, 0f, new Vector2(1,1), 1f, SpriteEffects.None, 0);
+                    sb.Draw(_sheet, epos, new Rectangle(17, 11, 3, 3), Color.White, 0f, new Vector2(1, 1), 1f,
+                        SpriteEffects.None, 0);
+                }
             }
 
             sb.End();

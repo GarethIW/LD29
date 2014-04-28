@@ -1,4 +1,5 @@
 ﻿using GameStateManagement;
+using LD29.EntityPools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -13,6 +14,7 @@ namespace LD29.Entities
     {
         Forward1,
         Bomb,
+        Seeker,
         GorgerAcid,
         ManOWarLaser
     }
@@ -25,6 +27,7 @@ namespace LD29.Entities
         public double Life = 0;
         public bool EnemyOwner = false;
         public float Damage = 1f;
+        public Vector2 Target;
 
         public Projectile(Texture2D spritesheet, Rectangle hitbox, List<Vector2> hitPolyPoints, Vector2 hitboxoffset) 
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
@@ -37,13 +40,17 @@ namespace LD29.Entities
             Rotation = Helper.V2ToAngle(Speed);
 
             Life -= gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (Life <= 0) Active = false;
+            if (Life <= 0)
+            {
+                Active = false;
+                if(Type== ProjectileType.Bomb || Type== ProjectileType.Seeker) Explode();
+            }
 
             bool? coll = gameMap.CheckCollision(Position);
             if (coll.HasValue && coll.Value)
             {
                 Active=false;
-                if (Type == ProjectileType.Bomb) Explode();
+                if (Type == ProjectileType.Bomb || Type == ProjectileType.Seeker) Explode();
                 else RaiseDust();
             }
 
@@ -69,6 +76,27 @@ namespace LD29.Entities
                                    0, Helper.Random.NextDouble() * 1000, Helper.Random.NextDouble() * 1000,
                                    false, false,
                                    particleRect,
+                                   new Color(new Vector3(1f) * (0.25f + Helper.RandomFloat(0.5f))),
+                                   //(Position.Y > 260) ? ParticleFunctions.FadeInOut : ParticleFunctions.Smoke,
+                                   ParticleFunctions.Smoke,
+                                   0.25f, 0f, 0f,
+                                   1, Position.Y > 260 ? ParticleBlend.Alpha :ParticleBlend.Additive);
+                    break;
+                case ProjectileType.Seeker:
+                    Enemy e = EnemyController.Instance.Enemies.OrderBy(en => Vector2.Distance(en.Position, Position)).FirstOrDefault();
+                    if (e != null)
+                        Target = e.Position;
+                    Vector2 dir = Target - Position;
+                    dir.Normalize();
+                    Speed += dir*0.5f;
+                    Speed = Vector2.Lerp(Speed, Vector2.Zero, 0.1f);
+
+                    Rectangle pRect = Position.Y > 260 ? new Rectangle(128, 0, 16, 16) : new Rectangle(0, 0, 8, 8);
+                    ParticleController.Instance.Add(Position,
+                                   new Vector2(-0.05f + Helper.RandomFloat(0.1f), -0.05f + Helper.RandomFloat(0.1f)),
+                                   0, Helper.Random.NextDouble() * 1000, Helper.Random.NextDouble() * 1000,
+                                   false, false,
+                                   pRect,
                                    new Color(new Vector3(1f) * (0.25f + Helper.RandomFloat(0.5f))),
                                    //(Position.Y > 260) ? ParticleFunctions.FadeInOut : ParticleFunctions.Smoke,
                                    ParticleFunctions.Smoke,
@@ -164,7 +192,7 @@ namespace LD29.Entities
              if(Type!= ProjectileType.GorgerAcid) Active = false;
             //}
 
-            if (Type == ProjectileType.Bomb)
+            if (Type == ProjectileType.Bomb || Type== ProjectileType.Seeker)
             {
                 //Active = false;
                 Explode();

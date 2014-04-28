@@ -11,7 +11,7 @@ namespace LD29
 
         public static void Reset()
         {
-            Wave = 1;
+            Wave = 0;
         }
     }
 }

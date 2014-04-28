@@ -21,7 +21,7 @@ namespace LD29.EntityPools
 
         private double _spawnTime = 0;
         private double _spawnInterval = 5000;
-        private int numToSpawn = 0;
+        public int NumToSpawn = 0;
 
         private Texture2D _spriteSheet;
 
@@ -38,7 +38,7 @@ namespace LD29.EntityPools
 
         public void Update(GameTime gameTime, Map gameMap)
         {
-            if (numToSpawn > 0)
+            if (NumToSpawn > 0)
             {
                 _spawnTime += gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (_spawnTime >= _spawnInterval)
@@ -46,14 +46,14 @@ namespace LD29.EntityPools
                     _spawnTime = 0;
                  
                     SpawnRandom(gameMap);
-                    numToSpawn--;
+                    NumToSpawn--;
                 }
             }
 
-            if (Enemies.Count == 0 && numToSpawn > 0)
+            if (Enemies.Count == 0 && NumToSpawn > 0)
             {
                 SpawnRandom(gameMap);
-                numToSpawn--;
+                NumToSpawn--;
             }
 
             foreach (Enemy e in Enemies.Where(ent => ent.Active))
@@ -75,14 +75,14 @@ namespace LD29.EntityPools
 
         public void SpawnInitial(int level, Map gameMap)
         {
-            numToSpawn = (int)Math.Pow(level + 5, 1.2);
+            NumToSpawn = (int)Math.Pow(level + 1, 1.2);
 
-            for (int i = 0; i < numToSpawn; i++)
+            for (int i = 0; i < NumToSpawn; i++)
             {
                 SpawnRandom(gameMap);
             }
 
-            numToSpawn = (int)Math.Pow(level + 10, 1.2);
+            NumToSpawn = (int)Math.Pow(level + 1, 1.2);
         }
 
         public void SpawnRandom(Map gameMap)
@@ -103,11 +103,16 @@ namespace LD29.EntityPools
                         Enemies.Add(gor);
                         break;
                     case 1:
-                    case 2:
                         Lunger lun = new Lunger(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
                         lun.Life = 10f;
                         lun.Spawn(spawnLoc);
                         Enemies.Add(lun);
+                        break;
+                    case 2:
+                        Eyes eye = new Eyes(_spriteSheet, new Rectangle(0, 0, 10, 10), null, Vector2.Zero);
+                        eye.Life = 10f;
+                        eye.Spawn(spawnLoc);
+                        Enemies.Add(eye);
                         break;
                 }
             }

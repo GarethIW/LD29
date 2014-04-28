@@ -206,7 +206,7 @@ namespace GameStateManagement
             float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
 
             // start at Y = 175; each X value is generated per entry
-            Vector2 position = new Vector2(0f, (ScreenManager.Game.GraphicsDevice.Viewport.Height/2) + 12f);
+            Vector2 position = new Vector2(0f, (ScreenManager.Game.RenderHeight/2) + 25f);
 
             // update each menu entry's location in turn
             for (int i = 0; i < menuEntries.Count; i++)
@@ -214,8 +214,9 @@ namespace GameStateManagement
                 MenuEntry menuEntry = menuEntries[i];
                 
                 // each entry is to be centered horizontally
-                position.X = -(400f - ((i*40f))) + (420f * TransitionAlpha);
-                if (position.X > 20f) position.X = 20f;
+                position.X = (ScreenManager.Game.RenderWidth/2) - (menuEntries[i].GetWidth(this)/2); //-(400f - ((i*40f))) + (420f * TransitionAlpha);
+                position.Y += menuEntry.GetHeight(this) + (menuEntryPadding);
+                //if (position.X > 20f) position.X = 20f;
                 //menuEntry.Zoom = 1f;
 
                 //if (ScreenState == ScreenState.TransitionOn)
@@ -227,7 +228,7 @@ namespace GameStateManagement
                 menuEntry.Position = position;
 
                 // move down for the next entry the size of this entry plus our padding
-                position.Y += menuEntry.GetHeight(this) + (menuEntryPadding);
+                
             }
         }
 

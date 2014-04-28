@@ -88,6 +88,11 @@ namespace LD29.EntityPools
                 e.Position.X += off;
         }
 
+        public void Reset()
+        {
+            Entities.ForEach(ent=>ent.Active=false);
+        }
+
         private void CheckCollisions(Entity e)
         {
             foreach (object o in BoxCollidesWith)

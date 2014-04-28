@@ -66,8 +66,8 @@ namespace LD29
 
             // Add the first screen here, usually either MainMenuScreen or GameplayScreen if you just want to go straight to gameplay
             //screenManager.AddScreen(new ExampleGameplayScreen());
-            screenManager.AddScreen(new GameplayScreen());
-            //screenManager.AddScreen(new MainMenuScreen());
+            //screenManager.AddScreen(new GameplayScreen());
+            screenManager.AddScreen(new MainMenuScreen());
         }
 
         protected override void Update(GameTime gameTime)

@@ -32,9 +32,11 @@ namespace LD29.Entities
 
         private double projectileCoolDown1 = 50;
         private double projectileCoolDown2 = 1000;
+        private double projectileCoolDown3 = 1500;
 
         private double projectileTime1;
         private double projectileTime2;
+        private double projectileTime3;
 
         public int PowerUpMeter = 0;
 
@@ -73,6 +75,7 @@ namespace LD29.Entities
 
             projectileTime1 -= gameTime.ElapsedGameTime.TotalMilliseconds;
             projectileTime2 -= gameTime.ElapsedGameTime.TotalMilliseconds;
+            projectileTime3 -= gameTime.ElapsedGameTime.TotalMilliseconds;
 
             Position.Y = MathHelper.Clamp(Position.Y, 16, (gameMap.Height*gameMap.TileHeight) - 16);
 
@@ -95,8 +98,11 @@ namespace LD29.Entities
             if (PowerUpMeter >= 20 && PowerUpLevel<4)
             {
                 PowerUpLevel++;
-                PowerUpMeter = PowerUpMeter-20;
+                if(PowerUpLevel<4)
+                    PowerUpMeter = PowerUpMeter-20;
             }
+
+            Life = MathHelper.Clamp(Life, 0f, 100f);
 
             base.Update(gameTime, gameMap);
         }
@@ -285,8 +291,6 @@ namespace LD29.Entities
                         });
                     }
 
-                    
-
                 }
 
                 if (projectileTime2 <= 0)
@@ -302,9 +306,30 @@ namespace LD29.Entities
                             ((Projectile) entity).Life = 5000;
                             ((Projectile) entity).Scale = 0.5f;
                             ((Projectile)entity).EnemyOwner = false;
-                            ((Projectile)entity).Damage = 10f;
+                            ((Projectile)entity).Damage = 20f;
                             entity.Speed = new Vector2(1f*faceDir, 0f);
                             entity.Position = Position + new Vector2(0, 5);
+                        });
+                    }
+                }
+
+                if (projectileTime3 <= 0)
+                {
+                    projectileTime3 = projectileCoolDown3;
+
+                    if (PowerUpLevel >= 4)
+                    {
+                        ProjectileController.Instance.Spawn(entity =>
+                        {
+                            ((Projectile)entity).Type = ProjectileType.Seeker;
+                            ((Projectile)entity).SourceRect = new Rectangle(1, 18, 8, 4);
+                            ((Projectile)entity).Life = 3000;
+                            ((Projectile)entity).Scale = 1f;
+                            ((Projectile)entity).EnemyOwner = false;
+                            ((Projectile)entity).Damage = 5f;
+                            ((Projectile)entity).Target = Position + new Vector2(faceDir * 300, 0); ;
+                            entity.Speed = new Vector2(0f, -0.5f);
+                            entity.Position = Position + new Vector2(0,0);
                         });
                     }
                 }
@@ -340,6 +365,14 @@ namespace LD29.Entities
         {
 
             base.OnPolyCollision(collided);
+        }
+
+        public override void Reset()
+        {
+            Position = new Vector2(64, 190);
+            underWater = false;
+            Speed = Vector2.Zero;
+            base.Reset();
         }
 
         public override void Draw(SpriteBatch sb, Map gameMap)
