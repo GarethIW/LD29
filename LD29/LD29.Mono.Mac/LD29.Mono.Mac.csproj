@@ -12,6 +12,7 @@
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <AssemblyName>LD29.Mono.Mac</AssemblyName>
     <StartupObject>LD29.Mono.Mac.Program</StartupObject>
+    <SuppressXamMacUpsell>True</SuppressXamMacUpsell>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -79,13 +80,189 @@
       <HintPath>..\..\dependencies\MonoGame\MacOS\MonoMac.dll</HintPath>
     </Reference>
     <Reference Include="MonoGame.Framework">
-      <HintPath>..\..\..\VoxelNetworkGame\dependencies\MonoGame\MacOS\MonoGame.Framework.dll</HintPath>
+      <HintPath>..\..\dependencies\MonoGame\MacOS\MonoGame.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Game1.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\LD29\AudioController.cs">
+      <Link>AudioController.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\EnemyController.cs">
+      <Link>EnemyController.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Game.cs">
+      <Link>Game.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\GameController.cs">
+      <Link>GameController.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\HUD.cs">
+      <Link>HUD.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Helper.cs">
+      <Link>Helper.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\MapGeneration.cs">
+      <Link>MapGeneration.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Parallax.cs">
+      <Link>Parallax.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\ParticleController.cs">
+      <Link>ParticleController.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\PowerupController.cs">
+      <Link>PowerupController.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\ProjectileController.cs">
+      <Link>ProjectileController.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\SpriteAnim.cs">
+      <Link>SpriteAnim.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Timer.cs">
+      <Link>Timer.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\TimerController.cs">
+      <Link>TimerController.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Tween.cs">
+      <Link>Tween.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\TweenController.cs">
+      <Link>TweenController.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Entities\Enemy.cs">
+      <Link>Entities\Enemy.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Entities\Entity.cs">
+      <Link>Entities\Entity.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Entities\EntityPool.cs">
+      <Link>Entities\EntityPool.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Entities\Powerup.cs">
+      <Link>Entities\Powerup.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Entities\Projectile.cs">
+      <Link>Entities\Projectile.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Entities\Ship.cs">
+      <Link>Entities\Ship.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Entities\Enemies\Boss.cs">
+      <Link>Entities\Enemies\Boss.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Entities\Enemies\Eyes.cs">
+      <Link>Entities\Enemies\Eyes.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Entities\Enemies\Flyer.cs">
+      <Link>Entities\Enemies\Flyer.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Entities\Enemies\Gorger.cs">
+      <Link>Entities\Enemies\Gorger.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Entities\Enemies\Lunger.cs">
+      <Link>Entities\Enemies\Lunger.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Entities\Enemies\ManOWar.cs">
+      <Link>Entities\Enemies\ManOWar.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Entities\Enemies\Turret.cs">
+      <Link>Entities\Enemies\Turret.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\ScreenManager\GameScreen.cs">
+      <Link>ScreenManager\GameScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\ScreenManager\InputState.cs">
+      <Link>ScreenManager\InputState.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\ScreenManager\ScreenManager.cs">
+      <Link>ScreenManager\ScreenManager.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Screens\GameplayScreen.cs">
+      <Link>Screens\GameplayScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Screens\LoadingScreen.cs">
+      <Link>Screens\LoadingScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Screens\MainMenuScreen.cs">
+      <Link>Screens\MainMenuScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Screens\MenuEntry.cs">
+      <Link>Screens\MenuEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Screens\MenuScreen.cs">
+      <Link>Screens\MenuScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Screens\MessageBoxScreen.cs">
+      <Link>Screens\MessageBoxScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Screens\OptionsMenuScreen.cs">
+      <Link>Screens\OptionsMenuScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Screens\PauseMenuScreen.cs">
+      <Link>Screens\PauseMenuScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\Animation.cs">
+      <Link>Spine\Animation.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\Atlas.cs">
+      <Link>Spine\Atlas.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\BaseAtlas.cs">
+      <Link>Spine\BaseAtlas.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\Bone.cs">
+      <Link>Spine\Bone.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\BoneData.cs">
+      <Link>Spine\BoneData.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\Json.cs">
+      <Link>Spine\Json.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\Skeleton.cs">
+      <Link>Spine\Skeleton.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\SkeletonData.cs">
+      <Link>Spine\SkeletonData.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\SkeletonJson.cs">
+      <Link>Spine\SkeletonJson.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\SkeletonRenderer.cs">
+      <Link>Spine\SkeletonRenderer.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\Skin.cs">
+      <Link>Spine\Skin.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\Slot.cs">
+      <Link>Spine\Slot.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\SlotData.cs">
+      <Link>Spine\SlotData.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\SpriteBatcher.cs">
+      <Link>Spine\SpriteBatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\Attachments\AtlasAttachmentLoader.cs">
+      <Link>Spine\Attachments\AtlasAttachmentLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\Attachments\Attachment.cs">
+      <Link>Spine\Attachments\Attachment.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\Attachments\AttachmentLoader.cs">
+      <Link>Spine\Attachments\AttachmentLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\Attachments\AttachmentType.cs">
+      <Link>Spine\Attachments\AttachmentType.cs</Link>
+    </Compile>
+    <Compile Include="..\LD29\Spine\Attachments\RegionAttachment.cs">
+      <Link>Spine\Attachments\RegionAttachment.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -98,14 +275,112 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Content\logo.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\TiledLib.Mono.Mac\TiledLib.Mono.Mac.csproj">
       <Project>{FFF12ED3-6D6C-451F-8229-0112F32ECAD0}</Project>
       <Name>TiledLib.Mono.Mac</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\EarthTiles.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\abovewater-parallax.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\blank.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\boss.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\clouds.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\enemies.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\font.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\fontsmall.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\hud.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\map.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\particles.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\playership.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\powerup.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\projectiles.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\seabed-rocks.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\seabed-rocks2.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sky-bg.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\titles.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\underwater-bg.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sfx\boost.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sfx\explosion.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sfx\eyespew.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sfx\gorgershoot.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sfx\gun_winddown.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sfx\lancer.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sfx\laser.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sfx\minigun.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sfx\pickup.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sfx\powerup.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sfx\projectileexplosion.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sfx\seeker.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\sfx\shiphit.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

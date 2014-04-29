@@ -14,7 +14,7 @@ namespace LD29.Mono.Mac
 		static void Main (string[] args)
 		{
 			NSApplication.Init ();
-			
+
 			using (var p = new NSAutoreleasePool ()) {
 				NSApplication.SharedApplication.Delegate = new AppDelegate ();
 				NSApplication.Main (args);
@@ -26,17 +26,17 @@ namespace LD29.Mono.Mac
 
 	class AppDelegate : NSApplicationDelegate
 	{
-		Game1 game;
+		LD29.Game game;
 
 		public override void FinishedLaunching (MonoMac.Foundation.NSObject notification)
 		{
-			game = new Game1 ();
+			game = new LD29.Game ();
 			game.Run ();
 		}
 
 		public override bool ApplicationShouldTerminateAfterLastWindowClosed (NSApplication sender)
 		{
-			return true;
+			return false;
 		}
 	}
 }

@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FFF12ED3-6D6C-451F-8229-0112F32ECAD0}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>TiledLib.Mono.Mac</RootNamespace>
-    <AssemblyName>TiledLib.Mono.Mac</AssemblyName>
+    <RootNamespace>TiledLib</RootNamespace>
+    <AssemblyName>TiledLib</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

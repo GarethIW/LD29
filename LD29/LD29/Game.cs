@@ -134,7 +134,8 @@ namespace LD29
 
         void ChangeDisplayScale()
         {
-            graphics.PreferredBackBufferWidth = RenderWidth * DisplayScale;
+
+			            graphics.PreferredBackBufferWidth = RenderWidth * DisplayScale;
             graphics.PreferredBackBufferHeight = RenderHeight * DisplayScale;
             graphics.ApplyChanges();
         }
