@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FFF12ED3-6D6C-451F-8229-0112F32ECAD0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>TiledLib.Mono.Mac</RootNamespace>
+    <AssemblyName>TiledLib.Mono.Mac</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="MonoGame.Framework">
+      <HintPath>..\..\dependencies\MonoGame\MacOS\MonoGame.Framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\TiledLib\Camera.cs">
+      <Link>Camera.cs</Link>
+    </Compile>
+    <Compile Include="..\TiledLib\Helper.cs">
+      <Link>Helper.cs</Link>
+    </Compile>
+    <Compile Include="..\TiledLib\Layer.cs">
+      <Link>Layer.cs</Link>
+    </Compile>
+    <Compile Include="..\TiledLib\Map.cs">
+      <Link>Map.cs</Link>
+    </Compile>
+    <Compile Include="..\TiledLib\MapObject.cs">
+      <Link>MapObject.cs</Link>
+    </Compile>
+    <Compile Include="..\TiledLib\MapObjectLayer.cs">
+      <Link>MapObjectLayer.cs</Link>
+    </Compile>
+    <Compile Include="..\TiledLib\MapReader.cs">
+      <Link>MapReader.cs</Link>
+    </Compile>
+    <Compile Include="..\TiledLib\Orientation.cs">
+      <Link>Orientation.cs</Link>
+    </Compile>
+    <Compile Include="..\TiledLib\PropertyCollection.cs">
+      <Link>PropertyCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\TiledLib\Tile.cs">
+      <Link>Tile.cs</Link>
+    </Compile>
+    <Compile Include="..\TiledLib\TileLayer.cs">
+      <Link>TileLayer.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="..\TiledLib\TiledLib.csproj">
+      <Link>TiledLib.csproj</Link>
+    </None>
+  </ItemGroup>
+</Project>

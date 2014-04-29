@@ -31,10 +31,11 @@ namespace LD29.Entities.Enemies
             _hitAnim = new SpriteAnim(spritesheet, 10, 2, 16, 16, 200, new Vector2(8, 8), true, false, _idleAnim.CurrentFrame);
             _hitAnim.Play();
 
-            gunLoop = new SoundEffectInstance(AudioController._effects["minigun"]);
-            gunLoop.IsLooped = true;
-            gunLoop.Play();
-            gunLoop.Pause();
+			gunLoop = AudioController._effects ["minigun"].CreateInstance();
+			gunLoop.IsLooped = true;
+			gunLoop.Volume = 0.3f;
+			gunLoop.Play();
+			gunLoop.Pause();
 
             Speed.X = Helper.Random.Next(2) == 0 ? -0.1f : 0.1f;
         }

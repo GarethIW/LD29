@@ -56,11 +56,11 @@ namespace LD29.Entities
         {
             Instance = this;
 
-            engineLoop = new SoundEffectInstance(AudioController._effects["boost"]);
+			engineLoop = AudioController._effects ["boost"].CreateInstance();
             engineLoop.IsLooped = true;
             engineLoop.Play();
             engineLoop.Pause();
-            gunLoop = new SoundEffectInstance(AudioController._effects["minigun"]);
+			gunLoop = AudioController._effects ["minigun"].CreateInstance();
             gunLoop.IsLooped = true;
             gunLoop.Volume = 0.3f;
             gunLoop.Play();

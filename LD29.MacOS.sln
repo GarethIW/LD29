@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiledLib.Mono.Mac", "LD29\TiledLib.Mono.Mac\TiledLib.Mono.Mac.csproj", "{FFF12ED3-6D6C-451F-8229-0112F32ECAD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LD29.Mono.Mac", "LD29\LD29.Mono.Mac\LD29.Mono.Mac.csproj", "{4F9A4A4D-8766-4271-97B7-A091E17896C5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+		AppStore|Any CPU = AppStore|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4F9A4A4D-8766-4271-97B7-A091E17896C5}.AppStore|Any CPU.ActiveCfg = AppStore|Any CPU
+		{4F9A4A4D-8766-4271-97B7-A091E17896C5}.AppStore|Any CPU.Build.0 = AppStore|Any CPU
+		{4F9A4A4D-8766-4271-97B7-A091E17896C5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4F9A4A4D-8766-4271-97B7-A091E17896C5}.Debug|x86.Build.0 = Debug|Any CPU
+		{4F9A4A4D-8766-4271-97B7-A091E17896C5}.Release|x86.ActiveCfg = Release|Any CPU
+		{4F9A4A4D-8766-4271-97B7-A091E17896C5}.Release|x86.Build.0 = Release|Any CPU
+		{FFF12ED3-6D6C-451F-8229-0112F32ECAD0}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFF12ED3-6D6C-451F-8229-0112F32ECAD0}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{FFF12ED3-6D6C-451F-8229-0112F32ECAD0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FFF12ED3-6D6C-451F-8229-0112F32ECAD0}.Debug|x86.Build.0 = Debug|Any CPU
+		{FFF12ED3-6D6C-451F-8229-0112F32ECAD0}.Release|x86.ActiveCfg = Release|Any CPU
+		{FFF12ED3-6D6C-451F-8229-0112F32ECAD0}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = LD29\LD29.Mono.Mac\LD29.Mono.Mac.csproj
+	EndGlobalSection
+EndGlobal

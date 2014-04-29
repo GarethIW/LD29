@@ -1,0 +1,14 @@
+﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="29/04/2014 15:01:32">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="LD29/LD29.Mono.Mac/Main.cs">
+    <Files>
+      <File FileName="../MonoGameHead/MonoGame.Framework/MacOS/GameWindow.cs" Line="104" Column="1" />
+      <File FileName="LD29/LD29.Mono.Mac/Game1.cs" Line="12" Column="17" />
+      <File FileName="LD29/LD29.Mono.Mac/Main.cs" Line="23" Column="4" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

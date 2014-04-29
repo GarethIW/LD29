@@ -29,10 +29,11 @@ namespace LD29.Entities.Enemies
 
             _faceDir = Helper.Random.Next(2) == 0 ? -1 : 1;
 
-            gunLoop = new SoundEffectInstance(AudioController._effects["minigun"]);
-            gunLoop.IsLooped = true;
-            gunLoop.Play();
-            gunLoop.Pause();
+			gunLoop = AudioController._effects ["minigun"].CreateInstance();
+			gunLoop.IsLooped = true;
+			gunLoop.Volume = 0.3f;
+			gunLoop.Play();
+			gunLoop.Pause();
         }
 
         public override void Update(GameTime gameTime, Map gameMap)
