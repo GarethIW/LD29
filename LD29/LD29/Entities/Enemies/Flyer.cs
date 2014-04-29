@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using TiledLib;
 
@@ -16,6 +17,8 @@ namespace LD29.Entities.Enemies
         private double projectileCoolDown = 50;
         private double projectileTime;
 
+        private SoundEffectInstance gunLoop;
+
         public Flyer(Texture2D spritesheet, Rectangle hitbox, List<Vector2> hitPolyPoints, Vector2 hitboxoffset)
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
         {
@@ -25,6 +28,11 @@ namespace LD29.Entities.Enemies
             _hitAnim.Pause();
 
             _faceDir = Helper.Random.Next(2) == 0 ? -1 : 1;
+
+            gunLoop = new SoundEffectInstance(AudioController._effects["minigun"]);
+            gunLoop.IsLooped = true;
+            gunLoop.Play();
+            gunLoop.Pause();
         }
 
         public override void Update(GameTime gameTime, Map gameMap)
@@ -100,6 +108,13 @@ namespace LD29.Entities.Enemies
             projectileTime -= gameTime.ElapsedGameTime.TotalMilliseconds;
             if (_firing)
             {
+                Vector2 screenPos = Vector2.Transform(Position, Camera.Instance.CameraMatrix);
+                float pan = (screenPos.X - (Camera.Instance.Width / 2f)) / (Camera.Instance.Width / 2f);
+                if (pan < -1f || pan > 1f) gunLoop.Volume = 0f;
+                else gunLoop.Volume = 0.3f;
+                if (Ship.Instance.Position.Y >= 260) gunLoop.Volume = 0f;
+                gunLoop.Pan = pan;
+
                 if (projectileTime <= 0)
                 {
                     projectileTime = projectileCoolDown;
@@ -117,26 +132,38 @@ namespace LD29.Entities.Enemies
 
                 }
 
-                if (Helper.Random.Next(20) == 0) _firing = false;
+                if (Helper.Random.Next(20) == 0)
+                {
+                    _firing = false;
+                    gunLoop.Pause();
+                }
             }
             else
             {
-                if (Helper.Random.Next(50) == 0) _firing = true;
+                if (Helper.Random.Next(50) == 0)
+                {
+                    _firing = true;
+                    gunLoop.Resume();
+                }
             }
 
-            if(Helper.Random.Next(200)==0 && GameController.Wave>=8)
+            if (Helper.Random.Next(200) == 0 && GameController.Wave >= 8)
+            {
+                AudioController.PlaySFX("seeker", 0.5f, -0.1f, 0.1f, Camera.Instance, Position);
                 ProjectileController.Instance.Spawn(entity =>
                 {
-                    ((Projectile)entity).Type = ProjectileType.Seeker;
-                    ((Projectile)entity).SourceRect = new Rectangle(1, 18, 8, 4);
-                    ((Projectile)entity).Life = 2000;
-                    ((Projectile)entity).Scale = 1f;
-                    ((Projectile)entity).EnemyOwner = true;
-                    ((Projectile)entity).Damage = 5f;
-                    ((Projectile)entity).Target = Position + new Vector2(_faceDir * 300, 0); ;
+                    ((Projectile) entity).Type = ProjectileType.Seeker;
+                    ((Projectile) entity).SourceRect = new Rectangle(1, 18, 8, 4);
+                    ((Projectile) entity).Life = 2000;
+                    ((Projectile) entity).Scale = 1f;
+                    ((Projectile) entity).EnemyOwner = true;
+                    ((Projectile) entity).Damage = 5f;
+                    ((Projectile) entity).Target = Position + new Vector2(_faceDir*300, 0);
+                    ;
                     entity.Speed = new Vector2(0f, -0.5f);
                     entity.Position = Position + new Vector2(0, 0);
                 });
+            }
 
             //if (Vector2.Distance(Position, _target) < 1f)
             //{
@@ -185,6 +212,12 @@ namespace LD29.Entities.Enemies
             
 
             base.Update(gameTime, gameMap);
+        }
+
+        public override void Die()
+        {
+            gunLoop.Stop();
+            base.Die();
         }
     }
 }

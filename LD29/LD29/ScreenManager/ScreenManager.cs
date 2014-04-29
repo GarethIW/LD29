@@ -42,6 +42,7 @@ namespace GameStateManagement
 
         SpriteBatch spriteBatch;
         SpriteFont font;
+        SpriteFont fontsmall;
         public Texture2D blankTexture;
 
         bool isInitialized;
@@ -71,7 +72,10 @@ namespace GameStateManagement
         {
             get { return font; }
         }
-
+        public SpriteFont FontSmall
+        {
+            get { return fontsmall; }
+        }
 
         /// <summary>
         /// If true, the manager prints out a list of all the screens
@@ -119,6 +123,7 @@ namespace GameStateManagement
 
             spriteBatch = new SpriteBatch(Game.GraphicsDevice);
             font = content.Load<SpriteFont>("font");
+            fontsmall = content.Load<SpriteFont>("fontsmall");
             blankTexture = content.Load<Texture2D>("blank");
 
             // Tell each of the screens to load their content.

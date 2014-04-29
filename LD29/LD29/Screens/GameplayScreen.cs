@@ -166,6 +166,14 @@ namespace LD29.Screens
 
             camera.Target = playerShip.Position;
             camera.Target.X += playerShip.Speed.X * 20f;
+
+            //Enemy head = EnemyController.Instance.Enemies.FirstOrDefault(en => en is Boss && ((Boss) en).Head);
+            //if (head != null)
+            //{
+            //    playerShip.Position = head.Position + new Vector2(0, -16);
+            //    camera.Target = head.Position;
+            //}
+
             camera.Update(gameTime, playerShip.underWater, waterLevel);
 
             hud.Update(gameTime, new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight));
@@ -256,6 +264,8 @@ namespace LD29.Screens
             sb.Draw(ScreenManager.blankTexture, new Rectangle(0,(int)waterLevel-((int)camera.Position.Y-ScreenManager.Game.RenderHeight/2),ScreenManager.Game.RenderWidth, ((map.TileHeight*map.Height)+10)-(int)waterLevel), null, new Color(0,16,65));
             sb.End();
 
+           
+
             underwaterBGParallax.Draw(sb, camera.Position.Y);
             skyBGParallax.Draw(sb, camera.Position.Y);
             waterParallax.Draw(sb, false, camera.Position.Y);
@@ -282,8 +292,10 @@ namespace LD29.Screens
             sb.Draw(ScreenManager.blankTexture, new Rectangle(0, (int)waterLevel - ((int)camera.Position.Y - ScreenManager.Game.RenderHeight / 2) - 5, ScreenManager.Game.RenderWidth, ((map.TileHeight * map.Height) + 10) - (int)waterLevel), null, Color.Black * 0.4f);
             sb.End();
 
-            sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
-            sb.End();
+            //sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+            //Enemy head = EnemyController.Instance.Enemies.FirstOrDefault(en => en is Boss && ((Boss)en).Head);
+            //if (head != null) sb.DrawString(ScreenManager.Font, head.Position.ToString(), Vector2.One * 10, Color.White);
+            //sb.End();
 
             waterParallax.Draw(sb, true, camera.Position.Y);
 

@@ -156,7 +156,9 @@ namespace LD29.Entities
 
             engineLoop.Pause();
 
-            if (input.CurrentKeyboardState.IsKeyDown(Keys.Left))
+            if (input.CurrentKeyboardState.IsKeyDown(Keys.Left) ||
+                input.CurrentKeyboardState.IsKeyDown(Keys.A) ||
+                input.CurrentGamePadState.ThumbSticks.Left.X<-0.2f)
             {
                 Speed.X -= 0.05f;
                 faceDir = -1;
@@ -181,7 +183,9 @@ namespace LD29.Entities
                 engineLoop.Resume();
 
             }
-            if (input.CurrentKeyboardState.IsKeyDown(Keys.Right))
+            if (input.CurrentKeyboardState.IsKeyDown(Keys.Right) ||
+                input.CurrentKeyboardState.IsKeyDown(Keys.D) ||
+                input.CurrentGamePadState.ThumbSticks.Left.X > 0.2f)
             {
                 Speed.X += 0.05f;
                 faceDir = 1;
@@ -207,7 +211,9 @@ namespace LD29.Entities
             }
 
             _idleAnim.CurrentFrame = 0;
-            if (input.CurrentKeyboardState.IsKeyDown(Keys.Up))
+            if (input.CurrentKeyboardState.IsKeyDown(Keys.Up) ||
+                input.CurrentKeyboardState.IsKeyDown(Keys.W) ||
+                input.CurrentGamePadState.ThumbSticks.Left.Y > 0.2f)
             {
                 Speed.Y -= 0.05f;
                 _upAnim.Play();
@@ -237,7 +243,9 @@ namespace LD29.Entities
                 _upAnim.Reset();
                 _upHitAnim.Reset();
             }
-            if (input.CurrentKeyboardState.IsKeyDown(Keys.Down))
+            if (input.CurrentKeyboardState.IsKeyDown(Keys.Down) ||
+                input.CurrentKeyboardState.IsKeyDown(Keys.S) ||
+                input.CurrentGamePadState.ThumbSticks.Left.Y < -0.2f)
             {
                 Speed.Y += 0.05f;
                 _downAnim.Play();
@@ -270,7 +278,10 @@ namespace LD29.Entities
 
 
 
-            if (input.CurrentKeyboardState.IsKeyDown(Keys.X))
+            if (input.CurrentKeyboardState.IsKeyDown(Keys.X) ||
+                input.CurrentKeyboardState.IsKeyDown(Keys.Space) ||
+                input.CurrentGamePadState.Buttons.A == ButtonState.Pressed ||
+                input.CurrentGamePadState.Triggers.Right > 0.2f)
             {
                 if (projectileTime1 <= 0)
                 {
@@ -405,7 +416,7 @@ namespace LD29.Entities
             {
                 _hitAlpha = 1f;
                 Life -= 0.5f;
-                AudioController.PlaySFX("shiphit", 0.5f, -0.1f, 0.1f);
+                //AudioController.PlaySFX("shiphit", 0.5f, -0.1f, 0.1f);
 
             }
 
@@ -475,6 +486,7 @@ namespace LD29.Entities
 
         public void Die()
         {
+
             Life = 0f;
             Active = false;
 

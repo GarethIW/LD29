@@ -60,6 +60,8 @@ namespace LD29.Entities.Enemies
                 if (Position.Y < 100) up = false;
                 if (Position.Y > 420) up = true;
 
+                if (Position.X < 100f) _faceDir = 1;
+                if (Position.X > (gameMap.Width * gameMap.TileWidth)-100f) _faceDir = -1;
             }
             else
             {
@@ -72,13 +74,16 @@ namespace LD29.Entities.Enemies
                     {
                         target = segs[index-1].Position;
                         Position = Vector2.Lerp(Position, target, 0.15f);
+                        //Vector2 dir = target - Position;
+                        //dir.Normalize();
+                        //Speed += dir*0.05f;
                     }
 
                     
                 }
 
                 if (Tail)
-                    Rotation = Helper.V2ToAngle(Position - target);
+                    Rotation = Helper.V2ToAngle(Position-target);
 
             }
 
@@ -86,6 +91,27 @@ namespace LD29.Entities.Enemies
 
 
             base.Update(gameTime, gameMap);
+
+            //if (Head)
+            //{
+            //    if (Position.X < 0) Wrap(true, gameMap);
+            //    if (Position.X >= (gameMap.Width*gameMap.TileWidth)) Wrap(false, gameMap);
+            //}
+        }
+
+        void Wrap(bool left, Map gameMap)
+        {
+            //Position.X = (gameMap.Width * gameMap.TileWidth) + Position.X;
+            //Position.X = Position.X - (gameMap.Width * gameMap.TileWidth);
+
+            List<Enemy> segs = EnemyController.Instance.Enemies.Where(en => en is Boss).OrderBy(en => ((Boss) en).Ordinal).ToList();
+            for (int index = 1; index < segs.Count; index++)
+            {
+                if (left)
+                    segs[index].Position.X = (gameMap.Width*gameMap.TileWidth) + segs[index].Position.X;
+                else
+                    segs[index].Position.X = segs[index].Position.X - (gameMap.Width*gameMap.TileWidth);
+            }
         }
 
         public override void Die()
@@ -98,7 +124,8 @@ namespace LD29.Entities.Enemies
                 {
                     if (((Boss) segs[index]).Body)
                     {
-                        ((Boss) segs[index]).Head = true;
+                        ((Boss)segs[index]).Head = true;
+                        ((Boss)segs[index]).Body = false;
                         found = true;
                         break;
                     }
@@ -166,18 +193,20 @@ namespace LD29.Entities.Enemies
             head.Life = 100;
             head.Spawn(pos);
 
+            pos.X -= face * 70;
+
             for (int i = 0; i < 7; i++)
             {
-                pos.X -= face*10;
+                pos.X += face*10;
                 Boss seg = new Boss(sheet, new Rectangle(0, 0, 25, 25), null, Vector2.Zero);
                 seg.Body = true;
-                seg.Ordinal = 1+i;
+                seg.Ordinal = 1+(6-i);
                 seg.Life = 100;
                 seg.Spawn(pos);
                 EnemyController.Instance.Enemies.Add(seg);
             }
 
-            pos.X -= face * 10;
+            pos.X -= face * 90;
             Boss tail = new Boss(sheet, new Rectangle(0, 0, 25, 25), null, Vector2.Zero);
             tail.Tail = true;
             tail.Ordinal = 8;

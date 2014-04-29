@@ -30,7 +30,8 @@ namespace GameStateManagement
         public KeyboardState LastKeyboardState;
         public MouseState CurrentMouseState;
         public MouseState LastMouseState;
-
+        public GamePadState CurrentGamePadState;
+        public GamePadState LastGamePadState;
         
 
         #endregion
@@ -43,7 +44,7 @@ namespace GameStateManagement
         /// </summary>
         public InputState()
         {
-
+            
         }
 
 
@@ -59,11 +60,11 @@ namespace GameStateManagement
         {
             LastKeyboardState = CurrentKeyboardState;
             LastMouseState = CurrentMouseState;
+            LastGamePadState = CurrentGamePadState;
 
             CurrentKeyboardState = Keyboard.GetState();
             CurrentMouseState = Mouse.GetState();
-
-            
+            CurrentGamePadState = GamePad.GetState(PlayerIndex.One);
         }
 
 
@@ -94,7 +95,9 @@ namespace GameStateManagement
         public bool IsMenuSelect()
         {
             return IsNewKeyPress(Keys.Space) ||
-                   IsNewKeyPress(Keys.Enter);
+                   IsNewKeyPress(Keys.Enter) ||
+                   (CurrentGamePadState.Buttons.A== ButtonState.Pressed && LastGamePadState.Buttons.A ==ButtonState.Released) ||
+                   (CurrentGamePadState.Buttons.Start == ButtonState.Pressed && LastGamePadState.Buttons.Start == ButtonState.Released);
                  
         }
 
@@ -118,7 +121,7 @@ namespace GameStateManagement
         /// </summary>
         public bool IsMenuUp()
         {
-            return IsNewKeyPress(Keys.Up);
+            return IsNewKeyPress(Keys.Up) || (CurrentGamePadState.ThumbSticks.Left.Y>0.2f && LastGamePadState.ThumbSticks.Left.Y<=0.2f);
         }
 
 
@@ -129,7 +132,7 @@ namespace GameStateManagement
         /// </summary>
         public bool IsMenuDown()
         {
-            return IsNewKeyPress(Keys.Down);
+            return IsNewKeyPress(Keys.Down) || (CurrentGamePadState.ThumbSticks.Left.Y < -0.2f && LastGamePadState.ThumbSticks.Left.Y >= -0.2f);
         }
 
         public bool IsMenuLeft()

@@ -8,6 +8,8 @@
 #endregion
 
 #region Using Statements
+
+using LD29.Entities;
 using LD29.Screens;
 using Microsoft.Xna.Framework;
 using System;
@@ -67,7 +69,17 @@ namespace GameStateManagement
         {
             ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
             ScreenManager.SpriteBatch.Draw(ScreenManager.blankTexture, new Rectangle(0,0,ScreenManager.Game.RenderWidth,ScreenManager.Game.RenderHeight), null, new Color(200,0,0));
-            ScreenManager.SpriteBatch.Draw(texLogo, new Vector2(ScreenManager.Game.RenderWidth / 2, (ScreenManager.Game.RenderHeight/2) -20), new Rectangle(0,0,195,65), Color.White, 0f, new Vector2(98,32), 1f, SpriteEffects.None, 0);
+            ScreenManager.SpriteBatch.Draw(texLogo, new Vector2(ScreenManager.Game.RenderWidth / 2, (ScreenManager.Game.RenderHeight/2) -40), new Rectangle(0,0,195,65), Color.White, 0f, new Vector2(98,32), 1f, SpriteEffects.None, 0);
+            
+            ScreenManager.SpriteBatch.End();
+
+            ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+            string fluff = "@garethiw and @gredgie for LD29";
+            ScreenManager.SpriteBatch.DrawString(ScreenManager.FontSmall, fluff, new Vector2(ScreenManager.Game.RenderWidth / 2, ScreenManager.Game.RenderHeight - 30) + Vector2.One, Color.Black, 0f, ScreenManager.FontSmall.MeasureString(fluff) / 2, 1f, SpriteEffects.None, 0);
+            ScreenManager.SpriteBatch.DrawString(ScreenManager.FontSmall, fluff, new Vector2(ScreenManager.Game.RenderWidth / 2, ScreenManager.Game.RenderHeight - 30), Color.DarkGray, 0f, ScreenManager.FontSmall.MeasureString(fluff) / 2, 1f, SpriteEffects.None, 0);
+            fluff = "WASD/Arrows, X/Space or 360 pad";
+            ScreenManager.SpriteBatch.DrawString(ScreenManager.FontSmall, fluff, new Vector2(ScreenManager.Game.RenderWidth / 2, ScreenManager.Game.RenderHeight - 22) + Vector2.One, Color.Black, 0f, ScreenManager.FontSmall.MeasureString(fluff) / 2, 1f, SpriteEffects.None, 0);
+            ScreenManager.SpriteBatch.DrawString(ScreenManager.FontSmall, fluff, new Vector2(ScreenManager.Game.RenderWidth / 2, ScreenManager.Game.RenderHeight - 22), Color.DarkGray, 0f, ScreenManager.FontSmall.MeasureString(fluff) / 2, 1f, SpriteEffects.None, 0);
             ScreenManager.SpriteBatch.End();
 
             ScreenManager.FadeBackBufferToBlack(1f-TransitionAlpha);
