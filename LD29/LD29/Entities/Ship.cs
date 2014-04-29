@@ -57,6 +57,7 @@ namespace LD29.Entities
             Instance = this;
 
 			engineLoop = AudioController._effects ["boost"].CreateInstance();
+			engineLoop.Volume = 0.3f;
             engineLoop.IsLooped = true;
             engineLoop.Play();
             engineLoop.Pause();

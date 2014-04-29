@@ -1,11 +1,13 @@
 ﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="29/04/2014 15:43:33">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="LD29/LD29/Screens/GameplayScreen.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="LD29/LD29.Mono.Mac/Info.plist">
     <Files>
       <File FileName="../MonoGameHead/MonoGame.Framework/MacOS/GameWindow.cs" Line="104" Column="1" />
-      <File FileName="LD29/LD29.Mono.Mac/Main.cs" Line="17" Column="4" />
+      <File FileName="LD29/LD29.Mono.Mac/Main.cs" Line="27" Column="42" />
       <File FileName="LD29/LD29/Entities/Hero.cs" Line="97" Column="30" />
       <File FileName="LD29/LD29/Screens/GameplayScreen.cs" Line="61" Column="1" />
+      <File FileName="LD29/LD29/Game.cs" Line="112" Column="4" />
+      <File FileName="LD29/LD29.Mono.Mac/Info.plist" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

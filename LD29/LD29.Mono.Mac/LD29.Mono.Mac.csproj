@@ -10,7 +10,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>LD29.Mono.Mac</RootNamespace>
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
-    <AssemblyName>LD29.Mono.Mac</AssemblyName>
+    <AssemblyName>Aeronautical</AssemblyName>
     <StartupObject>LD29.Mono.Mac.Program</StartupObject>
     <SuppressXamMacUpsell>True</SuppressXamMacUpsell>
   </PropertyGroup>
@@ -286,101 +286,40 @@
     <Folder Include="Content\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\EarthTiles.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\abovewater-parallax.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\blank.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\boss.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\clouds.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\enemies.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\font.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\fontsmall.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\hud.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\map.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\particles.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\playership.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\powerup.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\projectiles.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\seabed-rocks.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\seabed-rocks2.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sky-bg.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\titles.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\underwater-bg.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sfx\boost.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sfx\explosion.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sfx\eyespew.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sfx\gorgershoot.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sfx\gun_winddown.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sfx\lancer.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sfx\laser.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sfx\minigun.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sfx\pickup.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sfx\powerup.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sfx\projectileexplosion.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sfx\seeker.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\sfx\shiphit.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Content\EarthTiles.xnb" />
+    <Content Include="Content\abovewater-parallax.xnb" />
+    <Content Include="Content\blank.xnb" />
+    <Content Include="Content\boss.xnb" />
+    <Content Include="Content\clouds.xnb" />
+    <Content Include="Content\enemies.xnb" />
+    <Content Include="Content\font.xnb" />
+    <Content Include="Content\fontsmall.xnb" />
+    <Content Include="Content\hud.xnb" />
+    <Content Include="Content\map.xnb" />
+    <Content Include="Content\particles.xnb" />
+    <Content Include="Content\playership.xnb" />
+    <Content Include="Content\powerup.xnb" />
+    <Content Include="Content\projectiles.xnb" />
+    <Content Include="Content\seabed-rocks.xnb" />
+    <Content Include="Content\seabed-rocks2.xnb" />
+    <Content Include="Content\sky-bg.xnb" />
+    <Content Include="Content\titles.xnb" />
+    <Content Include="Content\underwater-bg.xnb" />
+    <Content Include="Content\sfx\boost.wav" />
+    <Content Include="Content\sfx\explosion.wav" />
+    <Content Include="Content\sfx\eyespew.xnb" />
+    <Content Include="Content\sfx\gorgershoot.wav" />
+    <Content Include="Content\sfx\gun_winddown.wav" />
+    <Content Include="Content\sfx\lancer.wav" />
+    <Content Include="Content\sfx\laser.wav" />
+    <Content Include="Content\sfx\minigun.wav" />
+    <Content Include="Content\sfx\pickup.wav" />
+    <Content Include="Content\sfx\powerup.wav" />
+    <Content Include="Content\sfx\projectileexplosion.wav" />
+    <Content Include="Content\sfx\seeker.wav" />
+    <Content Include="Content\sfx\shiphit.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\icon.icns" />
   </ItemGroup>
 </Project>

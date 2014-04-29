@@ -36,7 +36,7 @@ namespace LD29.Mono.Mac
 
 		public override bool ApplicationShouldTerminateAfterLastWindowClosed (NSApplication sender)
 		{
-			return false;
+			return true;
 		}
 	}
 }
