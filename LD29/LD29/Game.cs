@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using GameStateManagement;
 using LD29.Screens;
@@ -10,7 +11,11 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using OpenTK;
 using TimersAndTweens;
+using Color = Microsoft.Xna.Framework.Color;
+using Point = System.Drawing.Point;
+using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace LD29
 {
@@ -19,8 +24,8 @@ namespace LD29
     /// </summary>
     public class Game : Microsoft.Xna.Framework.Game
     {
-        private const int MAX_SCALE = 5;
-        private const int MIN_SCALE = 1;
+        private int MAX_SCALE = 5;
+        private int MIN_SCALE = 1;
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -43,9 +48,8 @@ namespace LD29
 
         protected override void Initialize()
         {
-            graphics.PreferredBackBufferWidth = RenderWidth * DisplayScale;
-            graphics.PreferredBackBufferHeight = RenderHeight * DisplayScale;
-            graphics.ApplyChanges();
+            MAX_SCALE = graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width/RenderWidth;
+            ChangeDisplayScale();
 
             screenManager = new ScreenManager(this);
             screenManager.Initialize();
@@ -134,10 +138,34 @@ namespace LD29
 
         void ChangeDisplayScale()
         {
+            //graphics.PreferredBackBufferWidth = RenderWidth * DisplayScale;
+            //graphics.PreferredBackBufferHeight = RenderHeight * DisplayScale;
+            //graphics.ApplyChanges();
+#if WINDOWS
+            if (RenderWidth*DisplayScale == graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width &&
+                RenderHeight*DisplayScale == graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Height)
+            {
+                ((OpenTKGameWindow) Window).Window.WindowState = WindowState.Fullscreen;
+                graphics.IsFullScreen = true;
+                graphics.PreferredBackBufferWidth = RenderWidth * DisplayScale;
+                graphics.PreferredBackBufferHeight = RenderHeight * DisplayScale;
+                graphics.ApplyChanges();
+            }
+            else
+            {
+                ((OpenTKGameWindow) Window).Window.WindowState = WindowState.Normal;
+                graphics.PreferredBackBufferWidth = RenderWidth * DisplayScale;
+                graphics.PreferredBackBufferHeight = RenderHeight * DisplayScale;
+                graphics.IsFullScreen = false;
+                graphics.ApplyChanges();
+                ((OpenTKGameWindow)Window).Window.Location = new Point((graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width / 2) - (RenderWidth * DisplayScale) / 2, (graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Height / 2) - (RenderHeight * DisplayScale) / 2);
+                ((OpenTKGameWindow) Window).Window.ClientSize = new Size(RenderWidth*DisplayScale,
+                    RenderHeight*DisplayScale);
 
-			            graphics.PreferredBackBufferWidth = RenderWidth * DisplayScale;
-            graphics.PreferredBackBufferHeight = RenderHeight * DisplayScale;
-            graphics.ApplyChanges();
+            }
+
+                //
+#endif
         }
 
         
