@@ -25,7 +25,7 @@ namespace TiledLib
 
         public Matrix CameraMatrix;
 
-        float Speed = 0.2f;
+        public float Speed = 0.2f;
 
         double shakeTime;
         float shakeAmount;

@@ -52,6 +52,7 @@ namespace LD29.Screens
         {
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
+
         }
 
         public override void LoadContent()
@@ -100,6 +101,9 @@ namespace LD29.Screens
 
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
+            base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
+            if (otherScreenHasFocus || IsExiting) return;
             //xpos++;
             //if (xpos == 320*3) xpos = 0;
             playerShip.Update(gameTime, map);
@@ -158,11 +162,7 @@ namespace LD29.Screens
             powerupController.Update(gameTime, map);
 
 
-            waterParallax.Update(gameTime, playerShip.Speed.X, (int)camera.Position.X);
-            underwaterBGParallax.Update(gameTime, playerShip.Speed.X * 0.5f, (int)camera.Position.X);
-            skyBGParallax.Update(gameTime, playerShip.Speed.X * 0.1f, (int)camera.Position.X);
-            rocksParallax.Update(gameTime, playerShip.Speed.X, (int)camera.Position.X);
-            cloudsParallax.Update(gameTime, playerShip.Speed.X, (int)camera.Position.X);
+            
 
             camera.Target = playerShip.Position;
             camera.Target.X += playerShip.Speed.X * 20f;
@@ -175,6 +175,12 @@ namespace LD29.Screens
             //}
 
             camera.Update(gameTime, playerShip.underWater, waterLevel);
+
+            waterParallax.Update(gameTime, (camera.Target.X - camera.Position.X) * camera.Speed, (int)camera.Position.X);
+            underwaterBGParallax.Update(gameTime, ((camera.Target.X - camera.Position.X) * camera.Speed) * 0.5f, (int)camera.Position.X);
+            skyBGParallax.Update(gameTime, ((camera.Target.X - camera.Position.X) * camera.Speed) * 0.1f, (int)camera.Position.X);
+            rocksParallax.Update(gameTime, (camera.Target.X - camera.Position.X) * camera.Speed, (int)camera.Position.X);
+            cloudsParallax.Update(gameTime, (camera.Target.X - camera.Position.X) * camera.Speed, (int)camera.Position.X);
 
             hud.Update(gameTime, new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight));
 
@@ -235,12 +241,16 @@ namespace LD29.Screens
                 }, 2000, false);
             }
 
-            base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+            TweenController.Instance.Update(gameTime);
+            TimerController.Instance.Update(gameTime);
+
+            
         }
 
         public override void HandleInput(InputState input)
         {
-            if(input.IsNewKeyPress(Keys.Back)) MapGeneration.Generate(map);
+            if (input.IsNewKeyPress(Keys.Escape)) ScreenManager.AddScreen(new PauseMenuScreen());
+            //if(input.IsNewKeyPress(Keys.Back)) MapGeneration.Generate(map);
             if (_endOfWave && _waveFade>=1f) return;
 
             if (_gameOver && _goTimer >= 1f)
@@ -319,12 +329,18 @@ namespace LD29.Screens
                 sb.End();
             }
 
-            hud.Draw(sb, new Viewport(0,0,ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), camera, !_endOfWave, ScreenManager.Font);
+            hud.Draw(sb, new Viewport(0,0,ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), camera, !_endOfWave, ScreenManager.Font, (map.Width*map.TileWidth));
 
-            ScreenManager.FadeBackBufferToBlack(1f - TransitionAlpha);
+            //ScreenManager.FadeBackBufferToBlack(1f - TransitionAlpha);
 
             base.Draw(gameTime);
 
+        }
+
+        public override void UnloadContent()
+        {
+            AudioController.KillInstances();
+            base.UnloadContent();
         }
     }
 }

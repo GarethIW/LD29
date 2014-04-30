@@ -78,8 +78,8 @@ namespace LD29
 
             screenManager.Update(gameTime);
 
-            timerController.Update(gameTime);
-            tweenController.Update(gameTime);
+            //timerController.Update(gameTime);
+            //tweenController.Update(gameTime);
 
             // Allows the game to exit
             if (screenManager.Input.CurrentKeyboardState.IsKeyDown(Keys.F12)) this.Exit();

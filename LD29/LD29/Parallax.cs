@@ -64,7 +64,7 @@ namespace LD29
         {
             if (!wavyEffect)
             {
-                float offsetStep = 1.6f/(float) numLayers;
+                float offsetStep = 2f/(float) numLayers;
                 if (!reverse)
                 {
                     for (int i = 0; i < numLayers; i++)

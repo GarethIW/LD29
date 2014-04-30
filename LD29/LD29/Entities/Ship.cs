@@ -50,22 +50,29 @@ namespace LD29.Entities
 
         private SoundEffectInstance engineLoop;
         private SoundEffectInstance gunLoop;
+        private SoundEffectInstance hitLoop;
 
         public Ship(Texture2D spritesheet, Rectangle hitbox, List<Vector2> hitPolyPoints, Vector2 hitboxoffset) 
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
         {
             Instance = this;
 
-			engineLoop = AudioController._effects ["boost"].CreateInstance();
-			engineLoop.Volume = 0.3f;
+            engineLoop = AudioController.CreateInstance("boost");
+			engineLoop.Volume = 0f;
             engineLoop.IsLooped = true;
             engineLoop.Play();
             engineLoop.Pause();
-			gunLoop = AudioController._effects ["minigun"].CreateInstance();
+            engineLoop.Volume = 0.3f;
+            gunLoop = AudioController.CreateInstance("minigun");
             gunLoop.IsLooped = true;
-            gunLoop.Volume = 0.3f;
+            gunLoop.Volume = 0f;
             gunLoop.Play();
             gunLoop.Pause();
+            gunLoop.Volume = 0.3f;
+            hitLoop = AudioController.CreateInstance("shiphit");
+            hitLoop.IsLooped = false;
+            hitLoop.Volume = 1f;
+
 
             _idleAnim = new SpriteAnim(spritesheet, 0, 1, 16, 16, 100, new Vector2(8, 8));
             _idleAnim.Play();
@@ -417,6 +424,11 @@ namespace LD29.Entities
             {
                 _hitAlpha = 1f;
                 Life -= 0.5f;
+                if (hitLoop.State == SoundState.Stopped)
+                {
+                    hitLoop.Pitch = Helper.RandomFloat(-0.2f, 0.2f);
+                    hitLoop.Play();
+                }
                 //AudioController.PlaySFX("shiphit", 0.5f, -0.1f, 0.1f);
 
             }
@@ -426,7 +438,11 @@ namespace LD29.Entities
                 _hitAlpha = 1f;
                 Life -= ((Projectile)collided).Damage;
 
-                AudioController.PlaySFX("shiphit", 0.5f, -0.1f, 0.1f);
+                if (hitLoop.State == SoundState.Stopped)
+                {
+                    hitLoop.Pitch = Helper.RandomFloat(-0.2f, 0.2f);
+                    hitLoop.Play();
+                }
 
             }
 
@@ -435,7 +451,7 @@ namespace LD29.Entities
                 collided.Active = false;
                 PowerUpMeter++;
 
-                AudioController.PlaySFX("pickup", 1f, -0.1f, 0.1f);
+                AudioController.PlaySFX("pickup", 1f, -0.2f, 0.2f);
 
             }
 

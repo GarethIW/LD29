@@ -34,6 +34,8 @@ namespace LD29
 
         public static Dictionary<string, SoundEffectInstance> _songs;
 
+        public static List<SoundEffectInstance> Instances = new List<SoundEffectInstance>(); 
+
         private static string _playingTrack = "";
         private static bool _isPlaying;
 
@@ -65,6 +67,24 @@ namespace LD29
                 s.IsLooped = true;
                 s.Volume = _musicVolume;
             }
+        }
+
+        public static SoundEffectInstance CreateInstance(string name)
+        {
+            SoundEffectInstance instance = _effects[name].CreateInstance();
+            Instances.Add(instance);
+            return instance;
+        }
+
+        public static void KillInstances()
+        {
+            foreach (SoundEffectInstance instance in Instances)
+            {
+                instance.Stop();
+                instance.Dispose();
+            }
+
+            Instances.Clear();
         }
 
         public static void PlayMusic(string track)

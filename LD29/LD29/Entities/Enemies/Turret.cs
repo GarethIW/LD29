@@ -31,9 +31,9 @@ namespace LD29.Entities.Enemies
             _hitAnim = new SpriteAnim(spritesheet, 10, 2, 16, 16, 200, new Vector2(8, 8), true, false, _idleAnim.CurrentFrame);
             _hitAnim.Play();
 
-			gunLoop = AudioController._effects ["minigun"].CreateInstance();
+            gunLoop = AudioController.CreateInstance("minigun");
 			gunLoop.IsLooped = true;
-			gunLoop.Volume = 0.3f;
+			gunLoop.Volume = 0f;
 			gunLoop.Play();
 			gunLoop.Pause();
 
@@ -58,7 +58,7 @@ namespace LD29.Entities.Enemies
                 if (pan < -1f || pan > 1f) gunLoop.Volume = 0f;
                 else gunLoop.Volume = 0.3f;
                 if (Ship.Instance.Position.Y >= 260) gunLoop.Volume = 0f;
-                gunLoop.Pan = pan;
+                gunLoop.Pan = MathHelper.Clamp(pan,-1f,1f);
 
                 if (projectileTime <= 0)
                 {

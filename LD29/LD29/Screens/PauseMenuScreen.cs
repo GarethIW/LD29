@@ -45,7 +45,7 @@ namespace GameStateManagement
             MenuEntries.Add(optionsMenuEntry);
             MenuEntries.Add(quitGameMenuEntry);
 
-
+            IsPopup = true;
         }
 
         void OptionsMenuEntrySelected(object sender, EventArgs e)
@@ -55,7 +55,7 @@ namespace GameStateManagement
 
         void resumeGameMenuEntry_Selected(object sender, EventArgs e)
         {
-            ScreenManager.CloseAllScreens();
+            ExitScreen();
         }
 
 
@@ -66,7 +66,7 @@ namespace GameStateManagement
 
         protected override void OnCancel(object sender, EventArgs e)
         {
-            ScreenManager.CloseAllScreens();
+            ExitScreen();
             base.OnCancel(sender, e);
         }
 
@@ -75,7 +75,7 @@ namespace GameStateManagement
         /// </summary>
         void QuitGameMenuEntrySelected(object sender, EventArgs e)
         {
-           
+            LoadingScreen.Load(ScreenManager, false, null, new MainMenuScreen());
             
         }
 
@@ -100,6 +100,14 @@ namespace GameStateManagement
             LoadingScreen.Load(ScreenManager, false, null, new MainMenuScreen());
         }
 
+
+        public override void Draw(GameTime gameTime)
+        {
+
+            ScreenManager.FadeBackBufferToBlack(0.3f*TransitionAlpha);
+
+            base.Draw(gameTime);
+        }
 
         #endregion
     }
