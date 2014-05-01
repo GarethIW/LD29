@@ -37,7 +37,7 @@ namespace LD29.Screens
 
         private HUD hud;
 
-        private float _waveFade = 1f;
+        private float _waveFade = 0f;
         private bool _endOfWave = false;
         private float _eowTimer = 0f;
         private bool _gameOver = false;
@@ -268,56 +268,65 @@ namespace LD29.Screens
             Vector2 center = new Vector2(ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight) / 2f;
             SpriteBatch sb = ScreenManager.SpriteBatch;
 
-            ScreenManager.Game.GraphicsDevice.Clear(new Color(37,59,89));
+            ScreenManager.Game.GraphicsDevice.Clear(Color.Black);
 
-            sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
-            sb.Draw(ScreenManager.blankTexture, new Rectangle(0,(int)waterLevel-((int)camera.Position.Y-ScreenManager.Game.RenderHeight/2),ScreenManager.Game.RenderWidth, ((map.TileHeight*map.Height)+10)-(int)waterLevel), null, new Color(0,16,65));
-            sb.End();
+            if (!_firstWave)
+            {
 
-           
+                ScreenManager.Game.GraphicsDevice.Clear(new Color(37, 59, 89));
 
-            underwaterBGParallax.Draw(sb, camera.Position.Y);
-            skyBGParallax.Draw(sb, camera.Position.Y);
-            waterParallax.Draw(sb, false, camera.Position.Y);
-            rocksParallax.Draw(sb, false, camera.Position.Y);
-            cloudsParallax.Draw(sb, true, camera.Position.Y);
+                sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+                sb.Draw(ScreenManager.blankTexture, new Rectangle(0,(int)waterLevel-((int)camera.Position.Y-ScreenManager.Game.RenderHeight/2),ScreenManager.Game.RenderWidth, ((map.TileHeight*map.Height)+10)-(int)waterLevel), null, new Color(0,16,65));
+                sb.End();
 
-            particleController.Draw(sb, camera, map, 0);
+                underwaterBGParallax.Draw(sb, camera.Position.Y);
+                skyBGParallax.Draw(sb, camera.Position.Y);
+                waterParallax.Draw(sb, false, camera.Position.Y);
+                rocksParallax.Draw(sb, false, camera.Position.Y);
+                cloudsParallax.Draw(sb, true, camera.Position.Y);
 
-            sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.CameraMatrix);
-            map.DrawLayer(sb, "fg", camera);
-            playerShip.Draw(sb, map, ScreenManager.Font);
-            sb.End();
+                particleController.Draw(sb, camera, map, 0);
 
-            enemyController.Draw(sb, camera, map);
+                sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.CameraMatrix);
+                map.DrawLayer(sb, "fg", camera);
+                playerShip.Draw(sb, map, ScreenManager.Font);
+                sb.End();
 
-            particleController.Draw(sb, camera, map, 1);
-            projectileController.Draw(sb, camera, map);
-            powerupController.Draw(sb,camera,map);
+                enemyController.Draw(sb, camera, map);
 
-            rocksParallax.Draw(sb, true, camera.Position.Y);
-            cloudsParallax.Draw(sb, false, camera.Position.Y);
+                particleController.Draw(sb, camera, map, 1);
+                projectileController.Draw(sb, camera, map);
+                powerupController.Draw(sb, camera, map);
 
-            sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
-            sb.Draw(ScreenManager.blankTexture, new Rectangle(0, (int)waterLevel - ((int)camera.Position.Y - ScreenManager.Game.RenderHeight / 2) - 5, ScreenManager.Game.RenderWidth, ((map.TileHeight * map.Height) + 10) - (int)waterLevel), null, Color.Black * 0.4f);
-            sb.End();
+                rocksParallax.Draw(sb, true, camera.Position.Y);
+                cloudsParallax.Draw(sb, false, camera.Position.Y);
 
-            //sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
-            //Enemy head = EnemyController.Instance.Enemies.FirstOrDefault(en => en is Boss && ((Boss)en).Head);
-            //if (head != null) sb.DrawString(ScreenManager.Font, head.Position.ToString(), Vector2.One * 10, Color.White);
-            //sb.End();
+                sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+                sb.Draw(ScreenManager.blankTexture,
+                    new Rectangle(0,
+                        (int) waterLevel - ((int) camera.Position.Y - ScreenManager.Game.RenderHeight/2) - 5,
+                        ScreenManager.Game.RenderWidth, ((map.TileHeight*map.Height) + 10) - (int) waterLevel), null,
+                    Color.Black*0.4f);
+                sb.End();
 
-            waterParallax.Draw(sb, true, camera.Position.Y);
+                //sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+                //Enemy head = EnemyController.Instance.Enemies.FirstOrDefault(en => en is Boss && ((Boss)en).Head);
+                //if (head != null) sb.DrawString(ScreenManager.Font, head.Position.ToString(), Vector2.One * 10, Color.White);
+                //sb.End();
+
+                waterParallax.Draw(sb, true, camera.Position.Y);
+
+            }
 
             if (_endOfWave)
             {
                 sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
-                sb.Draw(ScreenManager.blankTexture, new Rectangle(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), null, Color.White * (_firstWave?1f:_waveFade));
+                sb.Draw(ScreenManager.blankTexture, new Rectangle(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), null, Color.White *_waveFade);
                 int numdigits = GameController.Wave.ToString().Length;
                 int wavepos = -38 - 10 - (numdigits*8);
-                sb.Draw(text, center + new Vector2(wavepos, -16), new Rectangle(68, 66, 77, 32), Color.White * _waveFade);
+                sb.Draw(text, center + new Vector2(wavepos, -16), new Rectangle(68, 66, 77, 32), Color.White *  _waveFade);
                 for(int i=0;i<numdigits;i++)
-                    sb.Draw(text, center + new Vector2(wavepos + 77+10+ (i * 16), -16), new Rectangle(Convert.ToInt32(GameController.Wave.ToString().Substring(i,1))*32, 116, 32, 32), Color.White * _waveFade);
+                    sb.Draw(text, center + new Vector2(wavepos + 77 + 10 + (i * 16), -16), new Rectangle(Convert.ToInt32(GameController.Wave.ToString().Substring(i, 1)) * 32, 116, 32, 32), Color.White * _waveFade);
                 sb.End();
             }
 

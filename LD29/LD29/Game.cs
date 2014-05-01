@@ -142,13 +142,12 @@ namespace LD29
             //graphics.PreferredBackBufferHeight = RenderHeight * DisplayScale;
             //graphics.ApplyChanges();
 #if WINDOWS
-            if (RenderWidth*DisplayScale == graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width &&
-                RenderHeight*DisplayScale == graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Height)
+            if (RenderWidth*DisplayScale == graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width)
             {
                 ((OpenTKGameWindow) Window).Window.WindowState = WindowState.Fullscreen;
                 graphics.IsFullScreen = true;
-                graphics.PreferredBackBufferWidth = RenderWidth * DisplayScale;
-                graphics.PreferredBackBufferHeight = RenderHeight * DisplayScale;
+                graphics.PreferredBackBufferWidth = graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width;
+                graphics.PreferredBackBufferHeight = graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Height;
                 graphics.ApplyChanges();
             }
             else

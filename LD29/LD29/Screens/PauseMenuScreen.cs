@@ -42,7 +42,7 @@ namespace GameStateManagement
 
             // Add entries to the menu.
             MenuEntries.Add(resumeGameMenuEntry);
-            MenuEntries.Add(optionsMenuEntry);
+            //MenuEntries.Add(optionsMenuEntry);
             MenuEntries.Add(quitGameMenuEntry);
 
             IsPopup = true;

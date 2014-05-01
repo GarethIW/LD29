@@ -24,6 +24,8 @@ namespace LD29.Entities
 
         public float Life;
 
+        protected bool _underWater;
+
         public Enemy(Texture2D spritesheet, Rectangle hitbox, List<Vector2> hitPolyPoints, Vector2 hitboxoffset) 
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
         {
@@ -33,6 +35,7 @@ namespace LD29.Entities
         public void Spawn(Vector2 spawnPos)
         {
             Position = spawnPos;
+            if (spawnPos.Y > 260) _underWater = true;
 
             TweenController.Instance.Create("", TweenFuncs.QuadraticEaseIn, tween =>
             {
@@ -60,6 +63,30 @@ namespace LD29.Entities
             if (Life <= 0f) Die();
 
             if (Position.Y > (gameMap.Height*gameMap.TileHeight)) Die();
+
+            if (_underWater)
+            {
+                if (Position.Y < 260)
+                {
+                    _underWater = false;
+                    for (int i = 0; i < 30; i++)
+                    {
+                        Vector2 pos = new Vector2(Helper.RandomFloat(-5f, 5f), 0f);
+                        Color col = Color.Lerp(new Color(0, 81, 147), new Color(211, 234, 254),
+                            Helper.RandomFloat(0f, 1f));
+                        ParticleController.Instance.Add(Position + pos,
+                            (pos*0.1f) + new Vector2(Speed.X, Speed.Y*Helper.RandomFloat(0.25f, 2f)),
+                            0, 2000, 500, true, true, new Rectangle(0, 0, 3, 3),
+                            col, particle =>
+                            {
+                                ParticleFunctions.FadeInOut(particle);
+                                if (particle.Position.Y > 260)
+                                    particle.State = ParticleState.Done;
+                            }, 1f, 0f, Helper.RandomFloat(-0.1f, 0.1f), 1, ParticleBlend.Alpha);
+                    }
+                }
+            }
+            else if(Position.Y>260) _underWater = true;
 
             base.Update(gameTime, gameMap);
         }
