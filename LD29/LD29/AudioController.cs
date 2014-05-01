@@ -56,6 +56,13 @@ namespace LD29
             _effects.Add("pickup", content.Load<SoundEffect>("sfx/pickup"));
             _effects.Add("powerup", content.Load<SoundEffect>("sfx/powerup"));
             _effects.Add("eyespew", content.Load<SoundEffect>("sfx/eyespew"));
+            _effects.Add("boss", content.Load<SoundEffect>("sfx/boss"));
+            _effects.Add("combo_down", content.Load<SoundEffect>("sfx/combo_down"));
+            _effects.Add("combo_up", content.Load<SoundEffect>("sfx/combo_up"));
+            _effects.Add("shipexplosion", content.Load<SoundEffect>("sfx/shipexplosion"));
+            _effects.Add("trade", content.Load<SoundEffect>("sfx/trade"));
+            _effects.Add("water_enter", content.Load<SoundEffect>("sfx/water_enter"));
+            _effects.Add("water_leave", content.Load<SoundEffect>("sfx/water_leave"));
             
 
             _songs = new Dictionary<string, SoundEffectInstance>();

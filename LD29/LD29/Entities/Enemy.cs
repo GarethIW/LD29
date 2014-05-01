@@ -68,6 +68,7 @@ namespace LD29.Entities
             {
                 if (Position.Y < 260)
                 {
+                    AudioController.PlaySFX("water_leave", 1f, -0.1f, 0.1f, Camera.Instance, Position);
                     _underWater = false;
                     for (int i = 0; i < 30; i++)
                     {
@@ -86,7 +87,11 @@ namespace LD29.Entities
                     }
                 }
             }
-            else if(Position.Y>260) _underWater = true;
+            else if (Position.Y > 260)
+            {
+                _underWater = true;
+                AudioController.PlaySFX("water_enter", 1f, -0.1f, 0.1f, Camera.Instance, Position);
+            }
 
             base.Update(gameTime, gameMap);
         }

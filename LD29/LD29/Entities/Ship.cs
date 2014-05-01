@@ -146,6 +146,7 @@ namespace LD29.Entities
             {
                 MultiplierTime = 1000;
                 Multiplier--;
+                AudioController.PlaySFX("combo_down", 0.5f, -0.8f + (0.2f * (Multiplier - 1f)), -0.8f + (0.2f * (Multiplier - 1f)));
             }
 
             base.Update(gameTime, gameMap);
@@ -448,8 +449,11 @@ namespace LD29.Entities
 
             if (collided is Powerup)
             {
+                
                 collided.Active = false;
-                PowerUpMeter++;
+                if(!(PowerUpLevel==4 && PowerUpMeter==20))
+                    PowerUpMeter++;
+                
 
                 AudioController.PlaySFX("pickup", 1f, -0.2f, 0.2f);
 
@@ -509,7 +513,10 @@ namespace LD29.Entities
 
             engineLoop.Stop();
             gunLoop.Stop();
-         
+
+            AudioController.PlaySFX("shipexplosion", 1f, 0f, 0f);
+
+
             for (float a = 0f; a <= MathHelper.TwoPi; a += 0.1f)
             {
                 Vector2 loc = Helper.PointOnCircle(ref Position, 7, a);
@@ -604,7 +611,11 @@ namespace LD29.Entities
         internal void AddScore()
         {
             Score += 100*Multiplier;
-            if(Multiplier<10) Multiplier++;
+            if (Multiplier < 10)
+            {
+                Multiplier++;
+                AudioController.PlaySFX("combo_up", 0.5f, -0.8f + (0.2f * (Multiplier - 1f)), -0.8f + (0.2f * (Multiplier - 1f)));
+            }
             MultiplierTime = 10000;
         }
     }

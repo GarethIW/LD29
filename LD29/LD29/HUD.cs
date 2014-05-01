@@ -16,6 +16,9 @@ namespace LD29
         private Texture2D _sheet;
 
         private int prevHealth;
+        private int prevMult =1;
+
+        private float multScale = 1.5f;
 
         private List<HBSegment> hbSegments = new List<HBSegment>();
 
@@ -28,6 +31,11 @@ namespace LD29
 
         public void Update(GameTime gameTime, Viewport vp)
         {
+            if (Ship.Instance.Multiplier != prevMult)
+                multScale = 3f;
+
+            if (multScale > 1.5f) multScale -= 0.05f;
+
             if ((int)Ship.Instance.Life < prevHealth)
             {
                 hbSegments.Add(new HBSegment()
@@ -49,6 +57,7 @@ namespace LD29
             hbSegments.RemoveAll(hbs => hbs.Alpha <= 0f);
 
             prevHealth = (int)Ship.Instance.Life;
+            prevMult = Ship.Instance.Multiplier;
         }
 
         public void Draw(SpriteBatch sb, Viewport vp, Camera gameCamera, bool radar, SpriteFont font, int mapwidth)
@@ -85,9 +94,9 @@ namespace LD29
                 }
             }
 
-            pos = new Vector2(8,vp.Bounds.Bottom - 28);
-            sb.DrawString(font, Ship.Instance.Multiplier.ToString() + "x", pos + Vector2.One, Color.Black, 0f, Vector2.Zero, 1.6f, SpriteEffects.None, 0);
-            sb.DrawString(font, Ship.Instance.Multiplier.ToString() + "x", pos, Color.White, 0f, Vector2.Zero, 1.6f, SpriteEffects.None, 0);
+            pos = new Vector2(30,vp.Bounds.Bottom - 8);
+            sb.DrawString(font, Ship.Instance.Multiplier.ToString() + "x", pos + Vector2.One, Color.Black, 0f, font.MeasureString(Ship.Instance.Multiplier.ToString() + "x")/2, multScale, SpriteEffects.None, 0);
+            sb.DrawString(font, Ship.Instance.Multiplier.ToString() + "x", pos, Color.White, 0f, font.MeasureString(Ship.Instance.Multiplier.ToString() + "x")/2, multScale, SpriteEffects.None, 0);
             pos = new Vector2(vp.Bounds.Right - 58, vp.Bounds.Bottom - 20);
             sb.DrawString(font, Ship.Instance.Score.ToString("000000"), pos + Vector2.One, Color.Black, 0f, Vector2.Zero,1f, SpriteEffects.None,0);
             sb.DrawString(font, Ship.Instance.Score.ToString("000000"), pos, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);

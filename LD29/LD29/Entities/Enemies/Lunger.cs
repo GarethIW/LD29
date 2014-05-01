@@ -81,7 +81,7 @@ namespace LD29.Entities.Enemies
                                    new Color(new Vector3(1f) * (0.25f + Helper.RandomFloat(0.5f))),
                                    ParticleFunctions.FadeInOut,
                                    0.5f, 0f, 0f,
-                                   1, ParticleBlend.Alpha);
+                                   0, ParticleBlend.Alpha);
             }
 
             

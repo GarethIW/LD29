@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using GameStateManagement;
@@ -12,6 +13,8 @@ using Microsoft.Xna.Framework.Input;
 using TiledLib;
 using TimersAndTweens;
 using LD29.Entities.Enemies;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace LD29.Screens
 {
@@ -45,6 +48,9 @@ namespace LD29.Screens
         private float _goTimer = 0f;
 
         private bool _firstWave = true;
+
+        private bool _trading = false;
+        private int _tradecost = 0;
 
         private Texture2D text;
 
@@ -130,14 +136,18 @@ namespace LD29.Screens
 
             if (!playerShip.underWater)
             {
-                if(playerShip.Position.Y > waterLevel + 10) 
+                if (playerShip.Position.Y > waterLevel + 10)
+                {
                     playerShip.underWater = true;
+                    AudioController.PlaySFX("water_enter", 1f, -0.1f, 0.1f);
+                }
                 waterParallax.HeightScale = MathHelper.Lerp(waterParallax.HeightScale, 0.65f, 0.1f);
             }
             if (playerShip.underWater)
             {
                 if (playerShip.Position.Y < waterLevel - 10)
                 {
+                    AudioController.PlaySFX("water_leave", 0.8f,-0.1f,0.1f);
                     playerShip.underWater = false;
                     for (int i = 0; i < 30; i++)
                     {
@@ -204,7 +214,7 @@ namespace LD29.Screens
 
                             TweenController.Instance.Create("", TweenFuncs.Linear, eowtween =>
                             {
-                                playerShip.Life += 0.2f;
+                                //playerShip.Life += 0.2f;
                                 _eowTimer = eowtween.Value;
                                 if(eowtween.State== TweenState.Finished)
                                     TweenController.Instance.Create("", TweenFuncs.QuadraticEaseIn, tweenout =>
@@ -216,7 +226,7 @@ namespace LD29.Screens
                                         
                                         }
                                     }, 500, false, false);
-                            }, 2000, false, false);
+                            }, _tradecost==0?2000:5000, false, false);
                         }
                     }, 500, false, false);
                 }, GameController.Wave>0?2000:0, false);
@@ -244,6 +254,8 @@ namespace LD29.Screens
             TweenController.Instance.Update(gameTime);
             TimerController.Instance.Update(gameTime);
 
+            _tradecost = (int) Math.Ceiling((GameController.Wave*2f)*(0.01f*(100f - playerShip.Life)));
+
             
         }
 
@@ -251,6 +263,20 @@ namespace LD29.Screens
         {
             if (input.IsNewKeyPress(Keys.Escape)) ScreenManager.AddScreen(new PauseMenuScreen());
             //if(input.IsNewKeyPress(Keys.Back)) MapGeneration.Generate(map);
+            if (_endOfWave && _waveFade>=1f)
+            {
+                if (!_trading && _tradecost > 0 && (Ship.Instance.PowerUpMeter > 0 || Ship.Instance.PowerUpLevel > 0) &&
+                    (input.IsNewKeyPress(Keys.X) || input.IsNewKeyPress(Keys.Space) ||
+                     (input.CurrentGamePadState.Buttons.A == ButtonState.Pressed &&
+                      input.LastGamePadState.Buttons.A == ButtonState.Released) ||
+                     (input.CurrentGamePadState.Triggers.Right > 0.2f && input.LastGamePadState.Triggers.Right < 0.2f)))
+                {
+                    _trading = true;
+                    DoTrade();
+                    
+                }
+            }
+
             if (_endOfWave && _waveFade>=1f) return;
 
             if (_gameOver && _goTimer >= 1f)
@@ -263,6 +289,32 @@ namespace LD29.Screens
             base.HandleInput(input);
         }
 
+        void DoTrade()
+        {
+            TimerController.Instance.Create("", () =>
+            {
+                if (Ship.Instance.Life < 100f && (Ship.Instance.PowerUpMeter > 0 || Ship.Instance.PowerUpLevel > 0))
+                {
+                    if (Ship.Instance.PowerUpLevel == 4 && Ship.Instance.PowerUpMeter == 20)
+                        Ship.Instance.PowerUpLevel--;
+
+                    Ship.Instance.PowerUpMeter--;
+                    if (Ship.Instance.PowerUpMeter == -1)
+                    {
+                        Ship.Instance.PowerUpMeter = 19;
+                        Ship.Instance.PowerUpLevel -= 1;
+                    }
+                    Ship.Instance.Life += (100f/(GameController.Wave*2f));
+                    if (Ship.Instance.Life > 100f) Ship.Instance.Life = 100f;
+                    AudioController.PlaySFX("trade", 1f, 0f, 0f);
+                    DoTrade();
+                }
+                else _trading = false;
+
+            }, 200, false);
+        }
+
+        //private bool tradeFlash = false;
         public override void Draw(GameTime gameTime)
         {
             Vector2 center = new Vector2(ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight) / 2f;
@@ -321,7 +373,15 @@ namespace LD29.Screens
             if (_endOfWave)
             {
                 sb.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
-                sb.Draw(ScreenManager.blankTexture, new Rectangle(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), null, Color.White *_waveFade);
+                sb.Draw(ScreenManager.blankTexture, new Rectangle(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), null, Color.White * _waveFade);
+                if (_tradecost>0 && !_trading && (Ship.Instance.PowerUpMeter > 0 || Ship.Instance.PowerUpLevel > 0))
+                {
+                    string tradetext = "Press fire to trade " + _tradecost + " power for health";
+                   // sb.DrawString(ScreenManager.FontSmall, tradetext, center + new Vector2(0, -50) + Vector2.One, Color.Black * _waveFade, 0f, ScreenManager.FontSmall.MeasureString(tradetext) / 2,1f, SpriteEffects.None, 0);
+                    sb.DrawString(ScreenManager.FontSmall, tradetext, center + new Vector2(0, -50), Color.DarkRed * _waveFade, 0f, ScreenManager.FontSmall.MeasureString(tradetext) / 2,1f, SpriteEffects.None, 0);
+                }
+                
+                
                 int numdigits = GameController.Wave.ToString().Length;
                 int wavepos = -38 - 10 - (numdigits*8);
                 sb.Draw(text, center + new Vector2(wavepos, -16), new Rectangle(68, 66, 77, 32), Color.White *  _waveFade);

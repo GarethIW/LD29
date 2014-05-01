@@ -6,6 +6,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using LD29.EntityPools;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using TiledLib;
 
@@ -29,6 +30,8 @@ namespace LD29.Entities.Enemies
 
         private bool up = false;
 
+        private SoundEffectInstance laughLoop;
+
         public Boss(Texture2D spritesheet, Rectangle hitbox, List<Vector2> hitPolyPoints, Vector2 hitboxoffset)
             : base(spritesheet, hitbox, hitPolyPoints, hitboxoffset)
         {
@@ -43,6 +46,10 @@ namespace LD29.Entities.Enemies
             _bodyAnimHit = new SpriteAnim(spritesheet, 8, 1, 32, 32, 0, new Vector2(16, 16));
             _tailAnim = new SpriteAnim(spritesheet, 4, 1, 32, 32, 0, new Vector2(16, 16));
             _tailAnimHit = new SpriteAnim(spritesheet, 9, 1, 32, 32, 0, new Vector2(16, 16));
+
+            laughLoop = AudioController.CreateInstance("boss");
+            laughLoop.Volume = 0f;
+            laughLoop.Pause();
         }
 
         public override void Update(GameTime gameTime, Map gameMap)
@@ -87,8 +94,18 @@ namespace LD29.Entities.Enemies
 
             }
 
-            
+            if (Head)
+            {
+                Vector2 screenPos = Vector2.Transform(Position, Camera.Instance.CameraMatrix);
+                float pan = (screenPos.X - (Camera.Instance.Width/2f))/(Camera.Instance.Width/2f);
+                if ((pan < -1f || pan > 1f) && laughLoop.Volume>0f) laughLoop.Volume = MathHelper.Clamp(laughLoop.Volume-0.1f, 0f, 1f);
+                else if(laughLoop.Volume<1f) laughLoop.Volume = MathHelper.Clamp(laughLoop.Volume+0.1f, 0f, 1f);
+                if (Ship.Instance.Position.Y >= 260 && Position.Y < 260) laughLoop.Volume = 0f;
+                if (Ship.Instance.Position.Y < 260 && Position.Y >= 260) laughLoop.Volume = 0f;
+                laughLoop.Pan = MathHelper.Clamp(pan, -1f, 1f);
 
+                if (Vector2.Distance(Position,Ship.Instance.Position)<180f && laughLoop.State != SoundState.Playing) laughLoop.Play();
+            }
 
             base.Update(gameTime, gameMap);
 

@@ -56,14 +56,13 @@ namespace LD29.Entities.Enemies
 
             if (Helper.Random.Next(300) == 0 && GameController.Wave >= 7)
             {
-                AudioController.PlaySFX("seeker", 0.5f, -0.1f, 0.1f, Camera.Instance, Position);
                 ProjectileController.Instance.Spawn(entity =>
                 {
                     ((Projectile)entity).Type = ProjectileType.Bomb;
                     ((Projectile)entity).SourceRect = new Rectangle(16, 0, 8, 8);
                     ((Projectile)entity).Life = 5000;
                     ((Projectile)entity).Scale = 0.5f;
-                    ((Projectile)entity).EnemyOwner = false;
+                    ((Projectile)entity).EnemyOwner = true;
                     ((Projectile)entity).Damage = 10f;
                     entity.Speed = new Vector2(1f * _faceDir, 0f);
                     entity.Position = Position + new Vector2(0, 5);
