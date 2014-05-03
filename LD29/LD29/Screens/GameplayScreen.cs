@@ -95,6 +95,7 @@ namespace LD29.Screens
             powerupController.BoxCollidesWith.Add(playerShip);
             projectileController.BoxCollidesWith.Add(playerShip);
             projectileController.BoxCollidesWith.Add(enemyController);
+            projectileController.BoxCollidesWith.Add(projectileController);
             enemyController.BoxCollidesWith.Add(playerShip);
             enemyController.BoxCollidesWith.Add(projectileController);
 
@@ -140,6 +141,8 @@ namespace LD29.Screens
                 {
                     playerShip.underWater = true;
                     AudioController.PlaySFX("water_enter", 1f, -0.1f, 0.1f);
+                    AudioController._songs["overwater-theme"].Volume = 0f;
+                    AudioController._songs["underwater-theme"].Volume = AudioController.MusicVolume;
                 }
                 waterParallax.HeightScale = MathHelper.Lerp(waterParallax.HeightScale, 0.65f, 0.1f);
             }
@@ -148,6 +151,8 @@ namespace LD29.Screens
                 if (playerShip.Position.Y < waterLevel - 10)
                 {
                     AudioController.PlaySFX("water_leave", 0.8f,-0.1f,0.1f);
+                    AudioController._songs["overwater-theme"].Volume = AudioController.MusicVolume;
+                    AudioController._songs["underwater-theme"].Volume = 0f;
                     playerShip.underWater = false;
                     for (int i = 0; i < 30; i++)
                     {

@@ -16,6 +16,8 @@ namespace LD29
 {
     public static class AudioController
     {
+        public static bool Music = true;
+
         private static float _sfxVolume = 1f;
         public static float SFXVolume
         {
@@ -23,7 +25,7 @@ namespace LD29
             set { _sfxVolume = MathHelper.Clamp(value, 0f, 1f); }
         }
 
-        private static float _musicVolume = 1f;
+        private static float _musicVolume = 0.3f;
         public static float MusicVolume
         {
             get { return _musicVolume; }
@@ -67,13 +69,18 @@ namespace LD29
 
             _songs = new Dictionary<string, SoundEffectInstance>();
 
-            //_songs.Add("theme", content.Load<SoundEffect>("music").CreateInstance());
+            _songs.Add("overwater-theme", content.Load<SoundEffect>("sfx/overwater-theme").CreateInstance());
+            _songs.Add("underwater-theme", content.Load<SoundEffect>("sfx/underwater-theme").CreateInstance());
 
             foreach (SoundEffectInstance s in _songs.Values)
             {
                 s.IsLooped = true;
                 s.Volume = _musicVolume;
             }
+
+            _songs["underwater-theme"].Volume = 0f;
+            _songs["overwater-theme"].Play();
+            _songs["underwater-theme"].Play();
         }
 
         public static SoundEffectInstance CreateInstance(string name)
@@ -92,6 +99,21 @@ namespace LD29
             }
 
             Instances.Clear();
+        }
+
+        public static void Togglemusic()
+        {
+            Music = !Music;
+            if (Music)
+            {
+                _songs["overwater-theme"].Play();
+                _songs["underwater-theme"].Play();
+            }
+            else
+            {
+                _songs["overwater-theme"].Stop();
+                _songs["underwater-theme"].Stop();
+            }
         }
 
         public static void PlayMusic(string track)

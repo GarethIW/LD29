@@ -64,7 +64,9 @@ namespace GameStateManagement
             waterParallax = new Parallax(ScreenManager.Game.Content.Load<Texture2D>("abovewater-parallax"), 12, 0.5f, 180, 960, new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false, true);
             skyBGParallax = new Parallax(ScreenManager.Game.Content.Load<Texture2D>("sky-bg"), 72, 1f, 70, 960, new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false, false);
             cloudsParallax = new Parallax(ScreenManager.Game.Content.Load<Texture2D>("clouds"), 16, 0.35f, 25, 960, new Viewport(0, 0, ScreenManager.Game.RenderWidth, ScreenManager.Game.RenderHeight), false, false, true);
-            
+
+            AudioController._songs["overwater-theme"].Volume = AudioController.MusicVolume;
+            AudioController._songs["underwater-theme"].Volume = 0f;
 
             base.LoadContent();
         }

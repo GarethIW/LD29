@@ -445,6 +445,7 @@ namespace LD29.Entities
                     hitLoop.Play();
                 }
 
+                if(((Projectile)collided).Type != ProjectileType.GorgerAcid) collided.Active = false;
             }
 
             if (collided is Powerup)
@@ -474,6 +475,8 @@ namespace LD29.Entities
             gunLoop.Pause();
             Position = new Vector2(64, 190);
             underWater = false;
+            AudioController._songs["overwater-theme"].Volume = AudioController.MusicVolume;
+            AudioController._songs["underwater-theme"].Volume = 0f;
             Speed = Vector2.Zero;
             base.Reset();
         }

@@ -200,21 +200,39 @@ namespace LD29.Entities
             if (collided is Ship && !EnemyOwner) return;
             if (collided is Enemy && EnemyOwner) return;
 
-            collided.OnBoxCollision(this, intersect);
-
-            //if (Type == ProjectileType.Forward1)
-            //{
-             if(Type!= ProjectileType.GorgerAcid) Active = false;
-            //}
-
-            if (Type == ProjectileType.Bomb || Type== ProjectileType.Seeker)
+            if (collided is Enemy)
             {
-                //Active = false;
-                Explode();
+                collided.OnBoxCollision(this, intersect);
 
-                
+                //if (Type == ProjectileType.Forward1)
+                //{
+                if (Type != ProjectileType.GorgerAcid) Active = false;
+                //}
 
+                if (Type == ProjectileType.Bomb || Type == ProjectileType.Seeker)
+                {
+                    //Active = false;
+                    Explode();
+
+
+
+                }
             }
+
+            if (collided is Ship)
+            {
+                if (Type == ProjectileType.Bomb || Type == ProjectileType.Seeker)
+                    Explode();
+            }
+
+            if (collided is Projectile && Type == ProjectileType.Forward1 &&
+                ((Projectile) collided).Type == ProjectileType.Seeker)
+            {
+                collided.Active = false;
+                this.Active = false;
+                Explode();
+            }
+
             base.OnBoxCollision(collided, intersect);
         }
 

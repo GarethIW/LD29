@@ -8,8 +8,12 @@
 #endregion
 
 #region Using Statements
+
+using LD29;
 using Microsoft.Xna.Framework;
 using System;
+using Microsoft.Xna.Framework.Graphics;
+
 #endregion
 
 namespace GameStateManagement
@@ -22,6 +26,13 @@ namespace GameStateManagement
     {
         #region Initialization
 
+        private Texture2D text;
+
+
+
+        private MenuEntry optionsMenuEntry;
+
+
 
         /// <summary>
         /// Constructor.
@@ -31,7 +42,7 @@ namespace GameStateManagement
         {
             // Create our menu entries.
             MenuEntry resumeGameMenuEntry = new MenuEntry("Resume Game", true);
-            MenuEntry optionsMenuEntry = new MenuEntry("Options", true);
+            optionsMenuEntry = new MenuEntry("Music", true);
             MenuEntry quitGameMenuEntry = new MenuEntry("Quit Game", true);
 
 
@@ -42,15 +53,27 @@ namespace GameStateManagement
 
             // Add entries to the menu.
             MenuEntries.Add(resumeGameMenuEntry);
-            //MenuEntries.Add(optionsMenuEntry);
+            MenuEntries.Add(optionsMenuEntry);
             MenuEntries.Add(quitGameMenuEntry);
 
             IsPopup = true;
         }
 
+        public override void LoadContent()
+        {
+            text = ScreenManager.Game.Content.Load<Texture2D>("titles");
+            base.LoadContent();
+        }
+
+        public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
+        {
+            optionsMenuEntry.Text = "Music: " + (AudioController.Music ? "On" : "Off");
+            base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+        }
+
         void OptionsMenuEntrySelected(object sender, EventArgs e)
         {
-            ScreenManager.AddScreen(new OptionsMenuScreen());
+            AudioController.Togglemusic();
         }
 
         void resumeGameMenuEntry_Selected(object sender, EventArgs e)
@@ -105,6 +128,10 @@ namespace GameStateManagement
         {
 
             ScreenManager.FadeBackBufferToBlack(0.3f*TransitionAlpha);
+
+            ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
+            ScreenManager.SpriteBatch.Draw(text, new Vector2(ScreenManager.Game.RenderWidth / 2, (ScreenManager.Game.RenderHeight / 2) - 20), new Rectangle(293, 35, 103, 31), Color.White, 0f, new Vector2(51, 15), new Vector2(1f+TransitionPosition, 1f-TransitionPosition), SpriteEffects.None, 0);
+            ScreenManager.SpriteBatch.End();
 
             base.Draw(gameTime);
         }

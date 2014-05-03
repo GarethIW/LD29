@@ -217,6 +217,12 @@
       <Processor>SoundEffectProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="sfx\overwater-theme.wav">
+      <Name>overwater-theme</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <ProcessorParameters_Quality>Low</ProcessorParameters_Quality>
+    </Compile>
     <Content Include="sfx\pickup.wav">
       <Name>pickup</Name>
       <Importer>WavImporter</Importer>
@@ -259,6 +265,12 @@
       <Processor>SoundEffectProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="sfx\underwater-theme.wav">
+      <Name>underwater-theme</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <ProcessorParameters_Quality>Low</ProcessorParameters_Quality>
+    </Compile>
     <Content Include="sfx\water_enter.wav">
       <Name>water_enter</Name>
       <Importer>WavImporter</Importer>
