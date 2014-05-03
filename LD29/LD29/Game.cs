@@ -11,7 +11,9 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+#if WINDOWS || LINUX
 using OpenTK;
+#endif
 using TimersAndTweens;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = System.Drawing.Point;
@@ -138,10 +140,14 @@ namespace LD29
 
         void ChangeDisplayScale()
         {
-            //graphics.PreferredBackBufferWidth = RenderWidth * DisplayScale;
-            //graphics.PreferredBackBufferHeight = RenderHeight * DisplayScale;
-            //graphics.ApplyChanges();
+			#if MACOS
+            graphics.PreferredBackBufferWidth = RenderWidth * DisplayScale;
+            graphics.PreferredBackBufferHeight = RenderHeight * DisplayScale;
+            graphics.ApplyChanges();
+			this.Window.Window.Center();
+			#endif
 
+			#if WINDOWS || LINUX
             if (RenderWidth*DisplayScale == graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width)
             {
                 ((OpenTKGameWindow) Window).Window.WindowState = WindowState.Fullscreen;
@@ -160,12 +166,16 @@ namespace LD29
                 ((OpenTKGameWindow)Window).Window.Location = new Point((graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width / 2) - (RenderWidth * DisplayScale) / 2, (graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Height / 2) - (RenderHeight * DisplayScale) / 2);
                 ((OpenTKGameWindow) Window).Window.ClientSize = new Size(RenderWidth*DisplayScale,
                     RenderHeight*DisplayScale);
-
-            }
+			}
+			#endif
+            
 
                 //
 
         }
+
+
+
 
         
     }

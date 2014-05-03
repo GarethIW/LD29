@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG;MACOS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -307,7 +307,6 @@
     <Content Include="Content\underwater-bg.xnb" />
     <Content Include="Content\sfx\boost.wav" />
     <Content Include="Content\sfx\explosion.wav" />
-    <Content Include="Content\sfx\eyespew.xnb" />
     <Content Include="Content\sfx\gorgershoot.wav" />
     <Content Include="Content\sfx\gun_winddown.wav" />
     <Content Include="Content\sfx\lancer.wav" />
@@ -318,6 +317,16 @@
     <Content Include="Content\sfx\projectileexplosion.wav" />
     <Content Include="Content\sfx\seeker.wav" />
     <Content Include="Content\sfx\shiphit.wav" />
+    <Content Include="Content\sfx\overwater-theme.xnb" />
+    <Content Include="Content\sfx\eyespew.wav" />
+    <Content Include="Content\sfx\combo_up.wav" />
+    <Content Include="Content\sfx\boss.wav" />
+    <Content Include="Content\sfx\combo_down.wav" />
+    <Content Include="Content\sfx\shipexplosion.wav" />
+    <Content Include="Content\sfx\trade.wav" />
+    <Content Include="Content\sfx\underwater-theme.xnb" />
+    <Content Include="Content\sfx\water_enter.wav" />
+    <Content Include="Content\sfx\water_leave.wav" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\icon.icns" />
